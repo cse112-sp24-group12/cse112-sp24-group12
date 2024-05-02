@@ -12,23 +12,23 @@
 ## Issues
 ### Current sprint
 - Figma prototypes [7 points]
- - Geo
- - Brandon
+  - Geo
+  - Brandon
 - Game rules state machine [19 points]
- - Alex
- - Harshil
- - Eric
- - Shijun
- - Geo
- - Plus everyone's input
+  - Alex
+  - Harshil
+  - Eric
+  - Shijun
+  - Geo
+  - Plus everyone's input
 - Create and deploy minimal Websocket backend for game [2 points]
- - Luke
- - Kristin
+  - Luke
+  - Kristin
 - Create CSS classes for style guide + download fonts [3 points]
- - Luke
- - Kristin
+  - Luke
+  - Kristin
 - Add Code Climate [2 points]
- - Arjun
+  - Arjun
 
 ### Backlog
 - Automated image compression (CI/CD) [3 points]
