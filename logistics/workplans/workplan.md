@@ -11,21 +11,39 @@
 
 ## Issues
 ### Current sprint
-- Issue name [X points]
+- Figma prototypes [7 points]
+ - Geo
+ - Brandon
+- Game rules state machine [19 points]
+ - Alex
+ - Harshil
+ - Eric
+ - Shijun
+ - Geo
+ - Plus everyone's input
+- Create and deploy minimal Websocket backend for game [2 points]
+ - Luke
+ - Kristin
+- Create CSS classes for style guide + download fonts [3 points]
+ - Luke
+ - Kristin
+- Add Code Climate [2 points]
+ - Arjun
 
 ### Backlog
-- Automated image compression (CI/CD) [X points]
-- JS minification (CI/CD) [X points]
-- Snapshot testing [X points]
-- Figma prototypes [X points]
-- Game rules state machine [X points]
-- Create and deploy minimal Websocket backend for game [X points]
-- Create CSS classes for style guide [X points]
-- Conform various screens to new style guide [X points] 
-- Metrics [X points]
-- Add Code Climate [X points]
-- Fix next and previous buttons on mobile view [X points]
-- Add fonts from style guide and apply them to all text as appropriate [X points]
-- Make card hover/partial flip animation a little sleeker and more realistic [X points]
-- Make star animation more performant (switch from left:/top: position:absolute -> transform:translate, or use canvas element if that doesn't work) [X points]
-- Convert to SPA [X points]
+- Automated image compression (CI/CD) [3 points]
+- JS minification (CI/CD) [2 points]
+- Snapshot testing [3 points]
+- Scaffold settings page [3 points]
+- Conform various screens to new style guide [7 points] 
+- Metrics [12 points]
+- (Temporarily) disable mobile access and provide appropriate warning message to user [2 points]
+- Make card hover/partial flip animation a little sleeker and more realistic [5 points]
+- Make star animation more performant (switch from left:/top: position:absolute -> transform:translate, or use canvas element if that doesn't work) [5 points]
+- Convert to SPA [12 points]
+- Convert deployment to a cleaner URL [5 points]
+- Convert camera display to a popover in settings menu [7 points]
+- Fix scrolling dots under all cards view [3 points]
+- Remove left/right arrows on boundary in all cards view [2 points]
+- Find appropriate music [5 points]
+- Add music to background + settings [3 points]
