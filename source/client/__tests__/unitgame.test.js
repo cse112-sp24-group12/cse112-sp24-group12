@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-const game = require("../game");
+const game = require("../scripts/game.js");
 const fs = require("fs");
 window.document.body.innerHTML = fs.readFileSync("source/game.html");
 // require("../game");

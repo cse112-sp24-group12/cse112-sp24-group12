@@ -11,5 +11,6 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
-    }
+    },
+    "ignorePatterns": ['scripts/swiper-bundle.min.js']
 }
