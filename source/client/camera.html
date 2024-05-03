@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Camera</title>
+    <link rel="stylesheet" href="./assets/styles/camera.css" />
+    <script src="./assets/scripts/camera.js" type="module"></script>
+
+    <!-- stars background -->
+    <link rel="stylesheet" href="./assets/styles/stars.css" />
+    <script src="./assets/scripts/stars.js" type="module"></script>
+  </head>
+
+  <body>
+    <div id="stars-container"></div>
+    <div id="content">
+      <div id="message">
+        <h1>Welcome Adventurer</h1>
+        <h2>Choose a character from below or take your own picture</h2>
+      </div>
+      <div id="character-container">
+        <div class="character" id="char-1">
+          <div class="img-case">
+            <image
+              class="character-img"
+              src="./assets/images/characters/dragon.png"
+            ></image>
+          </div>
+          <p class="character-description">Dragon</p>
+        </div>
+        <div class="character" id="char-2">
+          <div class="img-case">
+            <image
+              class="character-img"
+              src="./assets/images/characters/panda.png"
+            ></image>
+          </div>
+          <p class="character-description">Panda</p>
+        </div>
+        <div class="character" id="char-3">
+          <div class="img-case">
+            <image
+              class="character-img"
+              id="camera-img"
+              src="./assets/images/characters/camera.png"
+            ></image>
+            <canvas id="photoDisplay" width="140"></canvas>
+          </div>
+          <p class="character-description">Take your own picture</p>
+        </div>
+      </div>
+      <div class="cameraContainer">
+        <div class="video-container">
+          <video id="video-display" width="100%" height="150" autoplay></video>
+          <div class="buttons">
+            <button id="take-photo-btn" style="visibility: hidden">
+              Take Photo
+            </button>
+            <button id="submit-btn" style="visibility: hidden">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

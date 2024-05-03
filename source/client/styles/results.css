@@ -1,0 +1,176 @@
+/* OUTLINE */
+/* Home Page Button  */
+.home-button {
+  display: inline-block;
+  margin: 1em;
+  font-size: 1.25rem;
+  color: #fff9;
+  background-color: #fff0;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 900;
+  text-decoration: none;
+  border: 3px solid #fff3;
+  transition: all 200ms;
+}
+.home-button:hover {
+  background-color: #fff1;
+  color: #fff;
+  border-color: #fff;
+  scale: 1.05;
+}
+.home-button:active {
+  scale: 0.98;
+}
+
+/* Short-Term and Long-Term Titles */
+h2 {
+  text-align: center;
+  margin: 10px;
+}
+
+/* Short-Term description is centered */
+#card-0 {
+  font-size: 1.2rem;
+  display: inline;
+  text-align: center;
+  padding: 5px;
+}
+
+/* All cards are in a row */
+#card-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+/* Individual Card Positions */
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 15px;
+  align-items: center;
+  max-width: 20%;
+}
+
+/* Card Images */
+img {
+  width: 150px;
+  height: 250px;
+}
+
+/* Card Descriptions */
+p {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+/* buttons and mobile card shouldn't be displayed in web version */
+#card-5 {
+  display: none;
+}
+button {
+  display: none;
+}
+
+/* Mobile Display */
+/*if the screen is less than or equal to 600px*/
+@media only screen and (max-width: 600px) {
+  /* only one card should show */
+  .card {
+    display: none;
+  }
+
+  /* card shown in mobile version */
+  #card-5 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  /* card description margin for mobile display */
+  p {
+    margin: 10px;
+  }
+
+  /*button features for mobile*/
+  button {
+    display: flex;
+    justify-content: center;
+    background-color: purple;
+    color: white;
+  }
+
+  /* Previous Button */
+  #prev-button {
+    position: fixed;
+    bottom: 5px;
+  }
+
+  /* Next Button */
+  #next-button {
+    position: fixed;
+    top: 5px;
+  }
+}
+
+/* THEME */
+
+/* 'Here is What Your Future Holds' Animation */
+h1 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  background-image: linear-gradient(
+    -225deg,
+    #eed6ff 0%,
+    #b180d4 29%,
+    #9b6fb9 67%,
+    #695bb8 100%
+  );
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-clip 4s linear infinite;
+}
+@keyframes text-clip {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Card Animations */
+img {
+  animation: anim-lineup 2s ease-out;
+}
+h2 {
+  color: rgba(255, 255, 255, 0.901);
+  font-family: cursive;
+  animation: anim-lineup 2s ease-out;
+}
+p {
+  color: rgba(255, 255, 255, 0.815);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  animation: anim-lineup 2s ease-out;
+}
+@keyframes anim-lineup {
+  0% {
+    opacity: 0;
+    transform: translateY(80%);
+  }
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}

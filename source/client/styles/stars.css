@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url("https://wallpapers.com/images/hd/dark-purple-background-yhif96q9bnx7pmmo.jpg");
+  background-size: cover;
+  background-position-y: center;
+  height: 100vh;
+  position: relative;
+}
+
+#stars-container {
+  position: absolute;
+  inset: 0;
+  background-color: #260050d0;
+  height: 100vh;
+  overflow: clip;
+  backdrop-filter: blur(0.2vw);
+}
+
+#content {
+  position: absolute;
+  inset: 0;
+  overflow: scroll;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+}

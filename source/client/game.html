@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/styles/game.css" />
+    <script src="./assets/scripts/game.js" type="module"></script>
+  </head>
+
+  <body>
+    <!-- instructions modal -->
+    <div id="popup-box" class="howto-modal">
+      <div class="content">
+        <b>
+          <span class="instruct">How to Play</span>
+          <ol>
+            <li>Select your avatar, take a picture if you would like.</li>
+            <li>Click on the cards to attack them.</li>
+            <li>Reduce the opponent fortune teller's HP bar to win.</li>
+            <li>Your luck is determined by the Lucky Point system.</li>
+            <li>
+              The Lucky Point bar oscillates between negative and positive luck.
+            </li>
+            <li>
+              Click on the cards when the Lucky Point bar is in the positive
+              zone.
+            </li>
+            <li>Find out your fortune!</li>
+          </ol>
+        </b>
+        <a href="#" class="box-close"> × </a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="buttons">
+        <a href="#popup-box" id="how-to-play-btn">How to play</a>
+        <a href="./camera.html" id="back-btn">Back</a>
+      </div>
+
+      <div class="oracle">
+        <div class="message">
+          Draw 4 cards to discover your fortune... choose wisely!
+        </div>
+        <img src="./assets/images/oracle.png" alt="The Oracle" />
+      </div>
+      <!-- board div contains all the cards -->
+      <div class="board"></div>
+      <!-- end of board div -->
+
+      <div class="player">
+        <div class="profile-pic">
+          <label class="-label" for="file">
+            <span>Change Image</span>
+          </label>
+          <input
+            id="file"
+            type="file"
+            accept=".png, .jpg, .jpeg"
+            onchange="loadFile(event)"
+          />
+          <img
+            src="./assets/images/characters/dragon.png"
+            id="output"
+            alt="Player Image"
+          />
+        </div>
+        <div class="bars">
+          <div class="luck-bar">
+            <div class="fill"></div>
+            <div class="label"></div>
+          </div>
+          <div class="oscillating-bar">
+            <div class="fill"></div>
+            <div class="label">Flip a card to determine your luck!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

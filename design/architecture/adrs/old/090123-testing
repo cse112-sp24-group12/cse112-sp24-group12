@@ -1,0 +1,52 @@
+
+# Decision: Unit Testing
+## status: accepted
+## date: 09-01-2023
+## deciders: Mick, Jenny, Steven, Henry, Jeannie
+## consulted: None
+## informed: all team members
+## Context and Problem Statement: We need to decide which tech stack to use for our unit test
+
+# Why this decision?
+
+## Considered Options
+- Jest
+- Mocha
+
+## Decision Outcome
+
+### Chosen option: Jest
+
+### Details
+- We choose to use Jest as the tech stack to write our unit test for all the function in backend, which include meainly game.js and result.js. 
+- The tests that is written will be in game.test.js and result.test.js. We also set up the CICD pipeline for this unit test such that github actions will always run the unit test everytime some push or merge to branch and will notify the admin if anyone fail the actions. 
+
+
+### Consequence 
+- Good, becuase they provide an easy access library that can be use easily and can be learn quickly, which is very useful for our team consider that no one really have experience with unit testing for javascript.
+- Good, because we have a lab about jest where we have the room to learn and test out how to use jest then apply it to our project. This help us become more familiar with unit testing using Jest and make the process easier.
+- Good, because the test is isolated (unit testing) and we can test each function individually instead of testing.
+- Bad, because eventhough we have some hand on experience through the lab, it is still new to us and sometimes jest cause errors and make the debug process more confusing. 
+- Bad, because jest is a framework so we will have to do some download and install package.json, which might bring more complexity to our project. 
+
+## Pros and Cons of the Options
+### Jest
+- Good, because it is easy to use as it have a great library that we can call from the API and search for document online.
+- Good, becuase there is a lot of resources for Jest in case we have any confusion or mess up our set up. One of the resources would be the lab that we did in class, which really help us familiar with the process of using Jest.
+- Good, because the test is secure and run fast, which help because we use Jest for unit test, which mean there will be many individual small test cases. It will cause a lot of troubles and time comsumption if the test take a long time to run.
+- Good, because Jest is also compatible with our choice of other tech stack such as Javascript and HTML/CSS. 
+- Good, because Jest also allow time manipulate for our testing 
+- Bad, because Jest is a framework and it will bring complexity to our project, which might cause a lot of bugs and it will take a lot of time to debug with those errors as we are not too familiar with this testing framework. 
+- Bad, becuase eventhough Jest have an easy to use library, Jest's library is very limited compare to other framework. 
+
+### Mocha
+- Good, because Mocha supporting many JavaScript assertion libraries, including Express.js, Should.js, and Chai. 
+- Good, because Mocha support BDD (behavior driven development) and TDD (test driven development) which makw it simple for us  test quality and also test coverage.
+- Good, because Mocha have a lot of usefol tools in it library.
+- Bad, because Mocha have worse test cases runtime than Jest, meaning that even though Mocha can provide much qualified test cases, it will take longer to run the test and will slower the process of us 
+- Bad, because Mocha library is more complicated and harder to use compare to Jest.
+- Bad, because Mocha require more set up than Jest and Jest is already complex as framwork so Mocha also worse on this point. 
+
+
+## More Information
+- Overall, we notice that Mocha might provide better resouces to create quality test. However, as most of us are unfamiliar with unit testing for javascript and both framework in general, we decided to choose the one what is available to us in lab, which we have more expose to. We are priotizing a simple but perfectly functional project rather than a project with all cool features but we are uncertain of. 
