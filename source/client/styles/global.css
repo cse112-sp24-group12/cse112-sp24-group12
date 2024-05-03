@@ -1,0 +1,39 @@
+:root {
+  --purple: #7238BD;
+  --yellow: #F2CD5D;
+  --black: #2B2D42;
+  --blue: #97EFE9;
+  --red: #CC3F0C;
+  --white: #FFFFFF;
+}
+
+@font-face {
+  font-family: "Bershire Swash";
+  src: url(../assets/fonts/BerkshireSwash-Regular.ttf);
+  font-weight: normal;
+}
+
+
+.primary-button,
+.secondary-button,
+.tertiary-button,
+.accent-button {
+  
+}
+
+.primary-button {
+  font-family: "Berkshire Swash", monospace;
+  background-color: var(--red);
+}
+
+.secondary-button {
+
+}
+
+.tertiary-button {
+
+}
+
+.accent-button {
+
+}
