@@ -1,0 +1,111 @@
+:root {
+  --purple: #7238BD;
+  --purple-low-opacity: #7238BD0A;
+  --yellow: #F2CD5D;
+  --black: #2B2D42;
+  --blue: #97EFE9;
+  --red: #CC3F0C;
+  --red-low-opacity: #cc3f0c35;
+  --white: #FFFFFF;
+  --white-low-opacity: #ffffffd4;
+
+  --border-radius: 10px;
+}
+
+@font-face {
+  font-family: "Berkshire Swash";
+  src: url(../assets/fonts/BerkshireSwash-Regular.ttf) format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Mystery Quest";
+  src: url(../assets/fonts/MysteryQuest-Regular.ttf) format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url(../assets/fonts/Roboto-Regular.ttf) format("truetype");
+  font-weight: normal;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-display: swap;
+  font-family: "Roboto", sans-serif;
+  color: var(--white);
+  background-color: var(--black);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Berkshire Swash";
+}
+
+.primary-button,
+.secondary-button,
+.tertiary-button,
+.accent-button {
+  font-family: "Mystery Quest", cursive, serif;
+  border: none;
+  text-decoration: none;
+  color: var(--white);
+  cursor: pointer;
+  background: none;
+  font-size: 1rem;
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1.75rem;
+  margin: 0 0.75rem;
+  display: inline-block;
+  transition: 150ms transform ease-in-out; 
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.tertiary-button:hover,
+.accent-button:hover {
+  transform: scale(1.05);
+}
+
+.primary-button {
+  background-color: var(--purple);
+}
+
+.secondary-button {
+  background-color: var(--purple-low-opacity);
+  border: 2px solid var(--purple);
+  padding: calc(0.75rem - 2px) calc(1.75rem - 2px);
+}
+
+.tertiary-button {
+  text-decoration: underline;
+}
+
+.accent-button {
+  background-color: var(--yellow);
+  color: var(--black);
+  font-size: 1.5rem;
+  padding: 0.825rem 2.125rem;
+}
+
+.card {
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  margin: 0.75rem;
+}
+
+.white-card {
+  background-color: var(--white-low-opacity); 
+  border: 2px solid var(--white);
+  color: var(--black);
+}
+
+.purple-card {
+  background-color: var(--purple-low-opacity);
+  border: 2px solid var(--purple);
+}
