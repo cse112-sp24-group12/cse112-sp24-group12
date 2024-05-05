@@ -12,6 +12,9 @@ const RESULTS_PAGE_PATH = `file://${join(__dirname, '../../results.html')}`;
 let browser;
 let page;
 
+/**
+ * Automates initialization of browser and navigation to game page, to be run before each test
+ */
 async function defaultInitialization() {
   browser = await puppeteer.launch({
     args: ['--allow-file-access-from-files'],
@@ -21,6 +24,9 @@ async function defaultInitialization() {
   await page.goto(GAME_PAGE_PATH, { waitUntil: 'networkidle2' });
 }
 
+/**
+ * Destructs browser and page, to be run after each test
+ */
 async function defaultTeardown() {
   await page.close();
   await browser.close();

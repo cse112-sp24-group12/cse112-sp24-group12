@@ -1,0 +1,24 @@
+name: JSDocs build
+run-name: JSDocs build triggered by @${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: ./source
+
+jobs:
+  Build & Deploy:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Install JSDocs
+        run: npm i -g jsdoc
+      - name: Build JSDocs
+        run: jsdoc -c jsdoc.json
+      - name: Deploy JSDocs to GitHub pages
+        run: 
