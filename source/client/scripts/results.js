@@ -31,6 +31,10 @@ if (storedCards !== null) {
 // Keep track of current screen width
 export let screenWidth = window.innerWidth;
 
+export function setScreenWidth(newScreenWidth) {
+  screenWidth = newScreenWidth;
+}
+
 // Update cards for desktop
 Array.prototype.sample = function () {
   return this[Math.floor(Math.random() * this.length)];
@@ -50,7 +54,7 @@ for (let i = 0; i < chosenCards.length; i++) {
   fortuneTellings.push(telling);
 }
 
-window.addEventListener('DOMContentLoaded', function (event) {
+window.addEventListener('DOMContentLoaded', function () {
   //update short term description
   const shortTermDescriptions = [
     'You are very unlucky today!! You should double it and pass it to the next person.',

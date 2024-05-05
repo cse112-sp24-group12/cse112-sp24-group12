@@ -1,15 +1,14 @@
 // initialize document content
-let startCamera = document.querySelector('#char-3');
-let cameraImg = document.querySelector('#camera-img');
-let cameraBtn = document.querySelector('#take-photo-btn');
-let video = document.querySelector('#video-display');
-let canvas = document.querySelector('.cameraContainer');
-let submitBtn = document.querySelector('#submit-btn');
+const cameraImg = document.querySelector('#camera-img');
+const cameraBtn = document.querySelector('#take-photo-btn');
+const video = document.querySelector('#video-display');
+const submitBtn = document.querySelector('#submit-btn');
+const photoDisplay = document.querySelector('#photoDisplay');
 
 //clear localStorage everytime come back or refresh
 window.localStorage.removeItem('userImage');
 
-var character = document.getElementsByClassName('character');
+const character = document.getElementsByClassName('character');
 for (let i = 0; i < character.length; i++) {
   if (i == 0) {
     character[i].addEventListener('click', dragonSelected);
@@ -20,7 +19,7 @@ for (let i = 0; i < character.length; i++) {
   }
 }
 
-var clicked = [];
+const clicked = [];
 
 /**
  * Handler function for when dragon character is selected.
@@ -28,9 +27,8 @@ var clicked = [];
  * - Update clicked stack
  * - Update borders
  * - Set LocalStorage
- * @param {} event
  */
-function dragonSelected(event) {
+function dragonSelected() {
   clicked.pop();
   clicked.push('dragon');
   window.localStorage.removeItem('userImage');
@@ -47,9 +45,8 @@ function dragonSelected(event) {
  * - Update clicked stack
  * - Update borders
  * - Set LocalStorage
- * @param {} event
  */
-function pandaSelected(event) {
+function pandaSelected() {
   clicked.pop();
   clicked.push('panda');
   window.localStorage.removeItem('userImage');
@@ -67,9 +64,8 @@ function pandaSelected(event) {
  * - Update borders
  * - Set LocalStorage
  * - Load Camera canvas
- * @param {} event
  */
-function takePicture(event) {
+function takePicture() {
   clicked.pop();
   clicked.push('camera');
   borderHandler();

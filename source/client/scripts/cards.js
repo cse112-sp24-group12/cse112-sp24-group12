@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // From Responsive Slider by CodingLab
-var swiper = new Swiper('.slide-content', {
+new window.Swiper('.slide-content', {
   slidesPerView: 3,
   spaceBetween: 25,
   loop: true,

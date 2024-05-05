@@ -25,7 +25,6 @@ function init() {
   board.innerHTML = cardHTMLs;
 
   const cards = board.children;
-  console.log(board.children);
 
   const startingLuck = 50;
   let luck;
