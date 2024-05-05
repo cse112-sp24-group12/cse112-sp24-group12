@@ -1,0 +1,12 @@
+name: Deploy Server
+run-name: Server deployment triggered by @${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Placeholder:
+    - name: Deploy to Render.com
+      run: curl {{ secrets.RENDER_DEPLOY_WEBHOOK_URL }}
