@@ -2,7 +2,7 @@ import tarotConfig from './tarot.js';
 
 /**
  * Create a hashmap for all tarot cards that can be indexed by card name
- * @return {Map} a hashmap of all the cards and their information paresed from json
+ * @returns {Map} a hashmap of all the cards and their information paresed from json
  */
 const tarotMap = tarotConfig.tarot.reduce((map, card) => {
   map[card.name] = {

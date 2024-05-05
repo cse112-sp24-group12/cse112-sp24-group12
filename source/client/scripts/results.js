@@ -1,7 +1,7 @@
 import tarotConfig from './tarot.js';
 /**
  * Create a hashmap for all tarot cards that can be indexed by card name
- * @return {Map} a hashmap of all the cards and their information parsed
+ * @returns {Map} a hashmap of all the cards and their information parsed
  */
 const tarotMap = tarotConfig.tarot.reduce((map, card) => {
   map[card.name] = {
@@ -31,6 +31,10 @@ if (storedCards !== null) {
 // Keep track of current screen width
 export let screenWidth = window.innerWidth;
 
+/**
+ *
+ * @param newScreenWidth
+ */
 export function setScreenWidth(newScreenWidth) {
   screenWidth = newScreenWidth;
 }
@@ -104,6 +108,11 @@ if (mobileCard !== undefined) {
 
 /**
  * Display the current card on the mobile side
+ * @param chosenCards
+ * @param idx
+ * @param mobileCard
+ * @param tarotMap
+ * @param fortuneTellings
  */
 export function updateMobileCard(
   chosenCards,
@@ -124,6 +133,7 @@ export function updateMobileCard(
 /**
  * Update button visibility - should not show the previous button when on the
  * first card and should not show the next button on the last card
+ * @param chosenCards
  * @param {*} idx index of current card when in mobile mode
  */
 export function updateButtonVisibility(chosenCards, idx) {

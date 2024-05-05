@@ -3,15 +3,19 @@
  */
 import puppeteer from 'puppeteer';
 import { join } from 'path';
+import { fileURLToPath } from 'url';
 
 // eslint-disable-next-line no-undef
-const GAME_PAGE_PATH = `file://${join(__dirname, '../../game.html')}`;
+const GAME_PAGE_PATH = `${join(import.meta.url, '../../../game.html')}`;
 // eslint-disable-next-line no-undef
-const RESULTS_PAGE_PATH = `file://${join(__dirname, '../../results.html')}`;
+const RESULTS_PAGE_PATH = `${join(import.meta.url, '../../../results.html')}`;
 
 let browser;
 let page;
 
+/**
+ * Automates initialization of browser and navigation to game page, to be run before each test
+ */
 async function defaultInitialization() {
   browser = await puppeteer.launch({
     args: ['--allow-file-access-from-files'],
@@ -21,6 +25,9 @@ async function defaultInitialization() {
   await page.goto(GAME_PAGE_PATH, { waitUntil: 'networkidle2' });
 }
 
+/**
+ *
+ */
 async function defaultTeardown() {
   await page.close();
   await browser.close();
@@ -112,6 +119,6 @@ describe('Testing local storage contents is as expected', () => {
     }
     await page.waitForNavigation();
     const url = await page.evaluate(() => document.location.href);
-    expect(url).toEqual(RESULTS_PAGE_PATH);
+    expect(fileURLToPath(url)).toEqual(fileURLToPath(RESULTS_PAGE_PATH));
   }, 10000);
 });

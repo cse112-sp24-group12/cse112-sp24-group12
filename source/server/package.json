@@ -1,7 +1,6 @@
 {
-  "name": "multiplayer-demo",
-  "version": "1.0.0",
-  "description": "",
+  "name": "tarot-game-server",
+  "description": "Node.js WebSocket backend for Tarot, but a Game",
   "main": "server/main.js",
   "type": "module",
   "scripts": {

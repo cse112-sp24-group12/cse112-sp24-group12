@@ -1,0 +1,12 @@
+{
+  "plugins": [],
+  "recurseDepth": 10,
+  "source": {
+    "include": ["./client", "./server"],
+    "exclude": ["./client/node_modules", "./server/node_modules"]
+  },
+  "opts": {
+    "recurse": true,
+    "destination": "./jsdocs"
+  }
+}

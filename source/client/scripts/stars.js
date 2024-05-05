@@ -26,6 +26,9 @@ window.addEventListener('DOMContentLoaded', () => {
   animate();
 });
 
+/**
+ *
+ */
 function animate() {
   for (let i = 0; i < stars.length; i++) {
     stars[i].z = (stars[i].z + 1 / starSlowness) % 1;
@@ -38,6 +41,11 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+/**
+ *
+ * @param starElement
+ * @param i
+ */
 function updateStar(starElement, i) {
   const star = stars[i];
 
