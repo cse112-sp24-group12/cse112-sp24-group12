@@ -10,4 +10,5 @@
 - Workplans: [`/logistics/workplans/`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/tree/main/logistics/workplans)
 
 ### Important links
+- JSDocs (Documentation): [GitHub Pages](https://cse112-sp24-group12.github.io/cse112-sp24-group12/)
 - Team intro video: [YouTube](https://www.youtube.com/watch?v=iKq6aLO0iRA)
