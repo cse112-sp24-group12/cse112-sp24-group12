@@ -1,3 +1,6 @@
+[![Deploy JSDocs](https://github.com/cse112-sp24-group12/cse112-sp24-group12/actions/workflows/deploy_docs.yml/badge.svg)](https://github.com/cse112-sp24-group12/cse112-sp24-group12/actions/workflows/deploy_docs.yml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ad00cf6d-4338-4ebd-b592-efadab490475/deploy-status)](https://app.netlify.com/sites/tarot-game-client/deploys)
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/a353393e3839a14923e2/maintainability)](https://codeclimate.com/github/cse112-sp24-group12/cse112-sp24-group12/maintainability)
 [![Technical Debt](https://img.shields.io/codeclimate/tech-debt/cse112-sp24-group12/cse112-sp24-group12?logo=codeclimate)](https://codeclimate.com/github/cse112-sp24-group12/cse112-sp24-group12/maintainability)
 # Powell's Prophets
