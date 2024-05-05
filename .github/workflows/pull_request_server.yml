@@ -5,7 +5,8 @@ on:
   pull_request:
     branches:
       - main
-
+    paths:
+      - 'source/server/**'
 defaults:
   run:
     working-directory: ./source/server      
