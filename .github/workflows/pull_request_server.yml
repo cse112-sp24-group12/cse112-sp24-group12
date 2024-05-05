@@ -6,13 +6,15 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: ./source/server      
+
 jobs:
   Temporary:
     runs-on: [ubuntu-latest]
     steps:
       - name: Check out code 
         uses: actions/checkout@v4
-      - name: Move to server subdirectory
-        run: cd source/server
       - name: Exit
         run: echo "exiting" && exit 0
