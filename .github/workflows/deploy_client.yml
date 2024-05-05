@@ -5,10 +5,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'source/client/**'
 
 jobs:
   Placeholder:
     runs-on: [ubuntu-latest]
     steps:
       - name: Deploy to Netlify
-        run: curl {{ secrets.NETLIFY_DEPLOY_WEBHOOK_URL }}
+        run: curl ${{ secrets.NETLIFY_DEPLOY_WEBHOOK_URL }}
