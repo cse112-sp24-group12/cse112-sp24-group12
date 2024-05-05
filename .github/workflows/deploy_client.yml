@@ -8,5 +8,7 @@ on:
 
 jobs:
   Placeholder:
-    - name: Placeholder
-      run: echo "Placeholder" && exit 0
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Deploy to Netlify
+        run: curl {{ secrets.NETLIFY_DEPLOY_WEBHOOK_URL }}
