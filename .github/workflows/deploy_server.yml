@@ -8,5 +8,5 @@ on:
 
 jobs:
   Placeholder:
-    - name: Deploy to Render.com
+    - name: Deploy to Render
       run: curl {{ secrets.RENDER_DEPLOY_WEBHOOK_URL }}
