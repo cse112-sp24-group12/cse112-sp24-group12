@@ -8,5 +8,7 @@ on:
 
 jobs:
   Placeholder:
-    - name: Deploy to Render
-      run: curl {{ secrets.RENDER_DEPLOY_WEBHOOK_URL }}
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Deploy to Render
+        run: curl {{ secrets.RENDER_DEPLOY_WEBHOOK_URL }}
