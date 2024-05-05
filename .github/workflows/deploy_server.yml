@@ -5,10 +5,12 @@ on:
   push:
     branches:
       - main
+    paths: 
+      - 'source/server/**'
 
 jobs:
   Placeholder:
     runs-on: [ubuntu-latest]
     steps:
       - name: Deploy to Render
-        run: curl {{ secrets.RENDER_DEPLOY_WEBHOOK_URL }}
+        run: curl ${{ secrets.RENDER_DEPLOY_WEBHOOK_URL }}
