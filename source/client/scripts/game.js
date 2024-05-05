@@ -1,19 +1,19 @@
-import tarotConfig from "../tarot.js";
+import tarotConfig from './tarot.js';
 
-window.addEventListener("DOMContentLoaded", init);
+window.addEventListener('DOMContentLoaded', init);
 
 function init() {
-  const board = document.querySelector(".board");
-  const playerImage = document.querySelector(".player img");
-  const luckLabel = document.querySelector(".luck-bar .label");
-  const luckBarFill = document.querySelector(".luck-bar .fill");
-  const oscillatingBar = document.querySelector(".oscillating-bar");
-  const oscillatingBarFill = document.querySelector(".oscillating-bar .fill");
-  const oracleMsg = document.querySelector(".oracle .message");
+  const board = document.querySelector('.board');
+  const playerImage = document.querySelector('.player img');
+  const luckLabel = document.querySelector('.luck-bar .label');
+  const luckBarFill = document.querySelector('.luck-bar .fill');
+  const oscillatingBar = document.querySelector('.oscillating-bar');
+  const oscillatingBarFill = document.querySelector('.oscillating-bar .fill');
+  const oracleMsg = document.querySelector('.oracle .message');
 
-  playerImage.src = window.localStorage.getItem("userImage");
+  playerImage.src = window.localStorage.getItem('userImage');
 
-  let cardHTMLs = "";
+  let cardHTMLs = '';
   for (let i = 0; i < 22; i++) {
     cardHTMLs += `<div class="card-container" id="card-container-${i + 1}">
       <div class="card" id="card-${i + 1}">
@@ -33,7 +33,7 @@ function init() {
 
   //Function to load profile image
   window.loadFile = function (event) {
-    var image = document.getElementById("output");
+    var image = document.getElementById('output');
     image.src = URL.createObjectURL(event.target.files[0]);
   };
 
@@ -42,7 +42,7 @@ function init() {
 
   //listen whenever a card is clicked
   for (let i = 0; i < cards.length; i++) {
-    cards[i].addEventListener("click", onCardClicked);
+    cards[i].addEventListener('click', onCardClicked);
   }
 
   /**
@@ -56,7 +56,7 @@ function init() {
     const card = event.currentTarget; // actually is card-container
 
     if (
-      card.classList.contains("flipped") ||
+      card.classList.contains('flipped') ||
       luck <= 0 ||
       luck >= 100 ||
       chosenCards.length >= 4
@@ -64,25 +64,25 @@ function init() {
       return;
     }
 
-    card.classList.add("flipped");
+    card.classList.add('flipped');
 
     // 50-50 chance that the card is upside-down
     const isDown = Math.random() < 0.5;
 
-    if (isDown) card.classList.add("reversed");
+    if (isDown) card.classList.add('reversed');
 
     if (isDown) {
       setLuck(
-        Math.max(0, luck - getBarWidth(oscillatingBarFill, oscillatingBar))
+        Math.max(0, luck - getBarWidth(oscillatingBarFill, oscillatingBar)),
       );
     } else {
       setLuck(
-        Math.max(0, luck + getBarWidth(oscillatingBarFill, oscillatingBar))
+        Math.max(0, luck + getBarWidth(oscillatingBarFill, oscillatingBar)),
       );
     }
 
     if (luck === 0 || luck === 100) {
-      oscillatingBar.style.visibility = "hidden";
+      oscillatingBar.style.visibility = 'hidden';
     }
 
     // Random generate a card. If card is already chosen then generate another card
@@ -97,9 +97,8 @@ function init() {
     // Change the image according to the card got chosen
     tarotConfig.tarot.forEach((element) => {
       if (element.name === cardName) {
-        card.querySelector(
-          ".front"
-        ).style.backgroundImage = `url("${element.image}")`;
+        card.querySelector('.front').style.backgroundImage =
+          `url("${element.image}")`;
       }
     });
 
@@ -107,29 +106,29 @@ function init() {
     // Change the hp bar of opponent accordingly.
     if (isDown) {
       say(
-        "You got a reverse " +
+        'You got a reverse ' +
           cardName +
-          " card. You receive " +
+          ' card. You receive ' +
           getBarWidth(oscillatingBarFill, oscillatingBar) * -1 +
-          " luck points!"
+          ' luck points!',
       );
     } else {
       say(
-        "You got a " +
+        'You got a ' +
           cardName +
-          " card. You receive " +
+          ' card. You receive ' +
           getBarWidth(oscillatingBarFill, oscillatingBar) +
-          " luck points!"
+          ' luck points!',
       );
     }
 
     setTimeout(() => {
       if (chosenCards.length === 4) {
-        say("Get ready to see your fortune!");
+        say('Get ready to see your fortune!');
         setTimeout(() => {
-          localStorage.setItem("chosenCards", JSON.stringify(chosenCards));
-          localStorage.setItem("luck", luck);
-          window.location.href = "./results.html";
+          localStorage.setItem('chosenCards', JSON.stringify(chosenCards));
+          localStorage.setItem('luck', luck);
+          window.location.href = './results.html';
         }, 3000);
       }
     }, 3000);
@@ -145,7 +144,7 @@ function init() {
     msgResetTimeout = setTimeout(() => {
       const numCardsLeft = 4 - chosenCards.length;
       oracleMsg.innerText = `Draw ${numCardsLeft} more card${
-        numCardsLeft === 1 ? "" : "s"
+        numCardsLeft === 1 ? '' : 's'
       }!`;
     }, 3000);
   }
@@ -170,8 +169,8 @@ export function getBarWidth(oscillatingBarFill, oscillatingBar) {
  */
 export function getTarotCardName(tarotConfig) {
   const tarotCardNames = [];
-  tarotConfig["tarot"].forEach((element) => {
-    tarotCardNames.push(element["name"]);
+  tarotConfig['tarot'].forEach((element) => {
+    tarotCardNames.push(element['name']);
   });
   return tarotCardNames;
 }
