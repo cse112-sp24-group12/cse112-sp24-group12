@@ -11,7 +11,7 @@ defaults:
     working-directory: ./source
 
 jobs:
-  Build and Deploy:
+  Build-and-Deploy:
     permissions:
       contents: read
       pages: write
