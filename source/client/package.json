@@ -16,7 +16,8 @@
       "test": "jest",
       "jsdoc": "./node_modules/.bin/jsdoc -r ./source/assets/scripts/",
       "lint:js": "eslint scripts/**/*.js",
-      "lint": "npm run lint:js"
+      "lint": "npm run lint:js",
+      "prettier": "npx prettier . --check"
   },
   "jest": {
       "preset": "jest-puppeteer",
