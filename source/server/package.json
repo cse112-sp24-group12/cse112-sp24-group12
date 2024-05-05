@@ -10,7 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "echo \"Error: no linter specified\" && exit 1"
   },
-  "author": "Luke Sheltraw",
   "license": "MIT",
   "dependencies": {
     "websocket": "^1.0.34"

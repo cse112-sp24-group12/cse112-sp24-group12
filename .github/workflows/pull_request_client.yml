@@ -11,32 +11,21 @@ defaults:
     working-directory: ./source/client
 
 jobs:
-  Jest:
+  Test:
     runs-on: [ubuntu-latest]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: "[DEBUG] - LIST FILES IN CURRENT DIRECTORY"
-        run: ls
       - name: Install dependencies
         run: npm ci
       - name: Run tests
         run: npm test
-  ESLint:
+  Lint:
     runs-on: [ubuntu-latest]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Install dependencies
         run: npm ci
-      - name: Run ESLint
+      - name: Run ESLint with Prettier
         run: npm run lint
-  Prettier:
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Prettier
-        run: npm run prettier
