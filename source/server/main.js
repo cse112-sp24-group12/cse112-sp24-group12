@@ -145,7 +145,7 @@ function createInstance(webSocketConnection) {
 } /* createInstance */
 
 /**
- * Handles a new request to the WebSocket server
+ * Handles a new request to the WebSocket server; always tries to accept
  * 
  * @param { request } webSocketRequest
  * @returns { void }
