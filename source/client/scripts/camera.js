@@ -1,26 +1,25 @@
 // initialize document content
-let startCamera = document.querySelector("#char-3");
-let cameraImg = document.querySelector("#camera-img");
-let cameraBtn = document.querySelector("#take-photo-btn");
-let video = document.querySelector("#video-display");
-let canvas = document.querySelector(".cameraContainer");
-let submitBtn = document.querySelector("#submit-btn");
+const cameraImg = document.querySelector('#camera-img');
+const cameraBtn = document.querySelector('#take-photo-btn');
+const video = document.querySelector('#video-display');
+const submitBtn = document.querySelector('#submit-btn');
+const photoDisplay = document.querySelector('#photoDisplay');
 
 //clear localStorage everytime come back or refresh
-window.localStorage.removeItem("userImage");
+window.localStorage.removeItem('userImage');
 
-var character = document.getElementsByClassName("character");
+const character = document.getElementsByClassName('character');
 for (let i = 0; i < character.length; i++) {
   if (i == 0) {
-    character[i].addEventListener("click", dragonSelected);
+    character[i].addEventListener('click', dragonSelected);
   } else if (i == 1) {
-    character[i].addEventListener("click", pandaSelected);
+    character[i].addEventListener('click', pandaSelected);
   } else {
-    character[i].addEventListener("click", takePicture);
+    character[i].addEventListener('click', takePicture);
   }
 }
 
-var clicked = [];
+const clicked = [];
 
 /**
  * Handler function for when dragon character is selected.
@@ -28,15 +27,14 @@ var clicked = [];
  * - Update clicked stack
  * - Update borders
  * - Set LocalStorage
- * @param {} event
  */
-function dragonSelected(event) {
+function dragonSelected() {
   clicked.pop();
-  clicked.push("dragon");
-  window.localStorage.removeItem("userImage");
+  clicked.push('dragon');
+  window.localStorage.removeItem('userImage');
   window.localStorage.setItem(
-    "userImage",
-    "./assets/images/characters/dragon.png"
+    'userImage',
+    './assets/images/characters/dragon.png',
   );
   borderHandler();
 }
@@ -47,15 +45,14 @@ function dragonSelected(event) {
  * - Update clicked stack
  * - Update borders
  * - Set LocalStorage
- * @param {} event
  */
-function pandaSelected(event) {
+function pandaSelected() {
   clicked.pop();
-  clicked.push("panda");
-  window.localStorage.removeItem("userImage");
+  clicked.push('panda');
+  window.localStorage.removeItem('userImage');
   window.localStorage.setItem(
-    "userImage",
-    "./assets/images/characters/panda.png"
+    'userImage',
+    './assets/images/characters/panda.png',
   );
   borderHandler();
 }
@@ -67,11 +64,10 @@ function pandaSelected(event) {
  * - Update borders
  * - Set LocalStorage
  * - Load Camera canvas
- * @param {} event
  */
-function takePicture(event) {
+function takePicture() {
   clicked.pop();
-  clicked.push("camera");
+  clicked.push('camera');
   borderHandler();
   loadCamera();
 }
@@ -82,48 +78,48 @@ function takePicture(event) {
  * - Dynamically make the take photo btn active and inactive
  */
 function borderHandler() {
-  let takePhotoBtn = document.getElementById("take-photo-btn");
-  let char1 = document.getElementById("char-1");
-  let char2 = document.getElementById("char-2");
-  let char3 = document.getElementById("char-3");
-  let borderStyle = "2px solid white";
-  let style = document.createElement("style");
+  let takePhotoBtn = document.getElementById('take-photo-btn');
+  let char1 = document.getElementById('char-1');
+  let char2 = document.getElementById('char-2');
+  let char3 = document.getElementById('char-3');
+  let borderStyle = '2px solid white';
+  let style = document.createElement('style');
   let hover =
-    "#take-photo-btn:hover{background-color: #fff1; color: #fff; border-color: $fff; scale: 1.05;}";
-  let active = "#take-photo-btn:active{scale: 0.98;}";
+    '#take-photo-btn:hover{background-color: #fff1; color: #fff; border-color: $fff; scale: 1.05;}';
+  let active = '#take-photo-btn:active{scale: 0.98;}';
   style.appendChild(document.createTextNode(hover));
   style.appendChild(document.createTextNode(active));
 
-  if (clicked[0] === "dragon") {
+  if (clicked[0] === 'dragon') {
     char1.style.border = borderStyle;
-    char2.style.border = "";
-    char3.style.border = "";
+    char2.style.border = '';
+    char3.style.border = '';
     if (takePhotoBtn.children.length != 0) {
       takePhotoBtn.removeChild(takePhotoBtn.children[0]);
     }
-    video.style.visibility = "hidden";
-    takePhotoBtn.style.visibility = "hidden";
-    submitBtn.style.visibility = "visible";
-  } else if (clicked[0] === "panda") {
-    char1.style.border = "";
+    video.style.visibility = 'hidden';
+    takePhotoBtn.style.visibility = 'hidden';
+    submitBtn.style.visibility = 'visible';
+  } else if (clicked[0] === 'panda') {
+    char1.style.border = '';
     char2.style.border = borderStyle;
-    char3.style.border = "";
+    char3.style.border = '';
     if (takePhotoBtn.children.length != 0) {
       takePhotoBtn.removeChild(takePhotoBtn.children[0]);
     }
-    video.style.visibility = "hidden";
-    takePhotoBtn.style.visibility = "hidden";
-    submitBtn.style.visibility = "visible";
+    video.style.visibility = 'hidden';
+    takePhotoBtn.style.visibility = 'hidden';
+    submitBtn.style.visibility = 'visible';
   } else {
-    char1.style.border = "";
-    char2.style.border = "";
+    char1.style.border = '';
+    char2.style.border = '';
     char3.style.border = borderStyle;
     if (takePhotoBtn.children.length == 0) {
       takePhotoBtn.appendChild(style);
     }
-    video.style.visibility = "visible";
-    takePhotoBtn.style.visibility = "visible";
-    submitBtn.style.visibility = "visible";
+    video.style.visibility = 'visible';
+    takePhotoBtn.style.visibility = 'visible';
+    submitBtn.style.visibility = 'visible';
   }
 }
 
@@ -142,13 +138,13 @@ async function loadCamera() {
  * Handler for photo taking and display image
  */
 cameraBtn.onclick = function () {
-  if (clicked.pop() === "camera") {
+  if (clicked.pop() === 'camera') {
     cameraImg.hidden = true;
     photoDisplay
-      .getContext("2d")
+      .getContext('2d')
       .drawImage(video, 0, 0, photoDisplay.width, photoDisplay.height);
-    let image_data_url = photoDisplay.toDataURL("image/jpeg");
-    window.localStorage.setItem("userImage", image_data_url);
+    let image_data_url = photoDisplay.toDataURL('image/jpeg');
+    window.localStorage.setItem('userImage', image_data_url);
   }
 };
 
@@ -156,5 +152,5 @@ cameraBtn.onclick = function () {
  * Switch href to game page
  */
 submitBtn.onclick = function () {
-  window.location.href = "./game.html";
+  window.location.href = './game.html';
 };

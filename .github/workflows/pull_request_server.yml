@@ -1,0 +1,20 @@
+name: Pull Request CI Pipeline [Server]
+run-name: PR CI triggered by @${{ github.actor }} [Server]
+
+on:
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: ./source/server      
+
+jobs:
+  Temporary:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Check out code 
+        uses: actions/checkout@v4
+      - name: Exit
+        run: echo "exiting" && exit 0

@@ -6,37 +6,26 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: ./source/client
+
 jobs:
-  Jest:
+  Test:
     runs-on: [ubuntu-latest]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Move to client subdirectory
-        run: cd source/client
       - name: Install dependencies
         run: npm ci
       - name: Run tests
         run: npm test
-  ESLint:
+  Lint:
     runs-on: [ubuntu-latest]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Move to client subdirectory
-        run: cd source/client
       - name: Install dependencies
         run: npm ci
-      - name: Run ESLint
+      - name: Run ESLint with Prettier
         run: npm run lint
-  Prettier:
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Move to client subdirectory
-        run: cd source/client
-      - name: Instsall dependencies
-        run: npm ci
-      - name: Run Prettier
-        run: npm run prettier

@@ -7,9 +7,9 @@ const starSlowness = 700;
 const maxOpacity = 0.8;
 const mouseSpeed = 0.2; // how much does the mouse affect the stars?
 
-const starsContainer = document.getElementById("stars-container");
+const starsContainer = document.getElementById('stars-container');
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener('DOMContentLoaded', () => {
   stars = new Array(400).fill().map(() => ({
     x: Math.random(),
     y: Math.random(),
@@ -17,8 +17,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }));
 
   for (let i = 0; i < stars.length; i++) {
-    const starElement = document.createElement("div");
-    starElement.className = "star";
+    const starElement = document.createElement('div');
+    starElement.className = 'star';
     updateStar(starElement, i);
     starsContainer.appendChild(starElement);
   }
@@ -64,7 +64,7 @@ function updateStar(starElement, i) {
   starElement.style.height = `${starSize * star.z}px`;
 }
 
-window.addEventListener("mousemove", (e) => {
+window.addEventListener('mousemove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 });
