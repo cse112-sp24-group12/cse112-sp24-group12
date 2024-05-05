@@ -13,4 +13,4 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Deploy to Netlify
-        run: curl ${{ secrets.NETLIFY_DEPLOY_WEBHOOK_URL }}
+        run: curl -X POST -d '{}' ${{ secrets.NETLIFY_DEPLOY_WEBHOOK_URL }}
