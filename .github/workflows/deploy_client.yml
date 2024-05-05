@@ -1,0 +1,12 @@
+name: Deploy Client
+run-name: Client deployment triggered by @${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Placeholder:
+    - name: Placeholder
+      run: echo "Placeholder" && exit 0
