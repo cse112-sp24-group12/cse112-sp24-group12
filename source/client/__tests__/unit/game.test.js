@@ -1,12 +1,16 @@
+/**
+ * @jest-environment jsdom
+ */
+import { jest } from '@jest/globals';
 import { getTarotCardName, getBarWidth } from '../../scripts/game.js';
-import tarotConfig from '../../scripts/tarot.js';
 
 /**
  * Initialize mock tarot object
  */
-jest.mock('../../scripts/tarot.js', () => ({
+jest.unstable_mockModule('../../scripts/tarot.js', () => ({
   tarot: [{ name: 'bob', suite: 'major' }],
 }));
+const tarotConfig = await import('../../scripts/tarot.js');
 
 /**
  * Test to see if getTarotCardName return the correct values

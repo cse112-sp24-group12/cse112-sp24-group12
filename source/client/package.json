@@ -3,10 +3,7 @@
   "description": "Vanilla JS, HTML, and CSS frontend for Tarot, but a Game",
   "type": "module",
   "devDependencies": {
-    "@babel/core": "^7.22.5",
-    "@babel/preset-env": "^7.22.5",
     "@eslint/js": "^9.2.0",
-    "babel-jest": "^29.5.0",
     "eslint": "^9.2.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jsdoc": "^48.2.3",
@@ -21,13 +18,13 @@
   },
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint ./scripts/**/*.js ./__tests__/**/*.js",
+    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint ./scripts/**/*.js ./__tests__/**/*.js --fix"
   },
   "jest": {
     "verbose": true,
     "preset": "jest-puppeteer",
-    "testEnvironment": "jest-environment-jsdom"
+    "transform": {}
   },
   "license": "MIT"
 }

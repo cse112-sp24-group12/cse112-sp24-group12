@@ -2,6 +2,9 @@ import tarotConfig from './tarot.js';
 
 window.addEventListener('DOMContentLoaded', init);
 
+/**
+ *
+ */
 function init() {
   const board = document.querySelector('.board');
   const playerImage = document.querySelector('.player img');
@@ -49,7 +52,6 @@ function init() {
    * Generate random card name -> change image accoridngly
    * Generate random damage points -> change hp bar accordingly
    * @param {MouseEvent} event - the value return by the event
-   *
    */
   function onCardClicked(event) {
     const card = event.currentTarget; // actually is card-container
@@ -135,6 +137,10 @@ function init() {
 
   let msgResetTimeout = -1;
 
+  /**
+   *
+   * @param msg
+   */
   function say(msg) {
     oracleMsg.innerText = msg;
 
@@ -148,6 +154,10 @@ function init() {
     }, 3000);
   }
 
+  /**
+   *
+   * @param val
+   */
   function setLuck(val) {
     if (val > 100) val = 100;
     if (val < 0) val = 0;
@@ -156,6 +166,11 @@ function init() {
     luckBarFill.style.width = `${luck}%`;
   }
 }
+/**
+ *
+ * @param oscillatingBarFill
+ * @param oscillatingBar
+ */
 export function getBarWidth(oscillatingBarFill, oscillatingBar) {
   const barWidth = oscillatingBarFill.getBoundingClientRect().width;
   const parentWidth = oscillatingBar.getBoundingClientRect().width;
@@ -164,7 +179,7 @@ export function getBarWidth(oscillatingBarFill, oscillatingBar) {
 /**
  * Create an array of 22 and parse all the card name from json file
  * @param {Array<*>} tarotConfig - an array of the tarot cards from json
- * @return {Array<string>} array contains 22 tarot cards' name
+ * @returns {Array<string>} array contains 22 tarot cards' name
  */
 export function getTarotCardName(tarotConfig) {
   const tarotCardNames = [];

@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 defaults:
   run:
     working-directory: ./source
@@ -21,4 +24,6 @@ jobs:
       - name: Build JSDocs
         run: jsdoc -c jsdoc.json
       - name: Deploy JSDocs to GitHub pages
-        run: 
+        run: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: source/jsdocs

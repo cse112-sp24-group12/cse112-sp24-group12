@@ -3,11 +3,12 @@
  */
 import puppeteer from 'puppeteer';
 import { join } from 'path';
+import { fileURLToPath } from 'url';
 
 // eslint-disable-next-line no-undef
-const GAME_PAGE_PATH = `file://${join(__dirname, '../../game.html')}`;
+const GAME_PAGE_PATH = `${join(import.meta.url, '../../../game.html')}`;
 // eslint-disable-next-line no-undef
-const RESULTS_PAGE_PATH = `file://${join(__dirname, '../../results.html')}`;
+const RESULTS_PAGE_PATH = `${join(import.meta.url, '../../../results.html')}`;
 
 let browser;
 let page;
@@ -25,7 +26,7 @@ async function defaultInitialization() {
 }
 
 /**
- * Destructs browser and page, to be run after each test
+ *
  */
 async function defaultTeardown() {
   await page.close();
@@ -118,6 +119,6 @@ describe('Testing local storage contents is as expected', () => {
     }
     await page.waitForNavigation();
     const url = await page.evaluate(() => document.location.href);
-    expect(url).toEqual(RESULTS_PAGE_PATH);
+    expect(fileURLToPath(url)).toEqual(fileURLToPath(RESULTS_PAGE_PATH));
   }, 10000);
 });
