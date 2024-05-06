@@ -18,9 +18,8 @@ console.log('Server online');
 
 /**
  * For a given connection, sends stringified version of object for re-parsing on other side
- * 
- * @param { connection } webSocketConnection 
- * @param { any } object 
+ * @param { connection } webSocketConnection
+ * @param { any } object
  * @returns { void }
  */
 function sendObject(webSocketConnection, object) {
@@ -29,7 +28,6 @@ function sendObject(webSocketConnection, object) {
 
 /**
  * Start game by sending 'start_game' code to all child connections.
- * 
  * @param { number } gameCode
  * @returns { void }
  */
@@ -42,19 +40,21 @@ function startGame(gameCode) {
     });
   });
 
-  console.log(`Game ${ gameCode } started`);
+  console.log(`Game ${gameCode} started`);
 } /* startGame */
 
 /**
  * For a given connection, leaves the game instance they are currently member to
- * 
- * @param { connection } webSocketConnection 
+ * @param { connection } webSocketConnection
  * @returns { void }
  */
 function leaveInstance(webSocketConnection) {
-  const gameInstance =  gameInstancesByPlayerUUID[webSocketConnection.playerUUID];
-  
-  gameInstance.playConnections = gameInstance.playConnections.filter((conn) => conn != webSocketConnection);
+  const gameInstance =
+    gameInstancesByPlayerUUID[webSocketConnection.playerUUID];
+
+  gameInstance.playConnections = gameInstance.playConnections.filter(
+    (conn) => conn != webSocketConnection,
+  );
   delete gameInstancesByPlayerUUID[webSocketConnection.playerUUID];
 
   // TODO: add logic for destruction of past game instances after some condition (e.g., 0 players left + timeout)
@@ -62,16 +62,15 @@ function leaveInstance(webSocketConnection) {
 
 /**
  * For a given connection, joins the game instance corresponding to the gameCode
- * 
- * @param { connection } webSocketConnection 
- * @param { number } gameCode 
+ * @param { connection } webSocketConnection
+ * @param { number } gameCode
  * @returns { void }
  */
 function joinInstance(webSocketConnection, gameCode) {
   const gameInstance = gameInstancesByGameCode[gameCode];
 
   if (gameInstance.playConnections.includes(webSocketConnection)) {
-    console.log(`Game ${ gameCode } rejected connection: already exists`);
+    console.log(`Game ${gameCode} rejected connection: already exists`);
     return;
   }
 
@@ -84,40 +83,40 @@ function joinInstance(webSocketConnection, gameCode) {
     gameCode,
   });
 
-  console.log(`Secondary player joined instance with room code ${ gameCode }`);
+  console.log(`Secondary player joined instance with room code ${gameCode}`);
 
   startGame(gameCode);
 } /* joinInstance */
 
 /**
  * For a given connection, alerts other player of new position
- * 
- * @param { connection } webSocketConnection 
+ * @param { connection } webSocketConnection
  * @param { number } xPos
  * @param { number } yPos
  * @returns { void }
  */
 function updatePosition(webSocketConnection, xPos, yPos) {
-  gameInstancesByPlayerUUID[webSocketConnection.playerUUID]
-    .playConnections
+  gameInstancesByPlayerUUID[webSocketConnection.playerUUID].playConnections
     .filter((conn) => conn !== webSocketConnection)
     .forEach((conn) => {
       sendObject(conn, {
         action: 'update_position',
         xPos,
         yPos,
+      });
     });
-  });
 } /* updatePosition */
 
 /**
  * Accepts a given WebSocket connection request
- * 
  * @param { request } webSocketRequest
  * @returns { connection }
  */
 function acceptRequest(webSocketRequest) {
-  const webSocketConnection = webSocketRequest.accept(OFFERED_PROTOCOL, webSocketRequest.origin);  
+  const webSocketConnection = webSocketRequest.accept(
+    OFFERED_PROTOCOL,
+    webSocketRequest.origin,
+  );
   webSocketConnection.playerUUID = randomUUID();
 
   return webSocketConnection;
@@ -125,7 +124,6 @@ function acceptRequest(webSocketRequest) {
 
 /**
  * Creates a new game instance and links it to given player
- * 
  * @param { connection } webSocketConnection
  * @returns { void }
  */
@@ -133,7 +131,7 @@ function createInstance(webSocketConnection) {
   const gameInstance = {
     gameCode: generateGameCode(), // TODO: ensure game code is unique
     playConnections: [webSocketConnection],
-  }
+  };
 
   gameInstancesByGameCode[gameInstance.gameCode] = gameInstance;
   gameInstancesByPlayerUUID[webSocketConnection.playerUUID] = gameInstance;
@@ -146,27 +144,27 @@ function createInstance(webSocketConnection) {
 
 /**
  * Handles a new request to the WebSocket server; always tries to accept
- * 
  * @param { request } webSocketRequest
  * @returns { void }
  */
 function handleRequest(webSocketRequest) {
-  console.log(`Request received at "${ webSocketRequest.remoteAddress }"`);
+  console.log(`Request received at "${webSocketRequest.remoteAddress}"`);
 
   const webSocketConnection = acceptRequest(webSocketRequest);
 
-  console.log(`WebSocket connected at "${ webSocketConnection.remoteAddress }"`);
+  console.log(`WebSocket connected at "${webSocketConnection.remoteAddress}"`);
 
   createInstance(webSocketConnection);
 
   /**
    * Handles message event for a given WebSocket connection
-   * 
    * @param { { type: 'utf8'|'binary', utf8Data: string, binaryData: binaryDataBuffer} } data
    * @returns { void }
    */
   function handleMessage(data) {
-    console.log(`Message received at "${ webSocketConnection.remoteAddress }": "${ data.utf8Data }"`);
+    console.log(
+      `Message received at "${webSocketConnection.remoteAddress}": "${data.utf8Data}"`,
+    );
 
     try {
       const messageObj = JSON.parse(data.utf8Data);
@@ -174,25 +172,32 @@ function handleRequest(webSocketRequest) {
       switch (messageObj.action) {
         case 'join_instance':
           joinInstance(webSocketConnection, messageObj.gameCode);
-        break;
+          break;
         case 'update_position':
-          updatePosition(webSocketConnection, +messageObj.xPos, +messageObj.yPos);
-        break;
+          updatePosition(
+            webSocketConnection,
+            +messageObj.xPos,
+            +messageObj.yPos,
+          );
+          break;
       }
     } catch {
-      console.log(`Error handling message at "${ webSocketConnection.remoteAddress }"`);
+      console.log(
+        `Error handling message at "${webSocketConnection.remoteAddress}"`,
+      );
     }
   } /* handleMessage */
 
   /**
    * Handles close event for a given WebSocket connection
-   * 
-   * @param { number } code 
+   * @param { number } code
    * @param { string } desc
    * @returns { void }
    */
   function handleClose(code, desc) {
-    console.log(`WebSocket disconnected at "${ webSocketConnection.remoteAddress }" with code "${ code }" and desc "${ desc }"`);
+    console.log(
+      `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
+    );
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);

@@ -1,6 +1,5 @@
 /**
  * Creates and returns random game code for each game instance; currently not necessarily unique
- * 
  * @returns { number }
  */
 export function generateGameCode() {
