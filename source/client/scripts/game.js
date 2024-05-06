@@ -104,13 +104,11 @@ function cardClickHandler(event) {
 
   cardContainerEl.querySelector('.front').style.backgroundImage =
     `url("${chosenCard.image}")`;
-
   displayMessage(
     `You got a ${isCardUpsideDown ? 'reverse ' : ''}card. You receive ${curMoveLuck} luck points!`,
   );
 
   cardContainerEl.classList.add('flipped');
-
   if (gameState.chosenCards.length === MAX_CHOSEN_CARDS) endGame();
 } /* cardClickHandler */
 
