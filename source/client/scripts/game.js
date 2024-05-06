@@ -17,11 +17,11 @@ const TAROT_CARDS = tarotConfig.tarot;
  * @type { {
  *  luck: number,
  *  chosenCards: Card[],
- *  messageResetTimeout: (NodeJS.Timeout | undefined),
+ *  messageResetTimeout: (NodeJS.Timeout | undefined)
  * } }
  */
 const gameState = {
-  luck: STARTING_LUCK_PERCENT,
+  luck: 0,
   chosenCards: [],
   messageResetTimeout: undefined,
 };
@@ -219,8 +219,9 @@ function attachProfileImageAndListener() {
  */
 function init() {
   const boardEl = document.querySelector('.board');
-
   boardEl.replaceChildren(...generateCardsWithListeners(NUM_CARDS));
+
+  setLuck(STARTING_LUCK_PERCENT);
 
   attachProfileImageAndListener();
 } /* init */

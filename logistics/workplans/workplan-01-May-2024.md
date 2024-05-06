@@ -1,6 +1,6 @@
 # Workplan
 ## Powell's Prophets (Team 12)
-### 8 May 2024
+### 1 May 2024
 
 ## Sprint Structure
 - Sprint length: 1 week
@@ -11,6 +11,24 @@
 
 ## Issues
 ### Current sprint
+- Figma prototypes [8 points]
+  - Geo
+  - Brandon
+- Game rules state machine [21 points]
+  - Alex
+  - Harshil
+  - Eric
+  - Shijun
+  - Geo
+  - Plus everyone's input
+- Create and deploy minimal Websocket backend for game [2 points]
+  - Luke
+  - Kristin
+- Create CSS classes for style guide + download fonts [3 points]
+  - Luke
+  - Kristin
+- Add Code Climate [2 points]
+  - Arjun
 
 ### Backlog
 - Automated image compression (CI/CD) [3 points]
@@ -29,11 +47,3 @@
 - Remove left/right arrows on boundary in all cards view [2 points]
 - Find appropriate music [5 points]
 - Add music to background + settings [3 points]
-
-### General timeline
-- Week 6 (this week): Get all designs finalized
-- Week 7 (next week): Develop state machine representing game logic across both frontend and backend; develop all assets needed
-- Week 8: Have minimal game working
-- Week 9: Polish game; run user testing and see what we need to change
-- Week 10: Slack week for picking up whatever changes we need from the previous steps
-- Finals week: Last-minute touches

@@ -6,10 +6,10 @@
  *  image: string,
  *  fortune_telling: string[],
  *  keywords: string[],
- *  meanings: {
+ *  meanings: Array<{
  *    light: string[],
- *    shadow: string[],
- *  }[],
+ *    shadow: string[]
+ *  }>
  * } } Card
  */
 

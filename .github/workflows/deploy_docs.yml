@@ -30,7 +30,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Install JSDocs
-        run: npm i -g jsdoc
+        run: npm i -g jsdoc && npm install -g jsdoc-tsimport-plugin
       - name: Build JSDocs
         run: jsdoc -c jsdoc.json
       - name: Upload GitHub Pages artifact
