@@ -6,6 +6,12 @@
 # Powell's Prophets
 ## Group 12 / CSE 112 / Spring 2024
 
+-----
+
+### 🚀 [https://tarot-game-client.netlify.app/](https://tarot-game-client.netlify.app/) 🚀
+
+-----
+
 ### Important file paths
 - Style guide: [`/design/style/style_guide.pdf`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/blob/main/design/style/style_guide.pdf)
 - User personas: [`/design/personas/`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/tree/main/design/personas)
