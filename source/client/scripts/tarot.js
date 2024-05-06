@@ -1,3 +1,18 @@
+/**
+ * A data-store for each card
+ * @typedef { {
+ *  name: string,
+ *  suite: string,
+ *  image: string,
+ *  fortune_telling: string[],
+ *  keywords: string[],
+ *  meanings: {
+ *    light: string[],
+ *    shadow: string[],
+ *  }[],
+ * } } Card
+ */
+
 export default {
   tarot: [
     {
