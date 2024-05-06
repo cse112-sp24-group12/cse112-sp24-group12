@@ -1,5 +1,10 @@
 import tarotConfig from './tarot.js';
 
+/**
+ * Data store for each card
+ * @typedef { import('./tarot.js').Card } Card
+ */
+
 const NUM_CARDS = 22;
 const STARTING_LUCK_PERCENT = 50;
 const MAX_CHOSEN_CARDS = 4;
@@ -7,10 +12,18 @@ const MAX_LUCK_MAGNITUDE_PER_MOVE = 15;
 const MESSAGE_DISPLAY_LENGTH_MS = 3000;
 const TAROT_CARDS = tarotConfig.tarot;
 
+/**
+ * Store for data related to current state of game
+ * @type { {
+ *  luck: number,
+ *  chosenCards: Card[],
+ *  messageResetTimeout: (NodeJS.Timeout | undefined),
+ * } }
+ */
 const gameState = {
   luck: STARTING_LUCK_PERCENT,
   chosenCards: [],
-  messageResetTimeout: null,
+  messageResetTimeout: undefined,
 };
 
 /**
@@ -53,7 +66,7 @@ function getCurMoveLuck(isCardUpsideDown) {
 
 /**
  * Picks a card that has not yet been chosen
- * @returns { import('./tarot.js').Card } card not currently present in state.chosenCards
+ * @returns { Card } card not currently present in state.chosenCards
  */
 export function getUniqueCard() {
   let chosenCard;

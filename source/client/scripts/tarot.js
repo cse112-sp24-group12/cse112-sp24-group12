@@ -1,5 +1,5 @@
 /**
- * A data-store for each card
+ * Data store for each card
  * @typedef { {
  *  name: string,
  *  suite: string,
@@ -13,6 +13,9 @@
  * } } Card
  */
 
+/**
+ * @type { { tarot: Card[] } }
+ */
 export default {
   tarot: [
     {
