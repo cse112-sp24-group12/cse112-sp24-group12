@@ -81,7 +81,7 @@ function endGame() {
 
 /**
  * Handles gameplay progression on card click event by generating a random card name/image,
- * and random damage points with correspondingy UI updates
+ * and random luck points with corresponding UI updates
  * @param { MouseEvent } event click event
  */
 function cardClickHandler(event) {
