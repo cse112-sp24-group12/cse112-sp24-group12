@@ -8,9 +8,10 @@
  */
 
 const NUM_STARS = 200;
-const MAX_OPACITY_PERCENT = 0.65;
-const STAR_SPEED_PERCENT = 0.0025;
-const MOUSE_EFFECT_COEFF = 0.025;
+const MAX_OPACITY_PERCENT = 0.75;
+const STAR_SPEED_PERCENTILE = 0.001;
+const MOUSE_EFFECT_COEFF = 0.05;
+const CENTER_EXCLUSION_RADIUS = 0.2;
 const Z_AXIS_ORIGIN_PX = 250;
 
 /**
@@ -37,6 +38,28 @@ function updateMousePosition(event) {
 } /* updateMousePosition */
 
 /**
+ * Generates a psuedo-random pair of XY coordinates for a star such that the
+ * coordinates avoid for the direct center of the screen, to avoid collisions
+ * with the camera
+ * @returns {{
+ *  xPosPercent: number,
+ *  yPosPercent: number
+ * } } pair of (x, y) coords in range [0, 1]
+ */
+function generateRandomXYPosPercents() {
+  let xPosPercent, yPosPercent;
+
+  do {
+    xPosPercent = Math.random();
+    yPosPercent = Math.random();
+  } while (
+    Math.hypot(xPosPercent - 0.5, yPosPercent - 0.5) < CENTER_EXCLUSION_RADIUS
+  );
+
+  return { xPosPercent, yPosPercent };
+} /* generateRandomXYPosPercents */
+
+/**
  * Creates and returns new Star objects, which each include initial
  * x, y, & z positions as well as corresponding HTML elements
  * @param { number } numStars number of stars to create
@@ -48,8 +71,7 @@ function generateStars(numStars) {
     starEl.className = 'star';
 
     return {
-      xPosPercent: Math.random(),
-      yPosPercent: Math.random(),
+      ...generateRandomXYPosPercents(),
       zPosPercent: Math.random(),
       htmlElement: starEl,
     };
@@ -81,7 +103,7 @@ function animateNextFrame(stars, starsContainerEl) {
 
   /* individually move stars closer to the camera */
   stars.forEach((star) => {
-    star.zPosPercent = (star.zPosPercent + STAR_SPEED_PERCENT) % 1;
+    star.zPosPercent = (star.zPosPercent + STAR_SPEED_PERCENTILE) % 1;
 
     star.htmlElement.style.backgroundColor = `rgba(255, 255, 255, ${getPercentOpacity(star)})`;
     star.htmlElement.style.transform = `translateZ(${star.zPosPercent * Z_AXIS_ORIGIN_PX}px)`;

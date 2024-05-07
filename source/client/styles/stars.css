@@ -27,6 +27,6 @@ body {
 .star {
   position: absolute;
   border-radius: 50%;
-  width: 2px;
+  width: 1.5px;
   aspect-ratio: 1 / 1;
 }
