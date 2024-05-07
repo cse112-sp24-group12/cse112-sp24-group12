@@ -11,6 +11,7 @@
 
 ## Issues
 ### Current sprint
+- 
 
 ### Backlog
 - Automated image compression (CI/CD) [3 points]
@@ -21,7 +22,6 @@
 - Metrics [13 points]
 - (Temporarily) disable mobile access and provide appropriate warning message to user [2 points]
 - Make card hover/partial flip animation a little sleeker and more realistic [5 points]
-- Make star animation more performant (switch from left:/top: position:absolute -> transform:translate, or use canvas element if that doesn't work) [5 points]
 - Convert to SPA [13 points]
 - Convert deployment to a cleaner URL [5 points]
 - Convert camera display to a popover in settings menu [8 points]
@@ -31,9 +31,9 @@
 - Add music to background + settings [3 points]
 
 ### General timeline
-- Week 6 (this week): Get all designs finalized
-- Week 7 (next week): Develop state machine representing game logic across both frontend and backend; develop all assets needed
-- Week 8: Have minimal game working
+- Week 6 (this week): Get all designs finalized; develop state machine representing game logic across both frontend and backend; develop all assets needed
+- Week 7 (next week): Have minimal game working
+- Week 8: Flesh out rest of game features
 - Week 9: Polish game; run user testing and see what we need to change
 - Week 10: Slack week for picking up whatever changes we need from the previous steps
 - Finals week: Last-minute touches
