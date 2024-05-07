@@ -62,7 +62,7 @@ function generateStars(numStars) {
  * @returns { number } percent opacity in range [0, 1]
  */
 function getPercentOpacity(star) {
-  return (star.zPosPercent ** 0.5) * MAX_OPACITY_PERCENT;
+  return star.zPosPercent ** 0.5 * MAX_OPACITY_PERCENT;
 } /* getPercentOpacity */
 
 /**
