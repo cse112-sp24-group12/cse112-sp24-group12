@@ -8,7 +8,7 @@
  */
 
 const NUM_STARS = 200;
-const MAX_OPACITY_PERCENT = 0.5;
+const MAX_OPACITY_PERCENT = 0.65;
 const STAR_SPEED_PERCENT = 0.0025;
 const MOUSE_EFFECT_COEFF = 0.025;
 const Z_AXIS_ORIGIN_PX = 250;
@@ -62,7 +62,7 @@ function generateStars(numStars) {
  * @returns { number } percent opacity in range [0, 1]
  */
 function getPercentOpacity(star) {
-  return MAX_OPACITY_PERCENT * (1 - Math.pow(2 * star.zPosPercent - 1, 4));
+  return (star.zPosPercent ** 0.5) * MAX_OPACITY_PERCENT;
 } /* getPercentOpacity */
 
 /**
