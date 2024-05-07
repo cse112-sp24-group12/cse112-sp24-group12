@@ -39,7 +39,7 @@ function updateMousePosition(event) {
 
 /**
  * Generates a psuedo-random pair of XY coordinates for a star such that the
- * coordinates avoid for the direct center of the screen, to avoid collisions
+ * coordinates avoid the direct center of the screen, to avoid collisions
  * with the camera
  * @returns {{
  *  xPosPercent: number,
