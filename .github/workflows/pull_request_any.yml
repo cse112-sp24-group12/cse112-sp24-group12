@@ -1,0 +1,24 @@
+name: Pull Request CI Pipeline [Client and/or Server]
+run-name: PR CI triggered by @${{ github.actor }} [Client and/or Server]
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'source/**'
+
+defaults:
+  run:
+    working-directory: ./source
+
+jobs:
+  JSDoc:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Install JSDocs
+        run: npm i -g jsdoc && npm install -g jsdoc-tsimport-plugin
+      - name: Build JSDocs (to verify, will discard)
+        run: jsdoc -c jsdoc.json
