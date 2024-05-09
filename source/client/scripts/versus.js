@@ -1,8 +1,15 @@
 /** @module versus */
 
 /**
+ * @typedef { {
+ *  suite: string,
+ *  number: number,
+ * } } CardName
+ */
+
+/**
  * 
- * @param { string[] } drawnCardNames
+ * @param { CardName[] } drawnCardNames
  */
 export function handleCardsDrawn(drawnCardNames) {
 
@@ -24,7 +31,7 @@ export function handleOpponentMove() {
 
 /**
  * 
- * @param { string } opponentCardName
+ * @param { CardName } opponentCardName
  * @param { "user"|"opponent" } roundWinner
  */
 export function handleRevealCards(opponentCardName, roundWinner) {
