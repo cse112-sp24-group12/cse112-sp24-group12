@@ -4,10 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tarot, but a Game | Versus</title>
-  <!-- TODO: include appropriate stylesheets -->
+
+  <link rel="stylesheet" href="styles/debug-menu.css">
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/versus.css">
+
   <script src="scripts/versus.js" type="module"></script>
+  <script src="scripts/chat.js" type="module"></script>
 </head>
 <body>
-  
+  <!-- GAMEPLAY -->
+  <select name="card_select_list" id="card_select_list">
+  </select>
+  <button>Select card</button>
+
+  <!-- CHAT BOX -->
+  <section id="chat_box" aria-labelledby="chat_title">
+    <h2 id="chat_title">Chat</h2>
+    <div role="feed">
+      <p>
+        <cite>System</cite>:
+        <span>Type <code>/debug</code> to toggle the debug menu.</span>
+      </p>
+    </div>
+    <div>
+      <input type="text" name="chat_input" id="chat_input">
+      <button id="chat_input_button">Send message</button>
+    </div>
+  </section>
+
+  <!-- DEBUG MENU -->
+  <section id="debug_menu" aria-labelledby="debug_title">
+    <h2 id="debug_title">Debug</h2>
+    <button id="cards_drawn_button">Draw cards</button>
+    <button id="opponent_move_button">Opponent move (no reveal)</button>
+    <button id="reveal_cards_button">Reveal cards</button>
+  </section>
 </body>
 </html>

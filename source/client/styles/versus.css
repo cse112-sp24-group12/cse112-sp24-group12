@@ -1,0 +1,4 @@
+#chat_box {
+  outline: 1px solid var(--white);
+  padding: 1rem;
+}
