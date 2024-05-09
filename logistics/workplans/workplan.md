@@ -11,8 +11,8 @@
 
 ## Issues
 ### Current sprint
-- Scaffold basic frontend interactions for drawing cards, playing a card, seeing your opponent has played a hidden card, and the reveal of the cards
-- Scaffold basic backend game logic for distributing cards, listening to and validating moves, signaling moves to other user, and sending final round winner
+- Scaffold basic frontend interactions for drawing cards, playing a card, seeing your opponent has played a hidden card, and the reveal of the cards [8 points]
+- Scaffold basic backend game logic for distributing cards, listening to and validating moves, signaling moves to other user, and sending final round winner [8 points]
 - Scaffold settings menu [5 points]
 
 ### Backlog
