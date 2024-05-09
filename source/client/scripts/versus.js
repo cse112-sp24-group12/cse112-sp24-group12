@@ -35,16 +35,31 @@ export function handleRoundStart() {
 /**
  *
  */
-export function handleOpponentMove() {} /* handleOpponentMove */
+export function handleOpponentMove() {
+  const opponentCardEl = document.querySelector('#opponent_card');
+
+  opponentCardEl.innerText = 'Played';
+} /* handleOpponentMove */
 
 /**
  *
  * @param { CardName } opponentCardName
- * @param { "user"|"opponent" } roundWinner
+ * @param { 'user'|'opponent' } roundWinner
  */
-export function handleRevealCards(
-  opponentCardName,
-  roundWinner,
-) {} /* handleRevealCards */
+export function handleRevealCards(opponentCardName, roundWinner) {
+  const opponentCardEl = document.querySelector('#opponent_card');
+  const roundWinnerEl = document.querySelector('#round_winner');
 
-// TODO: handle game ends
+  opponentCardEl.innerText = JSON.stringify(opponentCardName);
+  roundWinnerEl.innerText = roundWinner;
+} /* handleRevealCards */
+
+/**
+ *
+ * @param { 'user'|'opponent' } gameWinner
+ */
+export function handleGameEnd(gameWinner) {
+  const gameWinnerEl = document.querySelector('#game_winner');
+
+  gameWinnerEl.innerText = gameWinner;
+} /* handleGameEnd */

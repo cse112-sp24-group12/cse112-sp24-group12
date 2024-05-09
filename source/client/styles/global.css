@@ -9,6 +9,8 @@
   --white: #FFFFFF;
   --white-low-opacity: #ffffffd4;
 
+  --background-color: #341C3A;
+
   --border-radius: 10px;
 }
 
@@ -42,7 +44,7 @@ body {
   font-display: swap;
   font-family: "Roboto", sans-serif;
   color: var(--white);
-  background-color: var(--black);
+  background-color: var(--background-color);
 }
 
 h1, h2, h3, h4, h5, h6 {
