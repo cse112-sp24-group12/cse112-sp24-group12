@@ -21,11 +21,11 @@ const gameState = {
 
 /**
  *
- * @param { any } object
+ * @param { ClientToServerMessage } message
  */
-function sendObject(object) {
-  gameState.webSocket.send(JSON.stringify(object));
-} /* sendObject */
+function sendMessage(message) {
+  gameState.webSocket.send(JSON.stringify(message));
+} /* sendMessage */
 
 /**
  *
@@ -39,6 +39,7 @@ function handleMessage(message) {
     handleCardsDrawn,
     handleOpponentMove,
     handleRevealCards,
+    handleGameEnd,
   } = gameState.callbackFns;
 
   try {
@@ -58,6 +59,10 @@ function handleMessage(message) {
           messageObj.roundWinner.username,
         );
         break;
+      case S2C_ACTIONS.GAME_END:
+        handleGameEnd(
+          messageObj.gameWinner.username,
+        );
       default:
     }
   } catch (e) {
@@ -70,7 +75,7 @@ function handleMessage(message) {
  * @param { ClientToServerProfile } profile
  */
 export function sendProfile(profile) {
-  sendObject({
+  sendMessage({
     action: C2S_ACTIONS.CREATE_PROFILE,
     profile,
   });
@@ -81,7 +86,7 @@ export function sendProfile(profile) {
  * @param { number } gameCode
  */
 export function joinInstance(gameCode) {
-  sendObject({
+  sendMessage({
     action: C2S_ACTIONS.JOIN_INSTANCE,
     gameCode,
   });
@@ -92,7 +97,7 @@ export function joinInstance(gameCode) {
  * @param { Card } selectedCard
  */
 export function selectCard(selectedCard) {
-  sendObject({
+  sendMessage({
     action: C2S_ACTIONS.SELECT_CARD,
     selectedCard,
   });
@@ -102,7 +107,7 @@ export function selectCard(selectedCard) {
  *
  */
 export function startGame() {
-  sendObject({
+  sendMessage({
     action: C2S_ACTIONS.START_GAME,
   });
 } /* startGame */

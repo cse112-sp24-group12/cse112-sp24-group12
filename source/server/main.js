@@ -9,6 +9,7 @@ import {
   getOtherPlayer,
   getCurrentRoundState,
   getWinningCard,
+  createNewRound,
 } from './util.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
 
@@ -36,17 +37,18 @@ const DEBUG_TEST_CARD_LIST = [
     number: 4,
   },
 ];
+const NUM_ROUNDS = 2;
 
 console.log('Server online');
 
 /**
  * For a given connection, sends stringified version of object for re-parsing on other side
  * @param { connection } webSocketConnection
- * @param { any } object
+ * @param { ServerToClientMessage } message
  */
-function sendObject(webSocketConnection, object) {
-  webSocketConnection.sendUTF(JSON.stringify(object));
-} /* sendObject */
+function sendMessage(webSocketConnection, message) {
+  webSocketConnection.sendUTF(JSON.stringify(message));
+} /* sendMessage */
 
 /**
  * Start game by sending 'start_game' code to all child connections.
@@ -62,10 +64,7 @@ function startGame(webSocketConnection) {
     return;
   }
 
-  gameInstance.gameState.byRound.push({
-    selectedCard: {},
-    roundWinner: null,
-  });
+  gameInstance.gameState.byRound.push(createNewRound());
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
     gameInstance.gameState.byPlayer[webSocketConnection.profile.uuid] = {
@@ -73,7 +72,7 @@ function startGame(webSocketConnection) {
       remainingCards: DEBUG_TEST_CARD_LIST,
     };
 
-    sendObject(webSocketConnection, {
+    sendMessage(webSocketConnection, {
       action: S2C_ACTIONS.START_GAME,
       drawnCards: DEBUG_TEST_CARD_LIST,
     });
@@ -148,7 +147,7 @@ function alertUpdateInstance(gameInstance) {
   );
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
-    sendObject(webSocketConnection, {
+    sendMessage(webSocketConnection, {
       action: S2C_ACTIONS.UPDATE_INSTANCE,
       instanceInfo: {
         gameCode: gameInstance.gameCode,
@@ -207,10 +206,25 @@ function updateProfile(webSocketConnection, profile) {
  * @param { connection } webSocketConnection
  */
 function alertCardSelected(webSocketConnection) {
-  sendObject(webSocketConnection, {
+  sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.CARD_SELECTED,
   });
 } /* alertCardSelected */
+
+/**
+ * 
+ * @param { GameInstance } gameInstance 
+ */
+function handleGameEnd(gameInstance) {
+  const gameWinner = gameInstance.webSocketConnections[0].profile;
+
+  gameInstance.webSocketConnections.forEach((conn) => {
+    sendMessage(conn, {
+      action: S2C_ACTIONS.GAME_END,
+      gameWinner,
+    });
+  });
+} /* handleGameEnd */
 
 /**
  *
@@ -235,12 +249,18 @@ function handleRoundEnd(gameInstance) {
         getOtherPlayer(gameInstance, conn).profile.uuid
       ];
 
-    sendObject(conn, {
+    sendMessage(conn, {
       action: S2C_ACTIONS.REVEAL_CARDS,
       opponentSelectedCard,
       roundWinner,
     });
   });
+
+  if (gameInstance.gameState.byRound.length === NUM_ROUNDS) {
+    handleGameEnd(gameInstance);
+  } else {
+    gameInstance.gameState.byRound.push(createNewRound());
+  }
 } /* handleRoundEnd */
 
 /**

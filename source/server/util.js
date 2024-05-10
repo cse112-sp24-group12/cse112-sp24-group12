@@ -76,3 +76,13 @@ export function getWinningCard(card1, card2) {
 
   return card1.number > card2.number ? card1 : card2;
 } /* getWinningCard */
+
+/**
+ * 
+ */
+export function createNewRound() {
+  return {
+    selectedCard: {},
+    roundWinner: null,
+  }
+} /* */

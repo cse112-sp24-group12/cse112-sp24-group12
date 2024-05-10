@@ -88,6 +88,8 @@ function handleSelectCard() {
   if (!cardSelectEl.value) return;
 
   selectCard(JSON.parse(cardSelectEl.value));
+
+  cardSelectEl.removeChild([...cardSelectEl.children].find((el) => el.value === cardSelectEl.value));
 } /* handleSelectCard */
 
 /**

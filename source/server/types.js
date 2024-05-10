@@ -12,6 +12,7 @@ export const S2C_ACTIONS = {
   START_GAME: 'start_game',
   CARD_SELECTED: 'card_selected',
   REVEAL_CARDS: 'reveal_cards',
+  GAME_END: 'game_end',
 };
 
 /**
@@ -80,6 +81,10 @@ export const S2C_ACTIONS = {
  *    action: S2C_ACTIONS.REVEAL_CARDS,
  *    opponentSelectedCard: Card,
  *    roundWinner: ServerToClientProfile
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.GAME_END,
+ *    gameWinner: ServerToClientProfile
  *  }
  * } ServerToClientMessage
  */
