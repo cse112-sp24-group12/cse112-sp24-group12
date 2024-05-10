@@ -1,4 +1,4 @@
-#chat_box {
+#chat_box, #lobby_menu, #game_board {
   outline: 1px solid var(--white);
   padding: 1rem;
 }

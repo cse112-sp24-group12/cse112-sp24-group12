@@ -35,13 +35,6 @@ export function toggleDebugMenu() {
 /**
  *
  */
-function debugCardsDrawn() {
-  handleCardsDrawn(DEBUG_TEST_CARD_LIST);
-} /* debugCardsDrawn */
-
-/**
- *
- */
 function debugOpponentMove() {
   handleOpponentMove();
 } /* debugOpponentMove */
@@ -57,11 +50,9 @@ function debugRevealCards() {
  *
  */
 function init() {
-  const cardsDrawnButtonEl = document.querySelector('#cards_drawn_button');
   const opponentMoveButtonEl = document.querySelector('#opponent_move_button');
   const revealCardsButtonEl = document.querySelector('#reveal_cards_button');
 
-  cardsDrawnButtonEl.addEventListener('click', debugCardsDrawn);
   opponentMoveButtonEl.addEventListener('click', debugOpponentMove);
   revealCardsButtonEl.addEventListener('click', debugRevealCards);
 } /* init */

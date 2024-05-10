@@ -13,13 +13,37 @@
   <script src="scripts/chat.js" type="module"></script>
 </head>
 <body>
+  <!-- LOBBY -->
+  <section id="lobby_menu" aria-labelledby="lobby_title">
+    <h2 id="lobby_title">Lobby</h2>
+    <section id="lobby_game_codes_wrapper" aria-labelledby="lobby_game_codes_title">
+      <h3 id="lobby_game_codes_title">Game codes</h3>
+      <div>
+        <input type="text" id="outbound_game_code" name="outbound_game_code">
+        <button id="join_game_button">Join game</button>
+      </div>
+      <div>
+        <input type="text" id="self_game_code" name="self_game_code" readonly>
+      </div>
+    </section>
+    <section id="lobby_profile_list_wrapper" aria-labelledby="lobby_profile_list_title">
+      <h3 id="lobby_profile_list_title">Current players</h3>
+      <ul id="lobby_profile_list">
+        
+      </ul>
+    </section>
+    <button id="start_game_button">Start game</button>
+  </section>
+
   <!-- GAMEPLAY -->
-  <select name="card_select_list" id="card_select_list">
-  </select>
-  <button>Select card</button>
-  <p>Opponent card: <span id="opponent_card">None</span></p>
-  <p>Round winner: <span id="round_winner">None</span></p>
-  <p>Game winner: <span id="round_winner">None</span></p>
+  <section id="game_board" aria-labelledby="game_title">
+    <h2 id="game_title">Game</h2>
+    <select name="card_select_list" id="card_select_list"></select>
+    <button id="card_select_button">Select card</button>
+    <p>Opponent card: <span id="opponent_card">None</span></p>
+    <p>Round winner: <span id="round_winner">None</span></p>
+    <p>Game winner: <span id="round_winner">None</span></p>
+  </section>  
 
   <!-- CHAT BOX -->
   <section id="chat_box" aria-labelledby="chat_title">
@@ -39,7 +63,6 @@
   <!-- DEBUG MENU -->
   <section id="debug_menu" aria-labelledby="debug_title">
     <h2 id="debug_title">Debug</h2>
-    <button id="cards_drawn_button">Draw cards</button>
     <button id="opponent_move_button">Opponent move (no reveal)</button>
     <button id="reveal_cards_button">Reveal cards</button>
   </section>

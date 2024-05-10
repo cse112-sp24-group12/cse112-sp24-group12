@@ -1,12 +1,24 @@
 import { createServer } from 'http';
 import { server } from 'websocket';
 import { randomUUID } from 'crypto';
-import { generateGameCode } from './util.js';
+import {
+  generateGameCode,
+  areUnorderedArrsEqual,
+  isCardValid,
+  areCardsEqual,
+  getOtherPlayer,
+  getCurrentRoundState,
+  getWinningCard,
+} from './util.js';
+import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
 
 const PORT = process.env.PORT || 8000;
-const OFFERED_PROTOCOL = 'multiplayer-demo-protocol';
+const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 
+/** @type { { [gameCode: number]: GameInstance } } */
 const gameInstancesByGameCode = {};
+
+/** @type { { [playerUuid: string]: GameInstance } } */
 const gameInstancesByPlayerUUID = {};
 
 const webSocketServer = new server({
@@ -14,13 +26,23 @@ const webSocketServer = new server({
   autoAcceptConnections: false,
 });
 
+const DEBUG_TEST_CARD_LIST = [
+  {
+    suite: 'test',
+    number: 5,
+  },
+  {
+    suite: 'test',
+    number: 4,
+  },
+];
+
 console.log('Server online');
 
 /**
  * For a given connection, sends stringified version of object for re-parsing on other side
  * @param { connection } webSocketConnection
  * @param { any } object
- * @returns { void }
  */
 function sendObject(webSocketConnection, object) {
   webSocketConnection.sendUTF(JSON.stringify(object));
@@ -28,34 +50,50 @@ function sendObject(webSocketConnection, object) {
 
 /**
  * Start game by sending 'start_game' code to all child connections.
- * @param { number } gameCode
- * @returns { void }
+ * @param { connection } webSocketConnection
  */
-function startGame(gameCode) {
-  const gameInstance = gameInstancesByGameCode[gameCode];
+function startGame(webSocketConnection) {
+  const gameInstance =
+    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  gameInstance.playConnections.forEach((webSocketConnection) => {
+  if (!gameInstance.webSocketConnections.includes(webSocketConnection)) {
+    console.log('Could not start game by instruction of non-member');
+    // TODO: validate request is coming from host instead of just a player
+    return;
+  }
+
+  gameInstance.gameState.byRound.push({
+    selectedCard: {},
+    roundWinner: null,
+  });
+
+  gameInstance.webSocketConnections.forEach((webSocketConnection) => {
+    gameInstance.gameState.byPlayer[webSocketConnection.profile.uuid] = {
+      score: 0,
+      remainingCards: DEBUG_TEST_CARD_LIST,
+    };
+
     sendObject(webSocketConnection, {
-      action: 'start_game',
+      action: S2C_ACTIONS.START_GAME,
+      drawnCards: DEBUG_TEST_CARD_LIST,
     });
   });
 
-  console.log(`Game ${gameCode} started`);
+  console.log(`Game ${gameInstance.gameCode} started`);
 } /* startGame */
 
 /**
  * For a given connection, leaves the game instance they are currently member to
  * @param { connection } webSocketConnection
- * @returns { void }
  */
 function leaveInstance(webSocketConnection) {
   const gameInstance =
-    gameInstancesByPlayerUUID[webSocketConnection.playerUUID];
+    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  gameInstance.playConnections = gameInstance.playConnections.filter(
+  gameInstance.webSocketConnections = gameInstance.webSocketConnections.filter(
     (conn) => conn != webSocketConnection,
   );
-  delete gameInstancesByPlayerUUID[webSocketConnection.playerUUID];
+  delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   // TODO: add logic for destruction of past game instances after some condition (e.g., 0 players left + timeout)
 } /* leaveInstance */
@@ -64,48 +102,23 @@ function leaveInstance(webSocketConnection) {
  * For a given connection, joins the game instance corresponding to the gameCode
  * @param { connection } webSocketConnection
  * @param { number } gameCode
- * @returns { void }
  */
 function joinInstance(webSocketConnection, gameCode) {
   const gameInstance = gameInstancesByGameCode[gameCode];
 
-  if (gameInstance.playConnections.includes(webSocketConnection)) {
+  if (gameInstance.webSocketConnections.includes(webSocketConnection)) {
     console.log(`Game ${gameCode} rejected connection: already exists`);
     return;
   }
 
   leaveInstance(webSocketConnection);
-  gameInstancesByPlayerUUID[webSocketConnection.playerUUID] = gameInstance;
-  gameInstance.playConnections.push(webSocketConnection);
-
-  sendObject(webSocketConnection, {
-    action: 'join_instance',
-    gameCode,
-  });
+  gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = gameInstance;
+  gameInstance.webSocketConnections.push(webSocketConnection);
 
   console.log(`Secondary player joined instance with room code ${gameCode}`);
 
-  startGame(gameCode);
+  alertUpdateInstance(gameInstance);
 } /* joinInstance */
-
-/**
- * For a given connection, alerts other player of new position
- * @param { connection } webSocketConnection
- * @param { number } xPos
- * @param { number } yPos
- * @returns { void }
- */
-function updatePosition(webSocketConnection, xPos, yPos) {
-  gameInstancesByPlayerUUID[webSocketConnection.playerUUID].playConnections
-    .filter((conn) => conn !== webSocketConnection)
-    .forEach((conn) => {
-      sendObject(conn, {
-        action: 'update_position',
-        xPos,
-        yPos,
-      });
-    });
-} /* updatePosition */
 
 /**
  * Accepts a given WebSocket connection request
@@ -117,35 +130,163 @@ function acceptRequest(webSocketRequest) {
     OFFERED_PROTOCOL,
     webSocketRequest.origin,
   );
-  webSocketConnection.playerUUID = randomUUID();
+
+  webSocketConnection.profile = {
+    uuid: randomUUID(),
+  };
 
   return webSocketConnection;
-} /* acceptConnectionRequest */
+} /* acceptRequest */
+
+/**
+ *
+ * @param { GameInstance } gameInstance
+ */
+function alertUpdateInstance(gameInstance) {
+  const gameInstanceProfiles = gameInstance.webSocketConnections.map(
+    (webSocketConnection) => webSocketConnection.profile,
+  );
+
+  gameInstance.webSocketConnections.forEach((webSocketConnection) => {
+    sendObject(webSocketConnection, {
+      action: S2C_ACTIONS.UPDATE_INSTANCE,
+      instanceInfo: {
+        gameCode: gameInstance.gameCode,
+        profileList: gameInstanceProfiles,
+      },
+    });
+  });
+} /* alertUpdateInstance */
 
 /**
  * Creates a new game instance and links it to given player
  * @param { connection } webSocketConnection
- * @returns { void }
  */
 function createInstance(webSocketConnection) {
   const gameInstance = {
     gameCode: generateGameCode(), // TODO: ensure game code is unique
-    playConnections: [webSocketConnection],
+    webSocketConnections: [webSocketConnection],
+    gameState: {
+      byPlayer: {},
+      byRound: [],
+    },
   };
 
   gameInstancesByGameCode[gameInstance.gameCode] = gameInstance;
-  gameInstancesByPlayerUUID[webSocketConnection.playerUUID] = gameInstance;
+  gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = gameInstance;
 
-  sendObject(webSocketConnection, {
-    action: 'join_instance',
-    gameCode: gameInstance.gameCode,
-  });
+  alertUpdateInstance(gameInstance);
 } /* createInstance */
+
+/**
+ *
+ * @param webSocketConnection
+ * @param profile
+ */
+function updateProfile(webSocketConnection, profile) {
+  if (
+    !areUnorderedArrsEqual(Object.keys(profile), [
+      'username',
+      'profileImageName',
+    ]) ||
+    typeof profile.username !== 'string' ||
+    typeof profile.profileImageName !== 'string'
+  ) {
+    console.log('Invalid profile uploaded');
+    return;
+  }
+
+  webSocketConnection.profile = {
+    uuid: webSocketConnection.profile.uuid,
+    ...profile,
+  };
+} /* updateProfile */
+
+/**
+ *
+ * @param { connection } webSocketConnection
+ */
+function alertCardSelected(webSocketConnection) {
+  sendObject(webSocketConnection, {
+    action: S2C_ACTIONS.CARD_SELECTED,
+  });
+} /* alertCardSelected */
+
+/**
+ *
+ * @param { GameInstance } gameInstance
+ */
+function handleRoundEnd(gameInstance) {
+  const currentRoundState = getCurrentRoundState(gameInstance);
+
+  const [[uuid1, card1], [uuid2, card2]] = Object.entries(
+    currentRoundState.selectedCard,
+  );
+  const roundWinnerUUID =
+    getWinningCard(card1, card2) === card1 ? uuid1 : uuid2;
+
+  const roundWinner = gameInstance.webSocketConnections.find(
+    (conn) => conn.profile.uuid === roundWinnerUUID,
+  ).profile;
+
+  gameInstance.webSocketConnections.forEach((conn) => {
+    const opponentSelectedCard =
+      currentRoundState.selectedCard[
+        getOtherPlayer(gameInstance, conn).profile.uuid
+      ];
+
+    sendObject(conn, {
+      action: S2C_ACTIONS.REVEAL_CARDS,
+      opponentSelectedCard,
+      roundWinner,
+    });
+  });
+} /* handleRoundEnd */
+
+/**
+ *
+ * @param { connection } webSocketConnection
+ * @param { Card } selectedCard
+ */
+function selectCard(webSocketConnection, selectedCard) {
+  const gameInstance =
+    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+  const playerGameState =
+    gameInstance.gameState.byPlayer[webSocketConnection.profile.uuid];
+  const currentRoundState = getCurrentRoundState(gameInstance);
+
+  // TODO: more robust handling here; return some error to client on failure
+
+  if (!isCardValid(selectedCard)) {
+    console.log('Invalid card format');
+    return;
+  }
+
+  if (
+    !playerGameState.remainingCards.some((card) =>
+      areCardsEqual(card, selectedCard),
+    )
+  ) {
+    console.log('Card already played');
+    return;
+  }
+
+  playerGameState.remainingCards = playerGameState.remainingCards.filter(
+    (card) => !areCardsEqual(card, selectedCard),
+  );
+  currentRoundState.selectedCard[webSocketConnection.profile.uuid] =
+    selectedCard;
+
+  if (Object.keys(currentRoundState.selectedCard).length === 2) {
+    handleRoundEnd(gameInstance);
+  } else {
+    alertCardSelected(getOtherPlayer(gameInstance, webSocketConnection));
+  }
+} /* selectCard */
 
 /**
  * Handles a new request to the WebSocket server; always tries to accept
  * @param { request } webSocketRequest
- * @returns { void }
  */
 function handleRequest(webSocketRequest) {
   console.log(`Request received at "${webSocketRequest.remoteAddress}"`);
@@ -154,12 +295,9 @@ function handleRequest(webSocketRequest) {
 
   console.log(`WebSocket connected at "${webSocketConnection.remoteAddress}"`);
 
-  createInstance(webSocketConnection);
-
   /**
    * Handles message event for a given WebSocket connection
    * @param { { type: 'utf8'|'binary', utf8Data: string, binaryData: binaryDataBuffer} } data
-   * @returns { void }
    */
   function handleMessage(data) {
     console.log(
@@ -170,20 +308,25 @@ function handleRequest(webSocketRequest) {
       const messageObj = JSON.parse(data.utf8Data);
 
       switch (messageObj.action) {
-        case 'join_instance':
+        case C2S_ACTIONS.CREATE_PROFILE:
+          updateProfile(webSocketConnection, messageObj.profile);
+          createInstance(webSocketConnection);
+          break;
+        case C2S_ACTIONS.JOIN_INSTANCE:
           joinInstance(webSocketConnection, messageObj.gameCode);
           break;
-        case 'update_position':
-          updatePosition(
-            webSocketConnection,
-            +messageObj.xPos,
-            +messageObj.yPos,
-          );
+        case C2S_ACTIONS.START_GAME:
+          startGame(webSocketConnection);
           break;
+        case C2S_ACTIONS.SELECT_CARD:
+          selectCard(webSocketConnection, messageObj.selectedCard);
+          break;
+        default:
       }
-    } catch {
+    } catch (e) {
       console.log(
         `Error handling message at "${webSocketConnection.remoteAddress}"`,
+        e,
       );
     }
   } /* handleMessage */
@@ -192,7 +335,6 @@ function handleRequest(webSocketRequest) {
    * Handles close event for a given WebSocket connection
    * @param { number } code
    * @param { string } desc
-   * @returns { void }
    */
   function handleClose(code, desc) {
     console.log(
