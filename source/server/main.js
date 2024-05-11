@@ -10,8 +10,12 @@ import {
   getCurrentRoundState,
   getWinningCard,
   createNewRound,
+  generateUniqueCards,
 } from './util.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
+import CARD_LIST from './card_list.json' assert { type: 'json' };
+
+const NUM_ROUNDS = 5;
 
 const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
@@ -26,18 +30,6 @@ const webSocketServer = new server({
   httpServer: createServer().listen(PORT),
   autoAcceptConnections: false,
 });
-
-const DEBUG_TEST_CARD_LIST = [
-  {
-    suite: 'test',
-    number: 5,
-  },
-  {
-    suite: 'test',
-    number: 4,
-  },
-];
-const NUM_ROUNDS = 2;
 
 console.log('Server online');
 
@@ -62,15 +54,19 @@ function handleStartGame(webSocketConnection) {
 
   gameInstance.gameState.byRound.push(createNewRound());
 
+  const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);
+
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
+    const drawnCards = drawnCardLists.pop();
+
     gameInstance.gameState.byPlayer[webSocketConnection.profile.uuid] = {
       score: 0,
-      remainingCards: DEBUG_TEST_CARD_LIST,
+      remainingCards: drawnCards,
     };
 
     sendMessage(webSocketConnection, {
       action: S2C_ACTIONS.START_GAME,
-      drawnCards: DEBUG_TEST_CARD_LIST,
+      drawnCards,
     });
   });
 
@@ -198,8 +194,8 @@ function handleUpdateProfile(webSocketConnection, profile) {
 } /* handleUpdateProfile */
 
 /**
- * 
- * @param { GameInstance } gameInstance 
+ *
+ * @param { GameInstance } gameInstance
  */
 function handleGameEnd(gameInstance) {
   const gameWinner = gameInstance.webSocketConnections[0].profile;
@@ -242,7 +238,8 @@ function handleRoundEnd(gameInstance) {
     });
   });
 
-  if (gameInstance.gameState.byRound.length === NUM_ROUNDS) handleGameEnd(gameInstance);
+  if (gameInstance.gameState.byRound.length === NUM_ROUNDS)
+    handleGameEnd(gameInstance);
 } /* handleRoundEnd */
 
 /**
@@ -289,7 +286,7 @@ function handleSelectCard(webSocketConnection, selectedCard) {
 } /* handleSelectCard */
 
 /**
- * 
+ *
  * @param { connection } webSocketConnection
  */
 function handleStartRound(webSocketConnection) {
@@ -305,11 +302,16 @@ function handleStartRound(webSocketConnection) {
       action: S2C_ACTIONS.START_ROUND,
     });
   });
-
 } /* handleStartRound */
 
+/**
+ *
+ * @param webSocketConnection
+ * @param messageContents
+ */
 function handleChatMessage(webSocketConnection, messageContents) {
-  const gameInstance = gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+  const gameInstance =
+    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   // TODO: validate chat message contents
 

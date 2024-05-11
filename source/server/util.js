@@ -85,5 +85,22 @@ export function createNewRound() {
   return {
     selectedCard: {},
     roundWinner: null,
-  }
+  };
 } /* createNewRound */
+
+/**
+ * Generates two sets of n mutually-unique cards
+ * @param { Card[] } cardList list of cards to pull from
+ * @param { number } n integer size of each set
+ * @returns { [Card[], Card[]] }  two lists of n mutually-unique cards
+ */
+export function generateUniqueCards(cardList, n) {
+  /* shuffle cards by sorting according to random weights */
+  const shuffledCardList = cardList
+    .map((card) => [card, Math.random()])
+    .sort(([, weight1], [, weight2]) => weight1 - weight2)
+    .map(([card]) => card);
+
+  /* choose first n and second n elements for each list */
+  return [shuffledCardList.slice(0, n), shuffledCardList.slice(n, n + n)];
+} /* generateUniqueCards */
