@@ -1,78 +1,144 @@
-let mouseX = 0;
-let mouseY = 0;
-let stars = [];
+/**
+ * @typedef { {
+ *  xPosPercent: number,
+ *  yPosPercent: number,
+ *  zPosPercent: number,
+ *  htmlElement: HTMLElement
+ * } } Star
+ */
 
-const starSize = 3;
-const starSlowness = 700;
-const maxOpacity = 0.8;
-const mouseSpeed = 0.2; // how much does the mouse affect the stars?
-
-const starsContainer = document.getElementById('stars-container');
-
-window.addEventListener('DOMContentLoaded', () => {
-  stars = new Array(400).fill().map(() => ({
-    x: Math.random(),
-    y: Math.random(),
-    z: Math.random(),
-  }));
-
-  for (let i = 0; i < stars.length; i++) {
-    const starElement = document.createElement('div');
-    starElement.className = 'star';
-    updateStar(starElement, i);
-    starsContainer.appendChild(starElement);
-  }
-
-  animate();
-});
+const NUM_STARS = 250;
+const MAX_OPACITY_PERCENT = 0.95;
+const STAR_SPEED_PERCENTILE = 0.0015;
+const MOUSE_EFFECT_COEFF = 0.05;
+const CENTER_EXCLUSION_RADIUS = 0.2;
+const Z_AXIS_ORIGIN_PX = 250;
 
 /**
- *
+ * @type { {
+ *  xPos: number,
+ *  yPos: number
+ * } }
  */
-function animate() {
-  for (let i = 0; i < stars.length; i++) {
-    stars[i].z = (stars[i].z + 1 / starSlowness) % 1;
-  }
-
-  for (let i = 0; i < stars.length; i++) {
-    updateStar(starsContainer.children[i], i);
-  }
-
-  requestAnimationFrame(animate);
-}
+const mouseState = {
+  xPosPercentFromCenter: 0,
+  yPosPercentFromCenter: 0,
+};
 
 /**
- *
- * @param starElement
- * @param i
+ * Updates mouse x and y positions as relative percents of total screen size
+ * in mouseState object, using the center of the screen as the (0, 0) origin
+ * @param { MouseEvent } event mouse movement event passed by listener; passive
  */
-function updateStar(starElement, i) {
-  const star = stars[i];
+function updateMousePosition(event) {
+  const { clientWidth, clientHeight } = document.body;
 
-  const opacity = maxOpacity * (1 - Math.pow(2 * star.z - 1, 4));
+  mouseState.xPosPercentFromCenter = event.clientX / clientWidth - 0.5;
+  mouseState.yPosPercentFromCenter = event.clientY / clientHeight - 0.5;
+} /* updateMousePosition */
 
-  starElement.style.backgroundColor = `rgba(255, 255, 255, ${opacity})`;
+/**
+ * Generates a psuedo-random pair of XY coordinates for a star such that the
+ * coordinates avoid the direct center of the screen, to avoid collisions
+ * with the camera
+ * @returns {{
+ *  xPosPercent: number,
+ *  yPosPercent: number
+ * } } pair of (x, y) coords in range [0, 1]
+ */
+function generateRandomXYPosPercents() {
+  let xPosPercent, yPosPercent;
 
-  // both numbers from 0 to 1
-  const pos = {
-    x: star.x + (star.x - 0.5) * star.z,
-    y: star.y + (star.y - 0.5) * star.z,
-  };
+  do {
+    xPosPercent = Math.random();
+    yPosPercent = Math.random();
+  } while (
+    Math.hypot(xPosPercent - 0.5, yPosPercent - 0.5) < CENTER_EXCLUSION_RADIUS
+  );
 
-  // offset due to mouse
-  const offset = {
-    x: mouseSpeed * (mouseX * star.z),
-    y: mouseSpeed * (mouseY * star.z),
-  };
+  return { xPosPercent, yPosPercent };
+} /* generateRandomXYPosPercents */
 
-  starElement.style.left = `calc(${100 * pos.x}% + ${offset.x}px)`;
-  starElement.style.top = `calc(${100 * pos.y}% + ${offset.y}px)`;
+/**
+ * Creates and returns new Star objects, which each include initial
+ * x, y, & z positions as well as corresponding HTML elements
+ * @param { number } numStars number of stars to create
+ * @returns { Star[] } array of newly created stars
+ */
+function generateStars(numStars) {
+  return Array.from({ length: numStars }).map(() => {
+    const starEl = document.createElement('div');
+    starEl.className = 'star';
 
-  starElement.style.width = `${starSize * star.z}px`;
-  starElement.style.height = `${starSize * star.z}px`;
-}
+    return {
+      ...generateRandomXYPosPercents(),
+      zPosPercent: Math.random(),
+      htmlElement: starEl,
+    };
+  });
+} /* generateStars */
 
-window.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-});
+/**
+ * Calculates appropriate current opacity for a star, based off its z position
+ * @param { Star } star target star
+ * @returns { number } percent opacity in range [0, 1]
+ */
+function getPercentOpacity(star) {
+  return star.zPosPercent ** 0.5 * MAX_OPACITY_PERCENT;
+} /* getPercentOpacity */
+
+/**
+ * Handles animation of each frame; individually moves stars forward a step
+ * in the direction of the camera. Self-invoking.
+ * @param { Star[] } stars array of stars to animate
+ * @param { HTMLElement } starsContainerEl container element of stars, used to control perspective
+ */
+function animateNextFrame(stars, starsContainerEl) {
+  /* move perspective origin of parent to create mouse-movement effect*/
+  const { xPosPercentFromCenter, yPosPercentFromCenter } = mouseState;
+  const xPerspPercent = 50 - 100 * xPosPercentFromCenter * MOUSE_EFFECT_COEFF;
+  const yPerspPercent = 50 - 100 * yPosPercentFromCenter * MOUSE_EFFECT_COEFF;
+
+  starsContainerEl.style.perspectiveOrigin = `${xPerspPercent}% ${yPerspPercent}%`;
+
+  /* individually move stars closer to the camera */
+  stars.forEach((star) => {
+    star.zPosPercent = (star.zPosPercent + STAR_SPEED_PERCENTILE) % 1;
+
+    star.htmlElement.style.backgroundColor = `rgba(255, 255, 255, ${getPercentOpacity(star)})`;
+    star.htmlElement.style.transform = `translateZ(${star.zPosPercent * Z_AXIS_ORIGIN_PX}px)`;
+  });
+
+  /* self-invoke next frame */
+  requestAnimationFrame(() => animateNextFrame(stars, starsContainerEl));
+} /* animateNextFrame */
+
+/**
+ * Places stars into parent container and positions them appropriately
+ * @param { Star[] } stars stars to place onto screen
+ * @param { HTMLElement } starsContainerEl parent to place stars into
+ */
+function initializeStarPositions(stars, starsContainerEl) {
+  starsContainerEl.replaceChildren(...stars.map((star) => star.htmlElement));
+
+  stars.forEach((star) => {
+    star.htmlElement.style.left = `${star.xPosPercent * 100}%`;
+    star.htmlElement.style.top = `${star.yPosPercent * 100}%`;
+  });
+} /* initializeStarPositions */
+
+/**
+ * Initializes creation and placement of stars into background and commences
+ * animation frame sequence
+ */
+function init() {
+  const starsContainerEl = document.querySelector('#stars-container');
+
+  const stars = generateStars(NUM_STARS);
+
+  initializeStarPositions(stars, starsContainerEl);
+  animateNextFrame(stars, starsContainerEl);
+} /* init */
+
+window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('mousemove', updateMousePosition, { passive: true });
