@@ -34,6 +34,11 @@ export function handleOutboundMessage() {
   else sendChatMessage(messageContents);
 } /* handleOutboundMessage */
 
+/**
+ * 
+ * @param { string } messageContents 
+ * @param { string } username 
+ */
 function printMessage(messageContents, username) {
   const chatFeedEl = document.querySelector('#chat_feed');
 
