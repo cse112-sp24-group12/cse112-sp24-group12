@@ -71,6 +71,9 @@ export function handleRevealCards(opponentSelectedCard, roundWinner) {
   roundWinnerEl.innerText = roundWinner.username;
 } /* handleRevealCards */
 
+/**
+ *
+ */
 export function handleStartRound() {
   const opponentCardEl = document.querySelector('#opponent_card');
   const roundWinnerEl = document.querySelector('#round_winner');
@@ -99,7 +102,9 @@ function sendSelectCard() {
 
   selectCard(JSON.parse(cardSelectEl.value));
 
-  cardSelectEl.removeChild([...cardSelectEl.children].find((el) => el.value === cardSelectEl.value));
+  cardSelectEl.removeChild(
+    [...cardSelectEl.children].find((el) => el.value === cardSelectEl.value),
+  );
 } /* sendSelectCard */
 
 /**
@@ -134,7 +139,7 @@ function sendStartGame() {
 } /* sendStartGame */
 
 /**
- * 
+ *
  */
 function sendStartRound() {
   startRound();
@@ -148,7 +153,7 @@ function init() {
   const joinGameButtonEl = document.querySelector('#join_game_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
-  const startRoundButtonEl = document.querySelector("#start_round_button");
+  const startRoundButtonEl = document.querySelector('#start_round_button');
 
   initializeWebSocket(createSelfProfile());
 

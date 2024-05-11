@@ -1,7 +1,7 @@
 /** @module types */
 
 export const C2S_ACTIONS = {
-  CREATE_PROFILE: 'create_profile',
+  UPDATE_PROFILE: 'UPDATE_PROFILE',
   JOIN_INSTANCE: 'join_instance',
   START_GAME: 'start_game',
   SELECT_CARD: 'select_card',
@@ -48,7 +48,7 @@ export const S2C_ACTIONS = {
 /**
  * @typedef {
  *  {
- *    action: C2S_ACTIONS.CREATE_PROFILE,
+ *    action: C2S_ACTIONS.UPDATE_PROFILE,
  *    profile: ClientToServerProfile
  *  } |
  *  {

@@ -1,7 +1,7 @@
 /** @module types */
 
 export const C2S_ACTIONS = {
-  CREATE_PROFILE: 'create_profile',
+  UPDATE_PROFILE: 'UPDATE_PROFILE',
   JOIN_INSTANCE: 'join_instance',
   START_GAME: 'start_game',
   SELECT_CARD: 'select_card',
@@ -18,6 +18,14 @@ export const S2C_ACTIONS = {
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
 };
+
+/**
+ * @typedef { any } WSConnection
+ */
+
+/**
+ * @typedef { any } WSRequest
+ */
 
 /**
  * @typedef { string|null } UUID
@@ -48,7 +56,7 @@ export const S2C_ACTIONS = {
 /**
  * @typedef {
  *  {
- *    action: C2S_ACTIONS.CREATE_PROFILE,
+ *    action: C2S_ACTIONS.UPDATE_PROFILE,
  *    profile: ClientToServerProfile
  *  } |
  *  {
@@ -115,7 +123,7 @@ export const S2C_ACTIONS = {
 /**
  * @typedef { {
  *  score: number,
- *  remainingCards: Card[]
+ *  remainingCards: Card[],
  * } } PlayerGameState
  */
 
@@ -134,13 +142,14 @@ export const S2C_ACTIONS = {
  *    [playerUuid: UUID]: PlayerGameState
  *  },
  *  byRound: RoundState[]
+ *  isStarted: boolean
  * } } GameState
  */
 
 /**
  * @typedef { {
  *  gameCode: number,
- *  webSocketConnections: connection[],
+ *  webSocketConnections: WSConnection[],
  *  gameState: GameState
  * } } GameInstance
  */

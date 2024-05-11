@@ -1,3 +1,5 @@
+import * as Types from './types';
+
 /**
  * Creates and returns random game code for each game instance; currently not necessarily unique
  * @returns { number }
@@ -21,7 +23,7 @@ export function areUnorderedArrsEqual(arr1, arr2) {
 
 /**
  *
- * @param { Card } card
+ * @param { Types.Card } card
  * @returns { boolean }
  */
 export function isCardValid(card) {
@@ -34,8 +36,8 @@ export function isCardValid(card) {
 
 /**
  *
- * @param { Card } card1
- * @param { Card } card2
+ * @param { Types.Card } card1
+ * @param { Types.Card } card2
  * @returns { boolean }
  */
 export function areCardsEqual(card1, card2) {
@@ -44,9 +46,9 @@ export function areCardsEqual(card1, card2) {
 
 /**
  *
- * @param { GameInstance } gameInstance
- * @param { connection } webSocketConnection
- * @returns { connection } other player in game instance
+ * @param { Types.GameInstance } gameInstance
+ * @param { Types.WSConnection } webSocketConnection
+ * @returns { Types.WSConnection } other player in game instance
  */
 export function getOtherPlayer(gameInstance, webSocketConnection) {
   return gameInstance.webSocketConnections.find(
@@ -56,8 +58,8 @@ export function getOtherPlayer(gameInstance, webSocketConnection) {
 
 /**
  * Returns the last entry in list of round states from a game instance
- * @param { GameInstance } gameInstance
- * @returns { RoundState }
+ * @param { Types.GameInstance } gameInstance
+ * @returns { Types.RoundState }
  */
 export function getCurrentRoundState(gameInstance) {
   return gameInstance.gameState.byRound[
@@ -67,9 +69,9 @@ export function getCurrentRoundState(gameInstance) {
 
 /**
  * Determines which of two cards wins a round
- * @param { Card } card1
- * @param { Card } card2
- * @returns { Card } winning card of card1 and card2
+ * @param { Types.Card } card1
+ * @param { Types.Card } card2
+ * @returns { Types.Card } winning card of card1 and card2
  */
 export function getWinningCard(card1, card2) {
   // TODO: add logic to pick winner
@@ -79,7 +81,7 @@ export function getWinningCard(card1, card2) {
 
 /**
  * Creates and returns a new round state
- * @returns { RoundState } blank round state
+ * @returns { Types.RoundState } blank round state
  */
 export function createNewRound() {
   return {
@@ -90,9 +92,9 @@ export function createNewRound() {
 
 /**
  * Generates two sets of n mutually-unique cards
- * @param { Card[] } cardList list of cards to pull from
+ * @param { Types.Card[] } cardList list of cards to pull from
  * @param { number } n integer size of each set
- * @returns { [Card[], Card[]] }  two lists of n mutually-unique cards
+ * @returns { [Types.Card[], Types.Card[]] }  two lists of n mutually-unique cards
  */
 export function generateUniqueCards(cardList, n) {
   /* shuffle cards by sorting according to random weights */

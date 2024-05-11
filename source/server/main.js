@@ -1,5 +1,6 @@
 import { createServer } from 'http';
 import { server } from 'websocket';
+import { readFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 import {
   generateGameCode,
@@ -13,17 +14,19 @@ import {
   generateUniqueCards,
 } from './util.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
-import CARD_LIST from './card_list.json' assert { type: 'json' };
+import * as Types from './types';
+
+const CARD_LIST = JSON.parse(readFileSync('./card_list.json'));
 
 const NUM_ROUNDS = 5;
 
 const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 
-/** @type { { [gameCode: number]: GameInstance } } */
+/** @type { { [gameCode: number]: Types.GameInstance } } */
 const gameInstancesByGameCode = {};
 
-/** @type { { [playerUuid: string]: GameInstance } } */
+/** @type { { [playerUuid: string]: Types.GameInstance } } */
 const gameInstancesByPlayerUUID = {};
 
 const webSocketServer = new server({
@@ -35,8 +38,8 @@ console.log('Server online');
 
 /**
  * For a given connection, sends stringified version of object for re-parsing on other side
- * @param { connection } webSocketConnection
- * @param { ServerToClientMessage } message
+ * @param { Types.WSConnection } webSocketConnection
+ * @param { Types.ServerToClientMessage } message
  */
 function sendMessage(webSocketConnection, message) {
   webSocketConnection.sendUTF(JSON.stringify(message));
@@ -44,7 +47,7 @@ function sendMessage(webSocketConnection, message) {
 
 /**
  * Start game by sending 'start_game' code to all child connections.
- * @param { connection } webSocketConnection
+ * @param { Types.WSConnection } webSocketConnection
  */
 function handleStartGame(webSocketConnection) {
   const gameInstance =
@@ -52,9 +55,10 @@ function handleStartGame(webSocketConnection) {
 
   // TODO: validate request is coming from host of the game
 
-  gameInstance.gameState.byRound.push(createNewRound());
-
   const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);
+
+  gameInstance.gameState.byRound.push(createNewRound());
+  gameInstance.gameState.isStarted = true;
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
     const drawnCards = drawnCardLists.pop();
@@ -75,7 +79,7 @@ function handleStartGame(webSocketConnection) {
 
 /**
  * For a given connection, leaves the game instance they are currently member to
- * @param { connection } webSocketConnection
+ * @param { Types.WSConnection } webSocketConnection
  */
 function leaveInstance(webSocketConnection) {
   const gameInstance =
@@ -91,7 +95,7 @@ function leaveInstance(webSocketConnection) {
 
 /**
  * For a given connection, joins the game instance corresponding to the gameCode
- * @param { connection } webSocketConnection
+ * @param { Types.WSConnection } webSocketConnection
  * @param { number } gameCode
  */
 function handleJoinInstance(webSocketConnection, gameCode) {
@@ -113,8 +117,8 @@ function handleJoinInstance(webSocketConnection, gameCode) {
 
 /**
  * Accepts a given WebSocket connection request
- * @param { request } webSocketRequest
- * @returns { connection }
+ * @param { Types.WSRequest } webSocketRequest
+ * @returns { Types.WSConnection }
  */
 function acceptRequest(webSocketRequest) {
   const webSocketConnection = webSocketRequest.accept(
@@ -131,7 +135,7 @@ function acceptRequest(webSocketRequest) {
 
 /**
  *
- * @param { GameInstance } gameInstance
+ * @param { Types.GameInstance } gameInstance
  */
 function alertUpdateInstance(gameInstance) {
   const gameInstanceProfiles = gameInstance.webSocketConnections.map(
@@ -151,7 +155,7 @@ function alertUpdateInstance(gameInstance) {
 
 /**
  * Creates a new game instance and links it to given player
- * @param { connection } webSocketConnection
+ * @param { Types.WSConnection } webSocketConnection
  */
 function createInstance(webSocketConnection) {
   const gameInstance = {
@@ -160,6 +164,7 @@ function createInstance(webSocketConnection) {
     gameState: {
       byPlayer: {},
       byRound: [],
+      isStarted: false,
     },
   };
 
@@ -171,8 +176,8 @@ function createInstance(webSocketConnection) {
 
 /**
  *
- * @param webSocketConnection
- * @param profile
+ * @param { Types.WSConnection } webSocketConnection
+ * @param { Types.ClientToServerProfile } profile
  */
 function handleUpdateProfile(webSocketConnection, profile) {
   if (
@@ -195,7 +200,7 @@ function handleUpdateProfile(webSocketConnection, profile) {
 
 /**
  *
- * @param { GameInstance } gameInstance
+ * @param { Types.GameInstance } gameInstance
  */
 function handleGameEnd(gameInstance) {
   const gameWinner = gameInstance.webSocketConnections[0].profile;
@@ -210,7 +215,7 @@ function handleGameEnd(gameInstance) {
 
 /**
  *
- * @param { GameInstance } gameInstance
+ * @param { Types.GameInstance } gameInstance
  */
 function handleRoundEnd(gameInstance) {
   const currentRoundState = getCurrentRoundState(gameInstance);
@@ -224,6 +229,8 @@ function handleRoundEnd(gameInstance) {
   const roundWinner = gameInstance.webSocketConnections.find(
     (conn) => conn.profile.uuid === roundWinnerUUID,
   ).profile;
+
+  currentRoundState.roundWinner = roundWinnerUUID;
 
   gameInstance.webSocketConnections.forEach((conn) => {
     const opponentSelectedCard =
@@ -244,8 +251,8 @@ function handleRoundEnd(gameInstance) {
 
 /**
  *
- * @param { connection } webSocketConnection
- * @param { Card } selectedCard
+ * @param { Types.WSConnection } webSocketConnection
+ * @param { Types.Card } selectedCard
  */
 function handleSelectCard(webSocketConnection, selectedCard) {
   const gameInstance =
@@ -287,7 +294,7 @@ function handleSelectCard(webSocketConnection, selectedCard) {
 
 /**
  *
- * @param { connection } webSocketConnection
+ * @param { Types.WSConnection } webSocketConnection
  */
 function handleStartRound(webSocketConnection) {
   const gameInstance =
@@ -306,8 +313,8 @@ function handleStartRound(webSocketConnection) {
 
 /**
  *
- * @param webSocketConnection
- * @param messageContents
+ * @param { Types.WSConnection } webSocketConnection
+ * @param { string } messageContents
  */
 function handleChatMessage(webSocketConnection, messageContents) {
   const gameInstance =
@@ -325,8 +332,35 @@ function handleChatMessage(webSocketConnection, messageContents) {
 } /* handleChatMessage */
 
 /**
+ * Provides surface-level validation of whether an action is in
+ * the correct order, to be used in message handling to reject
+ * invalid messages.
+ * @param { Types.WSConnection } webSocketConnection
+ * @param { keyof C2S_ACTIONS } currentAction
+ */
+function isActionAllowed(webSocketConnection, currentAction) {
+  const uuid = webSocketConnection?.profile?.uuid;
+  const gameInstance = gameInstancesByPlayerUUID?.[uuid];
+
+  switch (currentAction) {
+    case C2S_ACTIONS.JOIN_INSTANCE:
+      return !gameInstance.isStarted;
+    case C2S_ACTIONS.START_GAME:
+      return !gameInstance.isStarted;
+    case C2S_ACTIONS.SELECT_CARD:
+      return !getCurrentRoundState(gameInstance).selectedCard[uuid];
+    case C2S_ACTIONS.START_ROUND:
+      return getCurrentRoundState(gameInstance).roundWinner;
+    case C2S_ACTIONS.CHAT_MESSAGE:
+      return true;
+    case C2S_ACTIONS.UPDATE_PROFILE:
+      return true;
+  }
+} /* isActionAllowed */
+
+/**
  * Handles a new request to the WebSocket server; always tries to accept
- * @param { request } webSocketRequest
+ * @param { Types.WSRequest } webSocketRequest
  */
 function handleRequest(webSocketRequest) {
   console.log(`Request received at "${webSocketRequest.remoteAddress}"`);
@@ -337,7 +371,7 @@ function handleRequest(webSocketRequest) {
 
   /**
    * Handles message event for a given WebSocket connection
-   * @param { { type: 'utf8'|'binary', utf8Data: string, binaryData: binaryDataBuffer} } data
+   * @param { { type: 'utf8'|'binary', utf8Data: string } } data
    */
   function handleMessage(data) {
     console.log(
@@ -347,8 +381,13 @@ function handleRequest(webSocketRequest) {
     try {
       const messageObj = JSON.parse(data.utf8Data);
 
+      if (!isActionAllowed(webSocketConnection, messageObj.action)) {
+        console.log('Action received out-of-order');
+        return;
+      }
+
       switch (messageObj.action) {
-        case C2S_ACTIONS.CREATE_PROFILE:
+        case C2S_ACTIONS.UPDATE_PROFILE:
           handleUpdateProfile(webSocketConnection, messageObj.profile);
           createInstance(webSocketConnection);
           break;

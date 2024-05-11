@@ -43,9 +43,7 @@ function handleMessage(message) {
     handleStartRound,
     handleGameEnd,
   } = socketState.gameCallbackFns;
-  const {
-    handleInboundMessage,
-  } = socketState.chatCallbackFns;
+  const { handleInboundMessage } = socketState.chatCallbackFns;
 
   try {
     switch (messageObj.action) {
@@ -68,15 +66,10 @@ function handleMessage(message) {
         handleStartRound();
         break;
       case S2C_ACTIONS.GAME_END:
-        handleGameEnd(
-          messageObj.gameWinner,
-        );
+        handleGameEnd(messageObj.gameWinner);
         break;
       case S2C_ACTIONS.CHAT_MESSAGE:
-        handleInboundMessage(
-          messageObj.messageContents,
-          messageObj.profile
-        );
+        handleInboundMessage(messageObj.messageContents, messageObj.profile);
         break;
       default:
     }
@@ -91,7 +84,7 @@ function handleMessage(message) {
  */
 export function sendProfile(profile) {
   sendMessage({
-    action: C2S_ACTIONS.CREATE_PROFILE,
+    action: C2S_ACTIONS.UPDATE_PROFILE,
     profile,
   });
 } /* sendProfile */
@@ -128,13 +121,13 @@ export function startGame() {
 } /* startGame */
 
 /**
- * 
+ *
  */
 export function startRound() {
   sendMessage({
     action: C2S_ACTIONS.START_ROUND,
   });
-}; /* startRound */
+} /* startRound */
 
 /**
  * @param { string } messageContents
@@ -147,16 +140,16 @@ export function sendChatMessage(messageContents) {
 } /* sendChatMessage */
 
 /**
- * 
- * @param { { [functionName: string]: Function } } callbackFns 
+ *
+ * @param { { [functionName: string]: Function } } callbackFns
  */
 export function attachGameCallbackFns(callbackFns) {
   socketState.gameCallbackFns = callbackFns;
 }
 
 /**
- * 
- * @param { { [functionName: string]: Function } } callbackFns 
+ *
+ * @param { { [functionName: string]: Function } } callbackFns
  */
 export function attachChatCallbackFns(callbackFns) {
   socketState.chatCallbackFns = callbackFns;

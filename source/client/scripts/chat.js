@@ -5,17 +5,16 @@ import { attachChatCallbackFns, sendChatMessage } from './socket.js';
 
 const COMMAND_CHARACTER = '/';
 const SYSTEM_USERNAME = 'System';
-const DEBUG_COMMAND = 'debug';
+const COMMANDS = {
+  DEBUG: 'debug',
+};
 
 /**
  *
  * @param { string } messageContents
  * @param { ServerToClientProfile } profile
  */
-export function handleInboundMessage(
-  messageContents,
-  profile,
-) {
+export function handleInboundMessage(messageContents, profile) {
   printMessage(messageContents, profile.username);
 } /* handleInboundMessage */
 
@@ -30,14 +29,15 @@ export function handleOutboundMessage() {
 
   if (!messageContents) return;
 
-  if (messageContents.indexOf(COMMAND_CHARACTER) === 0) handleCommand(messageContents.substring(COMMAND_CHARACTER.length));
+  if (messageContents.indexOf(COMMAND_CHARACTER) === 0)
+    handleCommand(messageContents.substring(COMMAND_CHARACTER.length));
   else sendChatMessage(messageContents);
 } /* handleOutboundMessage */
 
 /**
- * 
- * @param { string } messageContents 
- * @param { string } username 
+ *
+ * @param { string } messageContents
+ * @param { string } username
  */
 function printMessage(messageContents, username) {
   const chatFeedEl = document.querySelector('#chat_feed');
@@ -49,30 +49,34 @@ function printMessage(messageContents, username) {
   chatMessageAuthorEl.innerText = username;
   chatMessageContentsEl.innerText = messageContents;
 
-  chatMessageEl.replaceChildren(chatMessageAuthorEl, ': ', chatMessageContentsEl);
+  chatMessageEl.replaceChildren(
+    chatMessageAuthorEl,
+    ': ',
+    chatMessageContentsEl,
+  );
 
   chatFeedEl.append(chatMessageEl);
 } /* printMessage */
 
 /**
- * 
- * @param { string } systemMessage 
+ *
+ * @param { string } systemMessage
  */
 function printSystemMessage(systemMessage) {
   printMessage(systemMessage, SYSTEM_USERNAME);
 } /* printSystemMessage */
 
 /**
- * 
- * @param { string } command 
+ *
+ * @param { string } command
  */
 function handleCommand(command) {
   switch (command) {
-    case DEBUG_COMMAND: 
+    case COMMANDS.DEBUG:
       printSystemMessage('Debug menu toggled');
       toggleDebugMenu();
       break;
-    default: 
+    default:
       printSystemMessage('Command not recognized');
   }
 } /* handleCommand */
