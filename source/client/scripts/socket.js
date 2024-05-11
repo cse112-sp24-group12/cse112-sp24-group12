@@ -5,18 +5,19 @@ import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
 const WEB_SOCKET_URL = 'ws://localhost:8000';
 const REQUESTED_PROTOCOL = 'tarot-versus-protocol';
 
-const gameState = {
+const socketState = {
   webSocket: null,
-  callbackFns: {
+  gameCallbackFns: {
     handleUpdateInstance: () => {},
     handleCardsDrawn: () => {},
     handleOpponentMove: () => {},
     handleRevealCards: () => {},
+    handleStartRound: () => {},
     handleGameEnd: () => {},
   },
-  gameCode: 0,
-  selfProfile: {},
-  opponentProfile: {},
+  chatCallbackFns: {
+    handleInboundMessage: () => {},
+  },
 };
 
 /**
@@ -24,7 +25,7 @@ const gameState = {
  * @param { ClientToServerMessage } message
  */
 function sendMessage(message) {
-  gameState.webSocket.send(JSON.stringify(message));
+  socketState.webSocket.send(JSON.stringify(message));
 } /* sendMessage */
 
 /**
@@ -39,8 +40,12 @@ function handleMessage(message) {
     handleCardsDrawn,
     handleOpponentMove,
     handleRevealCards,
+    handleStartRound,
     handleGameEnd,
-  } = gameState.callbackFns;
+  } = socketState.gameCallbackFns;
+  const {
+    handleInboundMessage,
+  } = socketState.chatCallbackFns;
 
   try {
     switch (messageObj.action) {
@@ -56,13 +61,23 @@ function handleMessage(message) {
       case S2C_ACTIONS.REVEAL_CARDS:
         handleRevealCards(
           messageObj.opponentSelectedCard,
-          messageObj.roundWinner.username,
+          messageObj.roundWinner,
         );
+        break;
+      case S2C_ACTIONS.START_ROUND:
+        handleStartRound();
         break;
       case S2C_ACTIONS.GAME_END:
         handleGameEnd(
-          messageObj.gameWinner.username,
+          messageObj.gameWinner,
         );
+        break;
+      case S2C_ACTIONS.CHAT_MESSAGE:
+        handleInboundMessage(
+          messageObj.messageContents,
+          messageObj.profile
+        );
+        break;
       default:
     }
   } catch (e) {
@@ -113,22 +128,54 @@ export function startGame() {
 } /* startGame */
 
 /**
+ * 
+ */
+export function startRound() {
+  sendMessage({
+    action: C2S_ACTIONS.START_ROUND,
+  });
+}; /* startRound */
+
+/**
+ * @param { string } messageContents
+ */
+export function sendChatMessage(messageContents) {
+  sendMessage({
+    action: C2S_ACTIONS.CHAT_MESSAGE,
+    messageContents,
+  });
+} /* sendChatMessage */
+
+/**
+ * 
+ * @param { { [functionName: string]: Function } } callbackFns 
+ */
+export function attachGameCallbackFns(callbackFns) {
+  socketState.gameCallbackFns = callbackFns;
+}
+
+/**
+ * 
+ * @param { { [functionName: string]: Function } } callbackFns 
+ */
+export function attachChatCallbackFns(callbackFns) {
+  socketState.chatCallbackFns = callbackFns;
+}
+
+/**
  *
  * @param { ClientToServerProfile } profile profile of client (self)
- * @param { {[fnName: string]: Function} } callbackFns
  */
-export function initializeWebSocket(profile, callbackFns) {
-  if (gameState.webSocket) {
+export function initializeWebSocket(profile) {
+  if (socketState.webSocket) {
     console.log('WebSocket already initialized; quitting');
   }
 
-  gameState.webSocket = new WebSocket(WEB_SOCKET_URL, REQUESTED_PROTOCOL);
+  socketState.webSocket = new WebSocket(WEB_SOCKET_URL, REQUESTED_PROTOCOL);
 
-  gameState.callbackFns = callbackFns;
+  socketState.webSocket.addEventListener('message', handleMessage);
 
-  gameState.webSocket.addEventListener('message', handleMessage);
-
-  gameState.webSocket.addEventListener('open', () => {
+  socketState.webSocket.addEventListener('open', () => {
     sendProfile(profile);
   });
 } /* initializeWebSocket */

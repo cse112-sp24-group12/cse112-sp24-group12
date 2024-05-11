@@ -40,15 +40,16 @@
     <h2 id="game_title">Game</h2>
     <select name="card_select_list" id="card_select_list"></select>
     <button id="card_select_button">Select card</button>
-    <p>Opponent card: <span id="opponent_card">None</span></p>
-    <p>Round winner: <span id="round_winner">None</span></p>
-    <p>Game winner: <span id="game_winner">None</span></p>
+    <p>Opponent card: <span id="opponent_card"></span></p>
+    <p>Round winner: <span id="round_winner"></span></p>
+    <button id="start_round_button">Start next round</button>
+    <p>Game winner: <span id="game_winner"></span></p>
   </section>  
 
   <!-- CHAT BOX -->
   <section id="chat_box" aria-labelledby="chat_title">
     <h2 id="chat_title">Chat</h2>
-    <div role="feed">
+    <div id="chat_feed" role="feed">
       <p>
         <cite>System</cite>:
         <span>Type <code>/debug</code> to toggle the debug menu.</span>
@@ -61,7 +62,7 @@
   </section>
 
   <!-- DEBUG MENU -->
-  <section id="debug_menu" aria-labelledby="debug_title">
+  <section id="debug_menu" aria-labelledby="debug_title" class="hidden">
     <h2 id="debug_title">Debug</h2>
     <button id="opponent_move_button">Opponent move (no reveal)</button>
     <button id="reveal_cards_button">Reveal cards</button>

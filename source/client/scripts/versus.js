@@ -5,6 +5,8 @@ import {
   selectCard,
   joinInstance,
   startGame,
+  startRound,
+  attachGameCallbackFns,
 } from './socket.js';
 
 /**
@@ -59,30 +61,38 @@ export function handleOpponentMove() {
 /**
  *
  * @param { Card } opponentSelectedCard
- * @param { 'user'|'opponent' } roundWinner
+ * @param { ServerToClientProfile } roundWinner
  */
 export function handleRevealCards(opponentSelectedCard, roundWinner) {
   const opponentCardEl = document.querySelector('#opponent_card');
   const roundWinnerEl = document.querySelector('#round_winner');
 
   opponentCardEl.innerText = JSON.stringify(opponentSelectedCard);
-  roundWinnerEl.innerText = roundWinner;
+  roundWinnerEl.innerText = roundWinner.username;
 } /* handleRevealCards */
+
+export function handleStartRound() {
+  const opponentCardEl = document.querySelector('#opponent_card');
+  const roundWinnerEl = document.querySelector('#round_winner');
+
+  opponentCardEl.innerText = '';
+  roundWinnerEl.innerText = '';
+} /* handleStartRound */
 
 /**
  *
- * @param { 'user'|'opponent' } gameWinner
+ * @param { ServerToClientProfile } gameWinner
  */
 export function handleGameEnd(gameWinner) {
   const gameWinnerEl = document.querySelector('#game_winner');
 
-  gameWinnerEl.innerText = gameWinner;
+  gameWinnerEl.innerText = gameWinner.username;
 } /* handleGameEnd */
 
 /**
  *
  */
-function handleSelectCard() {
+function sendSelectCard() {
   const cardSelectEl = document.querySelector('#card_select_list');
 
   if (!cardSelectEl.value) return;
@@ -90,7 +100,7 @@ function handleSelectCard() {
   selectCard(JSON.parse(cardSelectEl.value));
 
   cardSelectEl.removeChild([...cardSelectEl.children].find((el) => el.value === cardSelectEl.value));
-} /* handleSelectCard */
+} /* sendSelectCard */
 
 /**
  * HACK : REPLACE THIS FUNCTION WITH A CALL TO PROFILE.JS FROM settings-menu BRANCH
@@ -100,12 +110,12 @@ function createSelfProfile() {
     username: Math.random().toString(),
     profileImageName: 'dragon',
   };
-}
+} /* createSelfProfile */
 
 /**
  *
  */
-function handleJoinInstance() {
+function sendJoinInstance() {
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
 
   const gameCode = outboundGameCodeInputEl.value;
@@ -114,14 +124,21 @@ function handleJoinInstance() {
   if (!gameCode) return;
 
   joinInstance(gameCode);
-}
+} /* sendJoinInstance */
 
 /**
  *
  */
-function handleStartGame() {
+function sendStartGame() {
   startGame();
-}
+} /* sendStartGame */
+
+/**
+ * 
+ */
+function sendStartRound() {
+  startRound();
+} /* sendStartRound */
 
 /**
  *
@@ -131,21 +148,26 @@ function init() {
   const joinGameButtonEl = document.querySelector('#join_game_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
+  const startRoundButtonEl = document.querySelector("#start_round_button");
 
-  initializeWebSocket(createSelfProfile(), {
+  initializeWebSocket(createSelfProfile());
+
+  attachGameCallbackFns({
     handleUpdateInstance,
     handleCardsDrawn,
     handleOpponentMove,
     handleRevealCards,
+    handleStartRound,
     handleGameEnd,
   });
 
-  selectCardButtonEl.addEventListener('click', handleSelectCard);
-  joinGameButtonEl.addEventListener('click', handleJoinInstance);
+  selectCardButtonEl.addEventListener('click', sendSelectCard);
+  joinGameButtonEl.addEventListener('click', sendJoinInstance);
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleJoinInstance();
+    if (e.key === 'Enter') sendJoinInstance();
   });
-  startGameButtonEl.addEventListener('click', handleStartGame);
+  startGameButtonEl.addEventListener('click', sendStartGame);
+  startRoundButtonEl.addEventListener('click', sendStartRound);
 } /* init */
 
 document.addEventListener('DOMContentLoaded', init);

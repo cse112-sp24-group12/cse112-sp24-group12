@@ -55,7 +55,7 @@ export function getOtherPlayer(gameInstance, webSocketConnection) {
 } /* getOtherPlayer */
 
 /**
- *
+ * Returns the last entry in list of round states from a game instance
  * @param { GameInstance } gameInstance
  * @returns { RoundState }
  */
@@ -66,10 +66,10 @@ export function getCurrentRoundState(gameInstance) {
 } /* getCurrentRoundState */
 
 /**
- *
+ * Determines which of two cards wins a round
  * @param { Card } card1
  * @param { Card } card2
- * @returns { Card }
+ * @returns { Card } winning card of card1 and card2
  */
 export function getWinningCard(card1, card2) {
   // TODO: add logic to pick winner
@@ -78,11 +78,12 @@ export function getWinningCard(card1, card2) {
 } /* getWinningCard */
 
 /**
- * 
+ * Creates and returns a new round state
+ * @returns { RoundState } blank round state
  */
 export function createNewRound() {
   return {
     selectedCard: {},
     roundWinner: null,
   }
-} /* */
+} /* createNewRound */

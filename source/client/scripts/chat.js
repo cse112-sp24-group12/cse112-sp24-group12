@@ -1,16 +1,30 @@
 /** @module chat */
 
 import { toggleDebugMenu } from './debug.js';
+import { attachChatCallbackFns, sendChatMessage } from './socket.js';
 
 /**
  *
- * @param { string } messageSender
  * @param { string } messageContents
+ * @param { ServerToClientProfile } profile
  */
 export function handleInboundMessage(
-  messageSender,
   messageContents,
-) {} /* handleInboundMessage */
+  profile,
+) {
+  const chatFeedEl = document.querySelector('#chat_feed');
+
+  const chatMessageEl = document.createElement('p');
+  const chatMessageAuthorEl = document.createElement('cite');
+  const chatMessageContentsEl = document.createElement('span');
+
+  chatMessageAuthorEl.innerText = profile.username;
+  chatMessageContentsEl.innerText = messageContents;
+
+  chatMessageEl.replaceChildren(chatMessageAuthorEl, ': ', chatMessageContentsEl);
+
+  chatFeedEl.append(chatMessageEl);
+} /* handleInboundMessage */
 
 /**
  *
@@ -24,9 +38,7 @@ export function handleOutboundMessage() {
   if (!messageContents) return;
 
   if (messageContents.toLowerCase() === '/debug') toggleDebugMenu();
-  else {
-    // send message to server
-  }
+  else sendChatMessage(messageContents);
 } /* handleOutboundMessage */
 
 /**
@@ -35,6 +47,10 @@ export function handleOutboundMessage() {
 function init() {
   const chatInputButtonEl = document.querySelector('#chat_input_button');
   const chatInputEl = document.querySelector('#chat_input');
+
+  attachChatCallbackFns({
+    handleInboundMessage,
+  });
 
   chatInputButtonEl.addEventListener('click', handleOutboundMessage);
   chatInputEl.addEventListener('keypress', (e) => {
