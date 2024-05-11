@@ -1,3 +1,5 @@
+import * as Types from './types.js';
+
 /**
  * @typedef { ('default'|'dragon'|'panda'|LOCAL_PROFILE_IMAGE_CUSTOM_FLAG) } ProfileImageName
  */
@@ -97,6 +99,16 @@ export function getProfileImageUrl() {
 } /* getProfileImageUrl */
 
 /**
+ * Fetches name of profile image from browser's local storage
+ * @returns { keyof LOCAL_PROFILE_IMAGE_STANDARD_URLS | LOCAL_PROFILE_IMAGE_CUSTOM_FLAG } name of profile image selected
+ */
+export function getProfileImageName() {
+  return (
+    window.localStorage.getItem(LOCAL_PROFILE_IMAGE_NAME_LOCATION) ?? 'default'
+  );
+} /* getProfileImageName */
+
+/**
  * Saves valid username to local storage for access across sessions
  * @param { string } username valid (nonempty) username
  * @returns { boolean } true if saved successfully; otherwise false
@@ -170,3 +182,13 @@ export function getVolumeLevel() {
     DEFAULT_VOLUME_LEVEL
   );
 } /* getVolumeLevel */
+
+/**
+ * @returns { Types.ClientToServerProfile } object containing locally saved profile data
+ */
+export function createProfileObject() {
+  return {
+    username: getUsername(),
+    profileImageName: getProfileImageName(),
+  };
+} /* createSelfProfile */

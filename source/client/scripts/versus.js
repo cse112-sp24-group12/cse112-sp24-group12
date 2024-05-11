@@ -8,13 +8,15 @@ import {
   startRound,
   attachGameCallbackFns,
 } from './socket.js';
+import { createProfileObject } from './profile.js';
+import * as Types from './types.js';
 
 /**
- *
- * @param { instanceInfo: {
+ * Updates display of current user lobby, including game code and active players
+ * @param { {
  *  gameCode: number,
- *  profileList: Profile[]
- * } } instanceInfo
+ *  profileList: Types.Profile[]
+ * } } instanceInfo new info about game instance
  */
 export function handleUpdateInstance({ gameCode, profileList } = {}) {
   const selfGameCodeReadOnlyInputEl = document.querySelector('#self_game_code');
@@ -33,10 +35,10 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
 } /* handleUpdateInstance */
 
 /**
- *
- * @param { Card[] } drawnCardNames
+ * Displays start of game instance, including cards being drawn
+ * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from server
  */
-export function handleCardsDrawn(drawnCardNames) {
+export function handleGameStart(drawnCardNames) {
   const cardSelectEl = document.querySelector('#card_select_list');
 
   cardSelectEl.replaceChildren(
@@ -47,10 +49,13 @@ export function handleCardsDrawn(drawnCardNames) {
       return drawnCardEl;
     }),
   );
-} /* handleCardsDrawn */
+
+  handleStartRound();
+} /* handleGameStart */
 
 /**
- *
+ * Displays fact that opponent user has played a card, without yet revealing what
+ * that card is
  */
 export function handleOpponentMove() {
   const opponentCardEl = document.querySelector('#opponent_card');
@@ -59,9 +64,9 @@ export function handleOpponentMove() {
 } /* handleOpponentMove */
 
 /**
- *
- * @param { Card } opponentSelectedCard
- * @param { ServerToClientProfile } roundWinner
+ * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
+ * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
+ * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
 export function handleRevealCards(opponentSelectedCard, roundWinner) {
   const opponentCardEl = document.querySelector('#opponent_card');
@@ -72,7 +77,7 @@ export function handleRevealCards(opponentSelectedCard, roundWinner) {
 } /* handleRevealCards */
 
 /**
- *
+ * Handles reset of UI at the start of each new round
  */
 export function handleStartRound() {
   const opponentCardEl = document.querySelector('#opponent_card');
@@ -83,8 +88,8 @@ export function handleStartRound() {
 } /* handleStartRound */
 
 /**
- *
- * @param { ServerToClientProfile } gameWinner
+ * Displays end-of-game information, namely who won
+ * @param { Types.ServerToClientProfile } gameWinner profile data of (user/opponent) who won game
  */
 export function handleGameEnd(gameWinner) {
   const gameWinnerEl = document.querySelector('#game_winner');
@@ -93,7 +98,7 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
- *
+ * Relays card selection to server during gameplay
  */
 function sendSelectCard() {
   const cardSelectEl = document.querySelector('#card_select_list');
@@ -108,17 +113,7 @@ function sendSelectCard() {
 } /* sendSelectCard */
 
 /**
- * HACK : REPLACE THIS FUNCTION WITH A CALL TO PROFILE.JS FROM settings-menu BRANCH
- */
-function createSelfProfile() {
-  return {
-    username: Math.random().toString(),
-    profileImageName: 'dragon',
-  };
-} /* createSelfProfile */
-
-/**
- *
+ * Relays attempt to join new game instance to server while in lobby
  */
 function sendJoinInstance() {
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
@@ -132,21 +127,22 @@ function sendJoinInstance() {
 } /* sendJoinInstance */
 
 /**
- *
+ * Relays attempt to start game instance to server while in lobby
  */
 function sendStartGame() {
   startGame();
 } /* sendStartGame */
 
 /**
- *
+ * Relays attempt to start new round to server during gameplay
  */
 function sendStartRound() {
   startRound();
 } /* sendStartRound */
 
 /**
- *
+ * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
+ * and activates event listeners
  */
 function init() {
   const selectCardButtonEl = document.querySelector('#card_select_button');
@@ -155,11 +151,11 @@ function init() {
   const startGameButtonEl = document.querySelector('#start_game_button');
   const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  initializeWebSocket(createSelfProfile());
+  initializeWebSocket(createProfileObject());
 
   attachGameCallbackFns({
     handleUpdateInstance,
-    handleCardsDrawn,
+    handleGameStart,
     handleOpponentMove,
     handleRevealCards,
     handleStartRound,

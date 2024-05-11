@@ -1,6 +1,7 @@
 /** @module socket */
 
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
+import * as Types from './types.js';
 
 const WEB_SOCKET_URL = 'ws://localhost:8000';
 const REQUESTED_PROTOCOL = 'tarot-versus-protocol';
@@ -9,7 +10,7 @@ const socketState = {
   webSocket: null,
   gameCallbackFns: {
     handleUpdateInstance: () => {},
-    handleCardsDrawn: () => {},
+    handleGameStart: () => {},
     handleOpponentMove: () => {},
     handleRevealCards: () => {},
     handleStartRound: () => {},
@@ -21,23 +22,24 @@ const socketState = {
 };
 
 /**
- *
- * @param { ClientToServerMessage } message
+ * Sends parsed message object directly to the server
+ * @param { Types.ClientToServerMessage } message action/info message pair to send
  */
 function sendMessage(message) {
   socketState.webSocket.send(JSON.stringify(message));
 } /* sendMessage */
 
 /**
- *
- * @param { MessageEvent } message
+ * Handles and redirects incoming messages to appropriate functions
+ * @param { MessageEvent } message incoming message from server
  */
 function handleMessage(message) {
+  /** @type { Types.ServerToClientMessage } */
   const messageObj = JSON.parse(message.data);
 
   const {
     handleUpdateInstance,
-    handleCardsDrawn,
+    handleGameStart,
     handleOpponentMove,
     handleRevealCards,
     handleStartRound,
@@ -51,7 +53,7 @@ function handleMessage(message) {
         handleUpdateInstance(messageObj.instanceInfo);
         break;
       case S2C_ACTIONS.START_GAME:
-        handleCardsDrawn(messageObj.drawnCards);
+        handleGameStart(messageObj.drawnCards);
         break;
       case S2C_ACTIONS.CARD_SELECTED:
         handleOpponentMove();
@@ -79,8 +81,8 @@ function handleMessage(message) {
 } /* handleMessage */
 
 /**
- *
- * @param { ClientToServerProfile } profile
+ * Updates profile information on backend by sending new profile info
+ * @param { Types.ClientToServerProfile } profile new profile information (entire profile)
  */
 export function sendProfile(profile) {
   sendMessage({
@@ -90,8 +92,8 @@ export function sendProfile(profile) {
 } /* sendProfile */
 
 /**
- *
- * @param { number } gameCode
+ * Attempts to move client to a new game instance associated to gameCode
+ * @param { number } gameCode four digit code corresponding to an existing game instance
  */
 export function joinInstance(gameCode) {
   sendMessage({
@@ -101,8 +103,8 @@ export function joinInstance(gameCode) {
 } /* joinInstance */
 
 /**
- *
- * @param { Card } selectedCard
+ * Tells server which card the client selected
+ * @param { Types.Card } selectedCard card selected by user from list of remaining cards
  */
 export function selectCard(selectedCard) {
   sendMessage({
@@ -112,7 +114,7 @@ export function selectCard(selectedCard) {
 } /* selectCard */
 
 /**
- *
+ * Attempts to start game instance server-side (implicitly starts first round)
  */
 export function startGame() {
   sendMessage({
@@ -121,7 +123,7 @@ export function startGame() {
 } /* startGame */
 
 /**
- *
+ * Attempts to start next round of game instance server-side
  */
 export function startRound() {
   sendMessage({
@@ -130,7 +132,9 @@ export function startRound() {
 } /* startRound */
 
 /**
- * @param { string } messageContents
+ * Sends chat message server-side to be redistributed to clients,
+ * implicitly associated to user profile of sender
+ * @param { string } messageContents text content of message to be displayed
  */
 export function sendChatMessage(messageContents) {
   sendMessage({
@@ -140,24 +144,26 @@ export function sendChatMessage(messageContents) {
 } /* sendChatMessage */
 
 /**
- *
- * @param { { [functionName: string]: Function } } callbackFns
+ * Attaches functions to WebSocket instance to orchestrate Versus gameplay behavior;
+ * avoids cyclic use of import statements
+ * @param { { [functionName: string]: Function } } callbackFns object literal map of functions
  */
 export function attachGameCallbackFns(callbackFns) {
   socketState.gameCallbackFns = callbackFns;
-}
+} /* attachGameCallbackFns */
 
 /**
- *
- * @param { { [functionName: string]: Function } } callbackFns
+ * Attaches functions to websocket instance to orchestrate chat behavior;
+ * avoids cyclic use of import statements
+ * @param { { [functionName: string]: Function } } callbackFns object literal map of functions
  */
 export function attachChatCallbackFns(callbackFns) {
   socketState.chatCallbackFns = callbackFns;
-}
+} /* attachChatCallbackFns */
 
 /**
- *
- * @param { ClientToServerProfile } profile profile of client (self)
+ * Initializes behavior of WebSocket; connects to backend WS server and relays profile
+ * @param { Types.ClientToServerProfile } profile profile of client (self)
  */
 export function initializeWebSocket(profile) {
   if (socketState.webSocket) {

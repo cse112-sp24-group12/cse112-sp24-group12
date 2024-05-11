@@ -14,7 +14,7 @@ import {
   generateUniqueCards,
 } from './util.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
-import * as Types from './types';
+import * as Types from './types.js';
 
 const CARD_LIST = JSON.parse(readFileSync('./card_list.json'));
 

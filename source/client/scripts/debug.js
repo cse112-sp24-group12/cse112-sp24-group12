@@ -1,30 +1,39 @@
 /** @module debug */
 
 import {
-  handleCardsDrawn,
+  handleGameStart,
   handleOpponentMove,
   handleRevealCards,
-  // handleRoundStart,
 } from './versus.js';
+import * as Types from './types.js';
 
+/** @type { Types.Card[] } */
 const DEBUG_TEST_CARD_LIST = [
   {
-    suite: 'test',
+    suite: 'suite1',
     number: 5,
   },
   {
-    suite: 'test',
+    suite: 'suite2',
     number: 4,
   },
 ];
 
+/** @type { Types.Card } */
 const DEBUG_OPPONENT_CARD = {
-  suite: 'opp_suite',
+  suite: 'suite_opp',
   number: 6,
 };
 
+/** @type { Types.ServerToClientProfile } */
+const DEBUG_OPPONENT_PROFILE = {
+  uuid: 'debug-uuid-123',
+  username: 'OpponentUser',
+  profileImageName: 'dragon',
+};
+
 /**
- *
+ * Shows/hides display of debug menu 
  */
 export function toggleDebugMenu() {
   const debugMenuEl = document.querySelector('#debug_menu');
@@ -33,26 +42,35 @@ export function toggleDebugMenu() {
 } /* toggleDebugMenu */
 
 /**
- *
+ * Simulates server-side message that cards have been drawn
+ */
+function debugStartGame() {
+  handleGameStart(DEBUG_TEST_CARD_LIST);
+} /* debugStartGame */
+
+/**
+ * Simulates server-side message that opponent moved
  */
 function debugOpponentMove() {
   handleOpponentMove();
 } /* debugOpponentMove */
 
 /**
- *
+ * Simulates server-side round-end behavior
  */
 function debugRevealCards() {
-  handleRevealCards(DEBUG_OPPONENT_CARD, 'user');
+  handleRevealCards(DEBUG_OPPONENT_CARD, DEBUG_OPPONENT_PROFILE);
 } /* debugRevealCards */
 
 /**
- *
+ * Initializes listeners to debug menu in Versus mode
  */
 function init() {
-  const opponentMoveButtonEl = document.querySelector('#opponent_move_button');
-  const revealCardsButtonEl = document.querySelector('#reveal_cards_button');
+  const startGameButtonEl = document.querySelector('#debug_start_game_button');
+  const opponentMoveButtonEl = document.querySelector('#debug_opponent_move_button');
+  const revealCardsButtonEl = document.querySelector('#debug_reveal_cards_button');
 
+  startGameButtonEl.addEventListener('click', debugStartGame);
   opponentMoveButtonEl.addEventListener('click', debugOpponentMove);
   revealCardsButtonEl.addEventListener('click', debugRevealCards);
 } /* init */

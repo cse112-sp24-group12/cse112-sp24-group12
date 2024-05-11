@@ -17,7 +17,7 @@ const TAROT_CARDS = tarotConfig.tarot;
  * @type { {
  *  luck: number,
  *  chosenCards: Card[],
- *  messageResetTimeout: (NodeJS.Timeout | undefined)
+ *  messageResetTimeout: (number | undefined)
  * } }
  */
 const gameState = {
@@ -82,7 +82,7 @@ export function getUniqueCard() {
  * and redirects users to results screen
  */
 function endGame() {
-  setTimeout(() => {
+  window.setTimeout(() => {
     localStorage.setItem(
       'chosenCards',
       JSON.stringify(gameState.chosenCards.map((card) => card.name)),
@@ -174,8 +174,8 @@ function displayMessage(message) {
 
   oracleMsgEl.innerText = message;
 
-  clearTimeout(gameState.messageResetTimeout);
-  gameState.messageResetTimeout = setTimeout(() => {
+  window.clearTimeout(gameState.messageResetTimeout);
+  gameState.messageResetTimeout = window.setTimeout(() => {
     const numCardsLeft = MAX_CHOSEN_CARDS - gameState.chosenCards.length;
     oracleMsgEl.innerText = `Draw ${numCardsLeft} more card${
       numCardsLeft === 1 ? '' : 's'

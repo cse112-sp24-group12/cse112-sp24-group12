@@ -2,6 +2,7 @@
 
 import { toggleDebugMenu } from './debug.js';
 import { attachChatCallbackFns, sendChatMessage } from './socket.js';
+import * as Types from './types.js';
 
 const COMMAND_CHARACTER = '/';
 const SYSTEM_USERNAME = 'System';
@@ -10,16 +11,16 @@ const COMMANDS = {
 };
 
 /**
- *
- * @param { string } messageContents
- * @param { ServerToClientProfile } profile
+ * Handles direction and parsing of message being passed to client from server
+ * @param { string } messageContents text content of message being received
+ * @param { Types.ServerToClientProfile } profile sender of message
  */
 export function handleInboundMessage(messageContents, profile) {
   printMessage(messageContents, profile.username);
 } /* handleInboundMessage */
 
 /**
- *
+ * Handles direction and parsing of message being passed to server from client
  */
 export function handleOutboundMessage() {
   const chatInputEl = document.querySelector('#chat_input');
@@ -35,9 +36,9 @@ export function handleOutboundMessage() {
 } /* handleOutboundMessage */
 
 /**
- *
- * @param { string } messageContents
- * @param { string } username
+ * Displays a message to the in-game chat box
+ * @param { string } messageContents text content of message to be displayed
+ * @param { string } username username to associate with message
  */
 function printMessage(messageContents, username) {
   const chatFeedEl = document.querySelector('#chat_feed');
@@ -59,16 +60,18 @@ function printMessage(messageContents, username) {
 } /* printMessage */
 
 /**
- *
- * @param { string } systemMessage
+ * Displays a message to the in-game chat box, with the username set as
+ * a system user (i.e., for meta-game alerts)
+ * @param { string } systemMessage text content of message to be displayed
  */
 function printSystemMessage(systemMessage) {
   printMessage(systemMessage, SYSTEM_USERNAME);
 } /* printSystemMessage */
 
 /**
- *
- * @param { string } command
+ * Handles direction of command (any message prefaced by COMMAND_CHARACTER)
+ * to appropriate functions
+ * @param { string } command command entered by user (i.e., without COMMAND_CHARACTER prepended)
  */
 function handleCommand(command) {
   switch (command) {
@@ -82,7 +85,7 @@ function handleCommand(command) {
 } /* handleCommand */
 
 /**
- *
+ * Initializes behavior of chat box in Versus mode
  */
 function init() {
   const chatInputButtonEl = document.querySelector('#chat_input_button');

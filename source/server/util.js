@@ -1,4 +1,4 @@
-import * as Types from './types';
+import * as Types from './types.js';
 
 /**
  * Creates and returns random game code for each game instance; currently not necessarily unique
