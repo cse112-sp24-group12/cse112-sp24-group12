@@ -1,10 +1,14 @@
 /** @module socket */
 
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
+import { setPlayerUUID, getPlayerUUID } from './profile.js';
 import * as Types from './types.js';
 
 const WEB_SOCKET_URL = 'ws://localhost:8000';
 const REQUESTED_PROTOCOL = 'tarot-versus-protocol';
+
+const CLOSED_WEB_SOCKET_STATE = 3;
+const WS_RECONNECTION_DELAY_MS = 3500;
 
 const socketState = {
   webSocket: null,
@@ -49,6 +53,9 @@ function handleMessage(message) {
 
   try {
     switch (messageObj.action) {
+      case S2C_ACTIONS.UPDATE_UUID:
+        setPlayerUUID(messageObj.playerUUID);
+        break;
       case S2C_ACTIONS.UPDATE_INSTANCE:
         handleUpdateInstance(messageObj.instanceInfo);
         break;
@@ -162,19 +169,47 @@ export function attachChatCallbackFns(callbackFns) {
 } /* attachChatCallbackFns */
 
 /**
+ *
+ * @param { Types.ClientToServerProfile } profile profile of client (self)
+ */
+function handleWebSocketOpen(profile) {
+  const previousInstancePlayerUUID = getPlayerUUID();
+  if (previousInstancePlayerUUID) {
+    sendMessage({
+      action: C2S_ACTIONS.REQUEST_REJOIN,
+      playerUUID: previousInstancePlayerUUID,
+    });
+
+    // TODO: listen for response
+    return;
+  }
+
+  sendProfile(profile);
+  sendMessage({
+    action: C2S_ACTIONS.CREATE_INSTANCE,
+  });
+} /* handleWebSocketOpen */
+
+/**
  * Initializes behavior of WebSocket; connects to backend WS server and relays profile
  * @param { Types.ClientToServerProfile } profile profile of client (self)
  */
 export function initializeWebSocket(profile) {
-  if (socketState.webSocket) {
-    console.log('WebSocket already initialized; quitting');
+  if (
+    socketState.webSocket &&
+    socketState.webSocket.readyState !== CLOSED_WEB_SOCKET_STATE
+  ) {
+    console.warn('WebSocket is already open; cannot re-initialize');
+    return;
   }
 
   socketState.webSocket = new WebSocket(WEB_SOCKET_URL, REQUESTED_PROTOCOL);
 
   socketState.webSocket.addEventListener('message', handleMessage);
-
-  socketState.webSocket.addEventListener('open', () => {
-    sendProfile(profile);
-  });
+  socketState.webSocket.addEventListener('open', () =>
+    handleWebSocketOpen(profile),
+  );
+  socketState.webSocket.addEventListener('close', () =>
+    setTimeout(initializeWebSocket, WS_RECONNECTION_DELAY_MS),
+  );
 } /* initializeWebSocket */

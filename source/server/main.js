@@ -26,7 +26,7 @@ const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 /** @type { { [gameCode: number]: Types.GameInstance } } */
 const gameInstancesByGameCode = {};
 
-/** @type { { [playerUuid: string]: Types.GameInstance } } */
+/** @type { { [playerUUID: string]: Types.GameInstance } } */
 const gameInstancesByPlayerUUID = {};
 
 const webSocketServer = new server({
@@ -38,16 +38,17 @@ console.log('Server online');
 
 /**
  * For a given connection, sends stringified version of object for re-parsing on other side
- * @param { Types.WSConnection } webSocketConnection
- * @param { Types.ServerToClientMessage } message
+ * @param { Types.WSConnection } webSocketConnection connection across which to send message
+ * @param { Types.ServerToClientMessage } message well-formed message object to send
  */
 function sendMessage(webSocketConnection, message) {
   webSocketConnection.sendUTF(JSON.stringify(message));
 } /* sendMessage */
 
 /**
- * Start game by sending 'start_game' code to all child connections.
- * @param { Types.WSConnection } webSocketConnection
+ * Start game by sending 'start_game' code to all child connections of game instance
+ * hosted by a specific connection
+ * @param { Types.WSConnection } webSocketConnection connection member to game instance to start
  */
 function handleStartGame(webSocketConnection) {
   const gameInstance =
@@ -79,7 +80,7 @@ function handleStartGame(webSocketConnection) {
 
 /**
  * For a given connection, leaves the game instance they are currently member to
- * @param { Types.WSConnection } webSocketConnection
+ * @param { Types.WSConnection } webSocketConnection connnection that should leave its game instance
  */
 function leaveInstance(webSocketConnection) {
   const gameInstance =
@@ -95,8 +96,8 @@ function leaveInstance(webSocketConnection) {
 
 /**
  * For a given connection, joins the game instance corresponding to the gameCode
- * @param { Types.WSConnection } webSocketConnection
- * @param { number } gameCode
+ * @param { Types.WSConnection } webSocketConnection connection that should join the game instance
+ * @param { number } gameCode game code corresponding to game instance to join
  */
 function handleJoinInstance(webSocketConnection, gameCode) {
   const gameInstance = gameInstancesByGameCode[gameCode];
@@ -116,9 +117,9 @@ function handleJoinInstance(webSocketConnection, gameCode) {
 } /* handleJoinInstance */
 
 /**
- * Accepts a given WebSocket connection request
- * @param { Types.WSRequest } webSocketRequest
- * @returns { Types.WSConnection }
+ * Accepts a given WebSocket connection request, and annotates it with a UUID and empty profile
+ * @param { Types.WSRequest } webSocketRequest inbound WebSocket request object
+ * @returns { Types.WSConnection } newly created WebSocket connection
  */
 function acceptRequest(webSocketRequest) {
   const webSocketConnection = webSocketRequest.accept(
@@ -130,12 +131,18 @@ function acceptRequest(webSocketRequest) {
     uuid: randomUUID(),
   };
 
+  sendMessage(webSocketConnection, {
+    action: S2C_ACTIONS.UPDATE_UUID,
+    playerUUID: webSocketConnection.profile.uuid,
+  });
+
   return webSocketConnection;
 } /* acceptRequest */
 
 /**
- *
- * @param { Types.GameInstance } gameInstance
+ * Passes down current game instance meta-data to all child connections, namely the game
+ * code and list of all profiles member to the instance
+ * @param { Types.GameInstance } gameInstance game instance to target child connections of
  */
 function alertUpdateInstance(gameInstance) {
   const gameInstanceProfiles = gameInstance.webSocketConnections.map(
@@ -155,7 +162,7 @@ function alertUpdateInstance(gameInstance) {
 
 /**
  * Creates a new game instance and links it to given player
- * @param { Types.WSConnection } webSocketConnection
+ * @param { Types.WSConnection } webSocketConnection connection to attach to the game instance
  */
 function createInstance(webSocketConnection) {
   const gameInstance = {
@@ -175,9 +182,9 @@ function createInstance(webSocketConnection) {
 } /* createInstance */
 
 /**
- *
- * @param { Types.WSConnection } webSocketConnection
- * @param { Types.ClientToServerProfile } profile
+ * Attaches new profile information to a connection, preserving the initial UUID
+ * @param { Types.WSConnection } webSocketConnection connection to attach new profile to
+ * @param { Types.ClientToServerProfile } profile well-formed new profile data object
  */
 function handleUpdateProfile(webSocketConnection, profile) {
   if (
@@ -199,10 +206,10 @@ function handleUpdateProfile(webSocketConnection, profile) {
 } /* handleUpdateProfile */
 
 /**
- *
- * @param { Types.GameInstance } gameInstance
+ * Ends game instance, deciding and sending winner to each child connection
+ * @param { Types.GameInstance } gameInstance game instance to end
  */
-function handleGameEnd(gameInstance) {
+function endGame(gameInstance) {
   const gameWinner = gameInstance.webSocketConnections[0].profile;
 
   gameInstance.webSocketConnections.forEach((conn) => {
@@ -211,13 +218,14 @@ function handleGameEnd(gameInstance) {
       gameWinner,
     });
   });
-} /* handleGameEnd */
+} /* endGame */
 
 /**
- *
- * @param { Types.GameInstance } gameInstance
+ * Ends game round, deciding and sending winner to each child connection along with
+ * the specific card chosen by each opposing player
+ * @param { Types.GameInstance } gameInstance targeted game instance
  */
-function handleRoundEnd(gameInstance) {
+function endRound(gameInstance) {
   const currentRoundState = getCurrentRoundState(gameInstance);
 
   const [[uuid1, card1], [uuid2, card2]] = Object.entries(
@@ -246,13 +254,14 @@ function handleRoundEnd(gameInstance) {
   });
 
   if (gameInstance.gameState.byRound.length === NUM_ROUNDS)
-    handleGameEnd(gameInstance);
-} /* handleRoundEnd */
+    endGame(gameInstance);
+} /* endRound */
 
 /**
- *
- * @param { Types.WSConnection } webSocketConnection
- * @param { Types.Card } selectedCard
+ * Handles logic when a client selects a card during a round, including validation,
+ * updates to game/round state, and sending of notification to opposing client
+ * @param { Types.WSConnection } webSocketConnection connection that selected card
+ * @param { Types.Card } selectedCard card selected by client
  */
 function handleSelectCard(webSocketConnection, selectedCard) {
   const gameInstance =
@@ -284,7 +293,7 @@ function handleSelectCard(webSocketConnection, selectedCard) {
     selectedCard;
 
   if (Object.keys(currentRoundState.selectedCard).length === 2) {
-    handleRoundEnd(gameInstance);
+    endRound(gameInstance);
   } else {
     sendMessage(getOtherPlayer(gameInstance, webSocketConnection), {
       action: S2C_ACTIONS.CARD_SELECTED,
@@ -293,8 +302,9 @@ function handleSelectCard(webSocketConnection, selectedCard) {
 } /* handleSelectCard */
 
 /**
- *
- * @param { Types.WSConnection } webSocketConnection
+ * Handles game-start logic upon signal from host client, including transmission
+ * of game-start to each child connection
+ * @param { Types.WSConnection } webSocketConnection connection requesting game start
  */
 function handleStartRound(webSocketConnection) {
   const gameInstance =
@@ -312,9 +322,9 @@ function handleStartRound(webSocketConnection) {
 } /* handleStartRound */
 
 /**
- *
- * @param { Types.WSConnection } webSocketConnection
- * @param { string } messageContents
+ * Validates and relays chat message from client
+ * @param { Types.WSConnection } webSocketConnection connection sending chat message
+ * @param { string } messageContents text content of message being received
  */
 function handleChatMessage(webSocketConnection, messageContents) {
   const gameInstance =
@@ -332,17 +342,64 @@ function handleChatMessage(webSocketConnection, messageContents) {
 } /* handleChatMessage */
 
 /**
+ *
+ * @param { Types.WSConnection } webSocketConnection
+ * @param { Types.UUID } playerUUID
+ */
+function handleRejoinRequest(webSocketConnection, playerUUID) {
+  const requestedGameInstance = gameInstancesByPlayerUUID[playerUUID];
+  const requestedReplacedConnection =
+    requestedGameInstance?.webSocketConnections?.find(
+      (conn) => conn.profile.uuid === playerUUID,
+    );
+
+  if (
+    !requestedGameInstance ||
+    !requestedReplacedConnection ||
+    requestedReplacedConnection.connected
+  ) {
+    sendMessage(webSocketConnection, {
+      action: S2C_ACTIONS.REJOIN_RESPONSE,
+      didRejoin: false,
+    });
+    return;
+  }
+
+  webSocketConnection.profile = requestedReplacedConnection.profile;
+  requestedGameInstance.webSocketConnections[
+    requestedGameInstance.webSocketConnections.indexOf(
+      requestedReplacedConnection,
+    )
+  ] = webSocketConnection;
+
+  sendMessage(webSocketConnection, {
+    action: S2C_ACTIONS.REJOIN_RESPONSE,
+    didRejoin: true,
+  });
+
+  sendMessage(webSocketConnection, {
+    action: S2C_ACTIONS.UPDATE_UUID,
+    playerUUID: playerUUID,
+  });
+
+  alertUpdateInstance(requestedGameInstance);
+} /* handleRejoinRequest */
+
+/**
  * Provides surface-level validation of whether an action is in
  * the correct order, to be used in message handling to reject
- * invalid messages.
- * @param { Types.WSConnection } webSocketConnection
- * @param { keyof C2S_ACTIONS } currentAction
+ * invalid messages
+ * @param { Types.WSConnection } webSocketConnection webSocketConnection requesting action
+ * @param { keyof C2S_ACTIONS } currentAction action being requested
+ * @returns { boolean } true if action is allowed; false if disallowed
  */
 function isActionAllowed(webSocketConnection, currentAction) {
   const uuid = webSocketConnection?.profile?.uuid;
   const gameInstance = gameInstancesByPlayerUUID?.[uuid];
 
   switch (currentAction) {
+    case C2S_ACTIONS.CREATE_INSTANCE:
+      return !gameInstance;
     case C2S_ACTIONS.JOIN_INSTANCE:
       return !gameInstance.isStarted;
     case C2S_ACTIONS.START_GAME:
@@ -355,12 +412,14 @@ function isActionAllowed(webSocketConnection, currentAction) {
       return true;
     case C2S_ACTIONS.UPDATE_PROFILE:
       return true;
+    case C2S_ACTIONS.REQUEST_REJOIN:
+      return true;
   }
 } /* isActionAllowed */
 
 /**
  * Handles a new request to the WebSocket server; always tries to accept
- * @param { Types.WSRequest } webSocketRequest
+ * @param { Types.WSRequest } webSocketRequest inbound WebSocket request object
  */
 function handleRequest(webSocketRequest) {
   console.log(`Request received at "${webSocketRequest.remoteAddress}"`);
@@ -371,7 +430,7 @@ function handleRequest(webSocketRequest) {
 
   /**
    * Handles message event for a given WebSocket connection
-   * @param { { type: 'utf8'|'binary', utf8Data: string } } data
+   * @param { { type: 'utf8'|'binary', utf8Data: string } } data message object received
    */
   function handleMessage(data) {
     console.log(
@@ -387,9 +446,11 @@ function handleRequest(webSocketRequest) {
       }
 
       switch (messageObj.action) {
+        case C2S_ACTIONS.CREATE_INSTANCE:
+          createInstance(webSocketConnection);
+          break;
         case C2S_ACTIONS.UPDATE_PROFILE:
           handleUpdateProfile(webSocketConnection, messageObj.profile);
-          createInstance(webSocketConnection);
           break;
         case C2S_ACTIONS.JOIN_INSTANCE:
           handleJoinInstance(webSocketConnection, messageObj.gameCode);
@@ -406,6 +467,9 @@ function handleRequest(webSocketRequest) {
         case C2S_ACTIONS.CHAT_MESSAGE:
           handleChatMessage(webSocketConnection, messageObj.messageContents);
           break;
+        case C2S_ACTIONS.REQUEST_REJOIN:
+          handleRejoinRequest(webSocketConnection, messageObj.playerUUID);
+          break;
         default:
       }
     } catch (e) {
@@ -418,8 +482,8 @@ function handleRequest(webSocketRequest) {
 
   /**
    * Handles close event for a given WebSocket connection
-   * @param { number } code
-   * @param { string } desc
+   * @param { number } code numeric code corresponding to close reason
+   * @param { string } desc textual description corresponding to close reason
    */
   function handleClose(code, desc) {
     console.log(

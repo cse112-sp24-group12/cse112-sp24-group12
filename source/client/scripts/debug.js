@@ -33,7 +33,7 @@ const DEBUG_OPPONENT_PROFILE = {
 };
 
 /**
- * Shows/hides display of debug menu 
+ * Shows/hides display of debug menu
  */
 export function toggleDebugMenu() {
   const debugMenuEl = document.querySelector('#debug_menu');
@@ -67,8 +67,12 @@ function debugRevealCards() {
  */
 function init() {
   const startGameButtonEl = document.querySelector('#debug_start_game_button');
-  const opponentMoveButtonEl = document.querySelector('#debug_opponent_move_button');
-  const revealCardsButtonEl = document.querySelector('#debug_reveal_cards_button');
+  const opponentMoveButtonEl = document.querySelector(
+    '#debug_opponent_move_button',
+  );
+  const revealCardsButtonEl = document.querySelector(
+    '#debug_reveal_cards_button',
+  );
 
   startGameButtonEl.addEventListener('click', debugStartGame);
   opponentMoveButtonEl.addEventListener('click', debugOpponentMove);

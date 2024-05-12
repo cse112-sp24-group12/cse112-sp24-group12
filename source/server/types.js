@@ -1,15 +1,18 @@
 /** @module types */
 
 export const C2S_ACTIONS = {
-  UPDATE_PROFILE: 'UPDATE_PROFILE',
+  CREATE_INSTANCE: 'create_instance',
+  UPDATE_PROFILE: 'update_profile',
   JOIN_INSTANCE: 'join_instance',
   START_GAME: 'start_game',
   SELECT_CARD: 'select_card',
   START_ROUND: 'start_round',
   CHAT_MESSAGE: 'chat_message',
+  REQUEST_REJOIN: 'request_rejoin',
 };
 
 export const S2C_ACTIONS = {
+  UPDATE_UUID: 'update_uuid',
   UPDATE_INSTANCE: 'update_instance',
   START_GAME: 'start_game',
   CARD_SELECTED: 'card_selected',
@@ -17,6 +20,7 @@ export const S2C_ACTIONS = {
   START_ROUND: 'start_round',
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
+  REJOIN_RESPONSE: 'rejoin_response',
 };
 
 /**
@@ -56,6 +60,9 @@ export const S2C_ACTIONS = {
 /**
  * @typedef {
  *  {
+ *    action: C2S_ACTIONS.CREATE_INSTANCE,
+ *  } |
+ *  {
  *    action: C2S_ACTIONS.UPDATE_PROFILE,
  *    profile: ClientToServerProfile
  *  } |
@@ -76,12 +83,20 @@ export const S2C_ACTIONS = {
  *  {
  *    action: C2S_ACTIONS.CHAT_MESSAGE,
  *    messageContents: string
+ *  } |
+ *  {
+ *    action: C2S_ACTIONS.REQUEST_REJOIN,
+ *    playerUUID: UUID
  *  }
  * } ClientToServerMessage
  */
 
 /**
  * @typedef {
+ *  {
+ *   action: S2C_ACTIONS.UPDATE_UUID,
+ *   playerUUID: UUID: UUID
+ *  } |
  *  {
  *    action: S2C_ACTIONS.UPDATE_INSTANCE,
  *    instanceInfo: {
@@ -112,6 +127,10 @@ export const S2C_ACTIONS = {
  *    action: S2C_ACTIONS.CHAT_MESSAGE,
  *    messageContents: string,
  *    profile: ServerToClientProfile
+ *  } | 
+ *  {
+ *    action: S2C_ACTIONS.REJOIN_RESPONSE,
+ *    didRejoin: boolean
  *  }
  * } ServerToClientMessage
  */
@@ -130,7 +149,7 @@ export const S2C_ACTIONS = {
 /**
  * @typedef { {
  *  selectedCard: {
- *    [playerUuid: UUID]: Card,
+ *    [playerUUID: UUID]: Card,
  *  },
  *  roundWinner: UUID
  * } } RoundState
@@ -139,7 +158,7 @@ export const S2C_ACTIONS = {
 /**
  * @typedef { {
  *  byPlayer: {
- *    [playerUuid: UUID]: PlayerGameState
+ *    [playerUUID: UUID]: PlayerGameState
  *  },
  *  byRound: RoundState[]
  *  isStarted: boolean

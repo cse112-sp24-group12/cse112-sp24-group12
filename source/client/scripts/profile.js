@@ -9,6 +9,7 @@ const LOCAL_PROFILE_IMAGE_CUSTOM_URL_LOCATION = 'user_profile.custom_image_url';
 const LOCAL_PROFILE_USERNAME_LOCATION = 'user_profile.username';
 const LOCAL_PROFILE_VOLUME_MUTE_LOCATION = 'user_profile.volume_mute';
 const LOCAL_PROFILE_VOLUME_LEVEL_LOCATION = 'user_profile.volume_level';
+const LOCAL_PROFILE_UUID_lOCATION = 'user_profile.uuid';
 
 const DEFAULT_USERNAME = 'User';
 const DEFAULT_MUTE = false;
@@ -182,6 +183,29 @@ export function getVolumeLevel() {
     DEFAULT_VOLUME_LEVEL
   );
 } /* getVolumeLevel */
+
+/**
+ * Attaches UUID sent from server to profile instance by saving it to browser's
+ * session storage; UUIDs are set on a per-instance basis
+ * @param { Types.UUID } playerUUID UUID sent from server
+ * @returns { boolean } true if saved successfully; otherwise false
+ */
+export function setPlayerUUID(playerUUID) {
+  if (typeof playerUUID !== 'string' || playerUUID.length == 0) return false;
+
+  window.sessionStorage.setItem(LOCAL_PROFILE_UUID_lOCATION, playerUUID);
+
+  return true;
+} /* setPlayerUUID */
+
+/**
+ * Fetches previously-set player UUID from browser's session storage; UUID will be
+ * invalid if fetched after game instance has ended
+ * @returns { Types.UUID } last UUID sent from the server to the client
+ */
+export function getPlayerUUID() {
+  return window.sessionStorage.getItem(LOCAL_PROFILE_UUID_lOCATION);
+} /* getPlayerUUID */
 
 /**
  * @returns { Types.ClientToServerProfile } object containing locally saved profile data

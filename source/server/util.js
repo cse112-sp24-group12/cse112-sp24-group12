@@ -2,17 +2,17 @@ import * as Types from './types.js';
 
 /**
  * Creates and returns random game code for each game instance; currently not necessarily unique
- * @returns { number }
+ * @returns { number } newly generated game code
  */
 export function generateGameCode() {
   return Math.floor(Math.random() * 9000) + 1000;
 } /* generateGameCode */
 
 /**
- * Determines if two arrays
- * @param { any[] } arr1
- * @param { any[] } arr2
- * @returns { boolean }
+ * Determines if two arrays are equal as sets
+ * @param { any[] } arr1 array of objects to compare
+ * @param { any[] } arr2 array of objects to compare
+ * @returns { boolean } true if arrays are equal as sets; false otherwise
  */
 export function areUnorderedArrsEqual(arr1, arr2) {
   return (
@@ -22,9 +22,9 @@ export function areUnorderedArrsEqual(arr1, arr2) {
 } /* areUnorderedArrsEqual */
 
 /**
- *
- * @param { Types.Card } card
- * @returns { boolean }
+ * Ensures that card object is well-formed and valid
+ * @param { Types.Card } card card object to test
+ * @returns { boolean } true if card is valid; false if invalid
  */
 export function isCardValid(card) {
   return (
@@ -35,19 +35,20 @@ export function isCardValid(card) {
 } /* isCardValid */
 
 /**
- *
- * @param { Types.Card } card1
- * @param { Types.Card } card2
- * @returns { boolean }
+ * Determines if two different card objects represent the same card
+ * @param { Types.Card } card1 card to compare
+ * @param { Types.Card } card2 card to compare
+ * @returns { boolean } true if the two cards represent the same
+ * card (i.e., same values); false otherwise
  */
 export function areCardsEqual(card1, card2) {
   return card1.number === card2.number && card1.suite === card2.suite;
 } /* areCardsEqual */
 
 /**
- *
- * @param { Types.GameInstance } gameInstance
- * @param { Types.WSConnection } webSocketConnection
+ * Determines the opponent of a given player in a game instance
+ * @param { Types.GameInstance } gameInstance game instance to target
+ * @param { Types.WSConnection } webSocketConnection non-target player of game instance
  * @returns { Types.WSConnection } other player in game instance
  */
 export function getOtherPlayer(gameInstance, webSocketConnection) {
@@ -58,8 +59,8 @@ export function getOtherPlayer(gameInstance, webSocketConnection) {
 
 /**
  * Returns the last entry in list of round states from a game instance
- * @param { Types.GameInstance } gameInstance
- * @returns { Types.RoundState }
+ * @param { Types.GameInstance } gameInstance game instance to target
+ * @returns { Types.RoundState } most recent (current) round attached to gameInstance
  */
 export function getCurrentRoundState(gameInstance) {
   return gameInstance.gameState.byRound[
@@ -69,8 +70,8 @@ export function getCurrentRoundState(gameInstance) {
 
 /**
  * Determines which of two cards wins a round
- * @param { Types.Card } card1
- * @param { Types.Card } card2
+ * @param { Types.Card } card1 card to compare
+ * @param { Types.Card } card2 card to compare
  * @returns { Types.Card } winning card of card1 and card2
  */
 export function getWinningCard(card1, card2) {
