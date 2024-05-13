@@ -1,7 +1,11 @@
 /** @module socket */
 
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
-import { setPlayerUUID, getPlayerUUID } from './profile.js';
+import {
+  setPlayerUUID,
+  getPlayerUUID,
+  createProfileObject,
+} from './profile.js';
 import * as Types from './types.js';
 
 const WEB_SOCKET_URL = 'ws://localhost:8000';
@@ -88,13 +92,13 @@ function handleMessage(message) {
 } /* handleMessage */
 
 /**
- * Updates profile information on backend by sending new profile info
- * @param { Types.ClientToServerProfile } profile new profile information (entire profile)
+ * Updates profile information on backend by creating and sending
+ * current profile information
  */
-export function sendProfile(profile) {
+export function sendProfile() {
   sendMessage({
     action: C2S_ACTIONS.UPDATE_PROFILE,
-    profile,
+    profile: createProfileObject(),
   });
 } /* sendProfile */
 
@@ -153,7 +157,7 @@ export function sendChatMessage(messageContents) {
 /**
  * Attaches functions to WebSocket instance to orchestrate Versus gameplay behavior;
  * avoids cyclic use of import statements
- * @param { { [functionName: string]: Function } } callbackFns object literal map of functions
+ * @param { Record<string, Function> } callbackFns object literal map of functions
  */
 export function attachGameCallbackFns(callbackFns) {
   socketState.gameCallbackFns = callbackFns;
@@ -162,7 +166,7 @@ export function attachGameCallbackFns(callbackFns) {
 /**
  * Attaches functions to websocket instance to orchestrate chat behavior;
  * avoids cyclic use of import statements
- * @param { { [functionName: string]: Function } } callbackFns object literal map of functions
+ * @param { Record<string, Function> } callbackFns object literal map of functions
  */
 export function attachChatCallbackFns(callbackFns) {
   socketState.chatCallbackFns = callbackFns;
@@ -170,31 +174,20 @@ export function attachChatCallbackFns(callbackFns) {
 
 /**
  *
- * @param { Types.ClientToServerProfile } profile profile of client (self)
  */
-function handleWebSocketOpen(profile) {
+function handleWebSocketOpen() {
   const previousInstancePlayerUUID = getPlayerUUID();
-  if (previousInstancePlayerUUID) {
-    sendMessage({
-      action: C2S_ACTIONS.REQUEST_REJOIN,
-      playerUUID: previousInstancePlayerUUID,
-    });
 
-    // TODO: listen for response
-    return;
-  }
-
-  sendProfile(profile);
   sendMessage({
-    action: C2S_ACTIONS.CREATE_INSTANCE,
+    action: C2S_ACTIONS.INITIALIZE_INSTANCE,
+    playerUUID: previousInstancePlayerUUID,
   });
 } /* handleWebSocketOpen */
 
 /**
  * Initializes behavior of WebSocket; connects to backend WS server and relays profile
- * @param { Types.ClientToServerProfile } profile profile of client (self)
  */
-export function initializeWebSocket(profile) {
+export function initializeWebSocket() {
   if (
     socketState.webSocket &&
     socketState.webSocket.readyState !== CLOSED_WEB_SOCKET_STATE
@@ -206,9 +199,10 @@ export function initializeWebSocket(profile) {
   socketState.webSocket = new WebSocket(WEB_SOCKET_URL, REQUESTED_PROTOCOL);
 
   socketState.webSocket.addEventListener('message', handleMessage);
-  socketState.webSocket.addEventListener('open', () =>
-    handleWebSocketOpen(profile),
-  );
+  socketState.webSocket.addEventListener('open', () => {
+    handleWebSocketOpen();
+    sendProfile();
+  });
   socketState.webSocket.addEventListener('close', () =>
     setTimeout(initializeWebSocket, WS_RECONNECTION_DELAY_MS),
   );

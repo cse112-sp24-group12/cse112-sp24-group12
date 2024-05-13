@@ -8,7 +8,6 @@ import {
   startRound,
   attachGameCallbackFns,
 } from './socket.js';
-import { createProfileObject } from './profile.js';
 import * as Types from './types.js';
 
 /**
@@ -151,7 +150,7 @@ function init() {
   const startGameButtonEl = document.querySelector('#start_game_button');
   const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  initializeWebSocket(createProfileObject());
+  initializeWebSocket();
 
   attachGameCallbackFns({
     handleUpdateInstance,

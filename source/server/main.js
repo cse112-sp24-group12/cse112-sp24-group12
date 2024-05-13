@@ -23,10 +23,10 @@ const NUM_ROUNDS = 5;
 const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 
-/** @type { { [gameCode: number]: Types.GameInstance } } */
+/** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
 
-/** @type { { [playerUUID: string]: Types.GameInstance } } */
+/** @type { Record<Types.UUID, Types.GameInstance> } */
 const gameInstancesByPlayerUUID = {};
 
 const webSocketServer = new server({
@@ -203,6 +203,8 @@ function handleUpdateProfile(webSocketConnection, profile) {
     uuid: webSocketConnection.profile.uuid,
     ...profile,
   };
+
+  // TODO: send down updates to other player
 } /* handleUpdateProfile */
 
 /**
@@ -344,9 +346,12 @@ function handleChatMessage(webSocketConnection, messageContents) {
 /**
  *
  * @param { Types.WSConnection } webSocketConnection
- * @param { Types.UUID } playerUUID
+ * @param { Types.UUID } [playerUUID]
+ * @returns { boolean } success status of rejoin attempt (i.e., true iff instance rejoined)
  */
-function handleRejoinRequest(webSocketConnection, playerUUID) {
+function attemptRejoin(webSocketConnection, playerUUID) {
+  if (!playerUUID) return false;
+
   const requestedGameInstance = gameInstancesByPlayerUUID[playerUUID];
   const requestedReplacedConnection =
     requestedGameInstance?.webSocketConnections?.find(
@@ -358,11 +363,7 @@ function handleRejoinRequest(webSocketConnection, playerUUID) {
     !requestedReplacedConnection ||
     requestedReplacedConnection.connected
   ) {
-    sendMessage(webSocketConnection, {
-      action: S2C_ACTIONS.REJOIN_RESPONSE,
-      didRejoin: false,
-    });
-    return;
+    return false;
   }
 
   webSocketConnection.profile = requestedReplacedConnection.profile;
@@ -371,26 +372,31 @@ function handleRejoinRequest(webSocketConnection, playerUUID) {
       requestedReplacedConnection,
     )
   ] = webSocketConnection;
-
-  sendMessage(webSocketConnection, {
-    action: S2C_ACTIONS.REJOIN_RESPONSE,
-    didRejoin: true,
-  });
-
   sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.UPDATE_UUID,
     playerUUID: playerUUID,
   });
 
   alertUpdateInstance(requestedGameInstance);
-} /* handleRejoinRequest */
+  return true;
+} /* attemptRejoin */
+
+/**
+ *
+ * @param { Types.WSConnection } webSocketConnection
+ * @param { Types.UUID } [playerUUID]
+ */
+function handleInitialization(webSocketConnection, playerUUID) {
+  const rejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
+  if (rejoinStatus === false) createInstance(webSocketConnection);
+} /* handleInitialization */
 
 /**
  * Provides surface-level validation of whether an action is in
  * the correct order, to be used in message handling to reject
  * invalid messages
  * @param { Types.WSConnection } webSocketConnection webSocketConnection requesting action
- * @param { keyof C2S_ACTIONS } currentAction action being requested
+ * @param { any } currentAction action being requested
  * @returns { boolean } true if action is allowed; false if disallowed
  */
 function isActionAllowed(webSocketConnection, currentAction) {
@@ -398,12 +404,12 @@ function isActionAllowed(webSocketConnection, currentAction) {
   const gameInstance = gameInstancesByPlayerUUID?.[uuid];
 
   switch (currentAction) {
-    case C2S_ACTIONS.CREATE_INSTANCE:
+    case C2S_ACTIONS.INITIALIZE_INSTANCE:
       return !gameInstance;
     case C2S_ACTIONS.JOIN_INSTANCE:
-      return !gameInstance.isStarted;
+      return !gameInstance.gameState.isStarted;
     case C2S_ACTIONS.START_GAME:
-      return !gameInstance.isStarted;
+      return !gameInstance.gameState.isStarted;
     case C2S_ACTIONS.SELECT_CARD:
       return !getCurrentRoundState(gameInstance).selectedCard[uuid];
     case C2S_ACTIONS.START_ROUND:
@@ -411,8 +417,6 @@ function isActionAllowed(webSocketConnection, currentAction) {
     case C2S_ACTIONS.CHAT_MESSAGE:
       return true;
     case C2S_ACTIONS.UPDATE_PROFILE:
-      return true;
-    case C2S_ACTIONS.REQUEST_REJOIN:
       return true;
   }
 } /* isActionAllowed */
@@ -446,8 +450,8 @@ function handleRequest(webSocketRequest) {
       }
 
       switch (messageObj.action) {
-        case C2S_ACTIONS.CREATE_INSTANCE:
-          createInstance(webSocketConnection);
+        case C2S_ACTIONS.INITIALIZE_INSTANCE:
+          handleInitialization(webSocketConnection, messageObj.playerUUID);
           break;
         case C2S_ACTIONS.UPDATE_PROFILE:
           handleUpdateProfile(webSocketConnection, messageObj.profile);
@@ -466,9 +470,6 @@ function handleRequest(webSocketRequest) {
           break;
         case C2S_ACTIONS.CHAT_MESSAGE:
           handleChatMessage(webSocketConnection, messageObj.messageContents);
-          break;
-        case C2S_ACTIONS.REQUEST_REJOIN:
-          handleRejoinRequest(webSocketConnection, messageObj.playerUUID);
           break;
         default:
       }

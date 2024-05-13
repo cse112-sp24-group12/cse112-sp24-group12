@@ -25,7 +25,7 @@ export const LOCAL_PROFILE_IMAGE_CUSTOM_FLAG = 'custom_image';
 /**
  * Fetches list of existing profile image name options; used to populate
  * list of available options in settings menu
- * @returns { string[] } list of names that can be selected by user
+ * @returns { ProfileImageName[] } list of names that can be selected by user
  */
 export function getProfileImageNameOptions() {
   return Object.keys(LOCAL_PROFILE_IMAGE_STANDARD_URLS);
@@ -34,7 +34,7 @@ export function getProfileImageNameOptions() {
 /**
  * Converts name of a profile image to an actual url; used to populate option lists
  * in settings menu or pick url for opponent's icon in versus mode
- * @param { string } profileImageName name of profile image, custom excluded
+ * @param { ProfileImageName } profileImageName name of profile image, custom excluded
  * @returns { string } url to profile image
  */
 export function getProfileImageUrlFromName(profileImageName) {
@@ -101,7 +101,7 @@ export function getProfileImageUrl() {
 
 /**
  * Fetches name of profile image from browser's local storage
- * @returns { keyof LOCAL_PROFILE_IMAGE_STANDARD_URLS | LOCAL_PROFILE_IMAGE_CUSTOM_FLAG } name of profile image selected
+ * @returns { ProfileImageName } name of profile image selected
  */
 export function getProfileImageName() {
   return (

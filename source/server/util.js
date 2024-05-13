@@ -95,7 +95,7 @@ export function createNewRound() {
  * Generates two sets of n mutually-unique cards
  * @param { Types.Card[] } cardList list of cards to pull from
  * @param { number } n integer size of each set
- * @returns { [Types.Card[], Types.Card[]] }  two lists of n mutually-unique cards
+ * @returns { Types.Card[][] }  two lists of n mutually-unique cards
  */
 export function generateUniqueCards(cardList, n) {
   /* shuffle cards by sorting according to random weights */
