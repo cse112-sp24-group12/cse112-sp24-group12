@@ -9,24 +9,32 @@ import { getProfile } from '../store.js';
  * <versus-username uuid="test-uuid"></versus-username>
  */
 export default class Username extends HTMLElement {
+  /** @type { string[] } */
   static observedAttributes = ['uuid'];
 
-  /**
-   * 
-   */
   constructor() {
     super();
   } /* constructor */
 
+  /**
+   * Initializes display and sets listener to update whenever new information exists
+   */
   connectedCallback() {
-    window.addEventListener(UPDATE_USERNAME_LISTENER_NAME, this._handleUpdate);
     this._handleUpdate();
-  }
+    window.addEventListener(UPDATE_USERNAME_LISTENER_NAME, this._handleUpdate);
+  } /* connectedCallback */
 
+  /**
+   * Destructs listeners
+   */
   disconnectedCallback() {
     window.removeEventListener(UPDATE_USERNAME_LISTENER_NAME, this._handleUpdate);
-  }
+  } /* disconnectedCallback */
 
+  /**
+   * Displays as text the most recently learned username from the server associated
+   * to the attributed UUID
+   */
   _handleUpdate = () => {
     const playerUUID = this.getAttribute('uuid');
     if (!playerUUID) return;
@@ -35,9 +43,12 @@ export default class Username extends HTMLElement {
     if (!profile) return;
 
     this.innerText = profile.username;
-  }
+  } /* _handleUpdate */
 
+  /**
+   * Refreshes display whenever UUID is updated
+   */
   attributeChangedCallback() {
     this._handleUpdate();
-  }
+  } /* attributeChangedCallback */
 } /* Username */

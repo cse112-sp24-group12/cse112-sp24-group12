@@ -107,6 +107,11 @@ function handleJoinInstance(webSocketConnection, gameCode) {
     return;
   }
 
+  if (gameInstance.webSocketConnections.length >= 2) {
+    console.log(`Game ${gameCode} rejected connection: game instance full`);
+    return;
+  }
+
   leaveInstance(webSocketConnection);
   gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = gameInstance;
   gameInstance.webSocketConnections.push(webSocketConnection);

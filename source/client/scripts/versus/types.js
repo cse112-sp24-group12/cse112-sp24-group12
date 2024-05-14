@@ -150,11 +150,3 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *  isStarted: boolean
  * } } GameState
  */
-
-/**
- * @typedef { {
- *  gameCode: number,
- *  webSocketConnections: WSConnection[],
- *  gameState: GameState
- * } } GameInstance
- */

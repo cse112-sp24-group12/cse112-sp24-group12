@@ -13,7 +13,7 @@ const COMMANDS = {
 const SYSTEM_PROFILE = {
   uuid: 'system',
   username: 'System',
-}
+};
 
 /**
  * Handles direction and parsing of message being passed to server from client
@@ -47,11 +47,7 @@ export function printMessage(messageContents, profile) {
   const chatMessageContentsEl = document.createElement('span');
   chatMessageContentsEl.innerText = messageContents;
 
-  chatMessageEl.replaceChildren(
-    versusUsernameEl,
-    ': ',
-    chatMessageContentsEl,
-  );
+  chatMessageEl.replaceChildren(versusUsernameEl, ': ', chatMessageContentsEl);
 
   chatFeedEl.append(chatMessageEl);
 } /* printMessage */

@@ -180,6 +180,9 @@ export function attachChatCallbackFns(callbackFns) {
  *
  */
 function handleWebSocketOpen() {
+  const connectionStatusWrapperEl = document.querySelector('#connection_status');
+  connectionStatusWrapperEl.classList.add('hidden');
+
   const previousInstancePlayerUUID = getPlayerUUID();
 
   sendMessage({
@@ -189,6 +192,13 @@ function handleWebSocketOpen() {
 
   sendProfile();
 } /* handleWebSocketOpen */
+
+function handleWebSocketClose() {
+  const connectionStatusWrapperEl = document.querySelector('#connection_status');
+  connectionStatusWrapperEl.classList.remove('hidden');
+
+  setTimeout(initializeWebSocket, WS_RECONNECTION_DELAY_MS);
+} /* handleWebSocketClose */
 
 /**
  * Initializes behavior of WebSocket; connects to backend WS server and relays profile
@@ -206,7 +216,5 @@ export function initializeWebSocket() {
 
   socketState.webSocket.addEventListener('message', handleMessage);
   socketState.webSocket.addEventListener('open', handleWebSocketOpen);
-  socketState.webSocket.addEventListener('close', () =>
-    setTimeout(initializeWebSocket, WS_RECONNECTION_DELAY_MS),
-  );
+  socketState.webSocket.addEventListener('close', handleWebSocketClose);
 } /* initializeWebSocket */

@@ -5,7 +5,7 @@ import { initializeDebug } from './debug.js';
 import { Username } from './components/index.js';
 
 /**
- * Initializes and pulls together all required files for 
+ * Initializes and pulls together all required files for
  * versus mode to work; only necessary to import this file
  */
 function init() {
