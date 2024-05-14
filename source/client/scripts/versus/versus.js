@@ -43,7 +43,12 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
  * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from server
  */
 export function handleGameStart(drawnCardNames) {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
   const cardSelectEl = document.querySelector('#card_select_list');
+
+  lobbyWrapperEl.classList.add('hidden');
+  gameBoardWrapperEl.classList.remove('hidden');
 
   cardSelectEl.replaceChildren(
     ...drawnCardNames.map((drawnCardName) => {
