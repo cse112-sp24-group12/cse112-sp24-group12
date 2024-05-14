@@ -63,6 +63,15 @@ export function handleGameStart(drawnCardNames) {
 } /* handleGameStart */
 
 /**
+ * Rebuilds entire game board (without animation); can be used to resolve errors
+ * and in the case of re-joining instances
+ * @param { * } gameState 
+ */
+export function refreshEntireGame(gameState) {
+  // TODO: build out
+} /* refreshEntireGame */
+
+/**
  * Displays fact that opponent user has played a card, without yet revealing what
  * that card is
  */
@@ -136,20 +145,6 @@ function sendJoinInstance() {
 } /* sendJoinInstance */
 
 /**
- * Relays attempt to start game instance to server while in lobby
- */
-function sendStartGame() {
-  startGame();
-} /* sendStartGame */
-
-/**
- * Relays attempt to start new round to server during gameplay
- */
-function sendStartRound() {
-  startRound();
-} /* sendStartRound */
-
-/**
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
  * and activates event listeners
  */
@@ -174,7 +169,7 @@ export function initializeVersus() {
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
-  startGameButtonEl.addEventListener('click', sendStartGame);
-  startRoundButtonEl.addEventListener('click', sendStartRound);
+  startGameButtonEl.addEventListener('click', startGame);
+  startRoundButtonEl.addEventListener('click', startRound);
 } /* function initializeVersus() {
  */

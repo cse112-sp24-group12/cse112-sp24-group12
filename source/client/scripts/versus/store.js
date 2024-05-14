@@ -3,9 +3,6 @@
 import { UPDATE_USERNAME_LISTENER_NAME } from './types.js';
 import * as Types from './types.js';
 
-/** @type { Types.GameState } */
-const gameState = {};
-
 /** @type { Types.ServerToClientProfile } */
 const userProfileByUUID = {};
 
