@@ -19,6 +19,7 @@ export const S2C_ACTIONS = {
   START_ROUND: 'start_round',
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
+  UPDATE_PROFILE: 'update_profile',
 };
 
 /**
@@ -121,6 +122,10 @@ export const S2C_ACTIONS = {
  *  {
  *    action: S2C_ACTIONS.CHAT_MESSAGE,
  *    messageContents: string,
+ *    profile: ServerToClientProfile
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.UPDATE_PROFILE,
  *    profile: ServerToClientProfile
  *  }
  * } ServerToClientMessage

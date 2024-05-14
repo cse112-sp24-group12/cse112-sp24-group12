@@ -5,7 +5,8 @@ import {
   setPlayerUUID,
   getPlayerUUID,
   createProfileObject,
-} from './profile.js';
+} from '../profile.js';
+import { updateProfile } from './store.js';
 import * as Types from './types.js';
 
 const WEB_SOCKET_URL = 'ws://localhost:8000';
@@ -25,7 +26,7 @@ const socketState = {
     handleGameEnd: () => {},
   },
   chatCallbackFns: {
-    handleInboundMessage: () => {},
+    printMessage: () => {},
   },
 };
 
@@ -53,7 +54,7 @@ function handleMessage(message) {
     handleStartRound,
     handleGameEnd,
   } = socketState.gameCallbackFns;
-  const { handleInboundMessage } = socketState.chatCallbackFns;
+  const { printMessage } = socketState.chatCallbackFns;
 
   try {
     switch (messageObj.action) {
@@ -82,7 +83,10 @@ function handleMessage(message) {
         handleGameEnd(messageObj.gameWinner);
         break;
       case S2C_ACTIONS.CHAT_MESSAGE:
-        handleInboundMessage(messageObj.messageContents, messageObj.profile);
+        printMessage(messageObj.messageContents, messageObj.profile);
+        break;
+      case S2C_ACTIONS.UPDATE_PROFILE:
+        updateProfile(messageObj.profile);
         break;
       default:
     }
@@ -182,6 +186,8 @@ function handleWebSocketOpen() {
     action: C2S_ACTIONS.INITIALIZE_INSTANCE,
     playerUUID: previousInstancePlayerUUID,
   });
+
+  sendProfile();
 } /* handleWebSocketOpen */
 
 /**
@@ -199,10 +205,7 @@ export function initializeWebSocket() {
   socketState.webSocket = new WebSocket(WEB_SOCKET_URL, REQUESTED_PROTOCOL);
 
   socketState.webSocket.addEventListener('message', handleMessage);
-  socketState.webSocket.addEventListener('open', () => {
-    handleWebSocketOpen();
-    sendProfile();
-  });
+  socketState.webSocket.addEventListener('open', handleWebSocketOpen);
   socketState.webSocket.addEventListener('close', () =>
     setTimeout(initializeWebSocket, WS_RECONNECTION_DELAY_MS),
   );

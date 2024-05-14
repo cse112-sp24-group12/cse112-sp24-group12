@@ -187,6 +187,8 @@ function createInstance(webSocketConnection) {
  * @param { Types.ClientToServerProfile } profile well-formed new profile data object
  */
 function handleUpdateProfile(webSocketConnection, profile) {
+  const gameInstance = gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+
   if (
     !areUnorderedArrsEqual(Object.keys(profile), [
       'username',
@@ -204,7 +206,12 @@ function handleUpdateProfile(webSocketConnection, profile) {
     ...profile,
   };
 
-  // TODO: send down updates to other player
+  gameInstance.webSocketConnections.forEach((conn) => {
+    sendMessage(conn, {
+      action: S2C_ACTIONS.UPDATE_PROFILE,
+      profile: webSocketConnection.profile,
+    });
+  });
 } /* handleUpdateProfile */
 
 /**

@@ -1,13 +1,13 @@
 /** @module versus */
 
 import {
-  initializeWebSocket,
   selectCard,
   joinInstance,
   startGame,
   startRound,
   attachGameCallbackFns,
 } from './socket.js';
+import { updateProfile } from './store.js';
 import * as Types from './types.js';
 
 /**
@@ -24,9 +24,14 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
   selfGameCodeReadOnlyInputEl.value = gameCode;
 
   lobbyProfileListEl.replaceChildren(
-    ...profileList.map(({ username }) => {
+    ...profileList.map((profile) => {
+      updateProfile(profile);
+
       const profileListItemEl = document.createElement('li');
-      profileListItemEl.innerText = username;
+      const versusUsernameEl = document.createElement('versus-username');
+      versusUsernameEl.setAttribute('uuid', profile.uuid);
+
+      profileListItemEl.append(versusUsernameEl);
 
       return profileListItemEl;
     }),
@@ -143,14 +148,12 @@ function sendStartRound() {
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
  * and activates event listeners
  */
-function init() {
+export function initializeVersus() {
   const selectCardButtonEl = document.querySelector('#card_select_button');
   const joinGameButtonEl = document.querySelector('#join_game_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
   const startRoundButtonEl = document.querySelector('#start_round_button');
-
-  initializeWebSocket();
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -168,6 +171,5 @@ function init() {
   });
   startGameButtonEl.addEventListener('click', sendStartGame);
   startRoundButtonEl.addEventListener('click', sendStartRound);
-} /* init */
-
-document.addEventListener('DOMContentLoaded', init);
+} /* function initializeVersus() {
+ */

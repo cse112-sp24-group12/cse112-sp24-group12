@@ -2,22 +2,18 @@
 
 import { toggleDebugMenu } from './debug.js';
 import { attachChatCallbackFns, sendChatMessage } from './socket.js';
+import { updateProfile } from './store.js';
 import * as Types from './types.js';
 
 const COMMAND_CHARACTER = '/';
-const SYSTEM_USERNAME = 'System';
 const COMMANDS = {
   DEBUG: 'debug',
 };
 
-/**
- * Handles direction and parsing of message being passed to client from server
- * @param { string } messageContents text content of message being received
- * @param { Types.ServerToClientProfile } profile sender of message
- */
-export function handleInboundMessage(messageContents, profile) {
-  printMessage(messageContents, profile.username);
-} /* handleInboundMessage */
+const SYSTEM_PROFILE = {
+  uuid: 'system',
+  username: 'System',
+}
 
 /**
  * Handles direction and parsing of message being passed to server from client
@@ -38,20 +34,21 @@ export function handleOutboundMessage() {
 /**
  * Displays a message to the in-game chat box
  * @param { string } messageContents text content of message to be displayed
- * @param { string } username username to associate with message
+ * @param { Types.ServerToClientProfile } profile username to associate with message
  */
-function printMessage(messageContents, username) {
+export function printMessage(messageContents, profile) {
   const chatFeedEl = document.querySelector('#chat_feed');
 
   const chatMessageEl = document.createElement('p');
-  const chatMessageAuthorEl = document.createElement('cite');
-  const chatMessageContentsEl = document.createElement('span');
 
-  chatMessageAuthorEl.innerText = username;
+  const versusUsernameEl = document.createElement('versus-username');
+  versusUsernameEl.setAttribute('uuid', profile.uuid);
+
+  const chatMessageContentsEl = document.createElement('span');
   chatMessageContentsEl.innerText = messageContents;
 
   chatMessageEl.replaceChildren(
-    chatMessageAuthorEl,
+    versusUsernameEl,
     ': ',
     chatMessageContentsEl,
   );
@@ -65,7 +62,7 @@ function printMessage(messageContents, username) {
  * @param { string } systemMessage text content of message to be displayed
  */
 function printSystemMessage(systemMessage) {
-  printMessage(systemMessage, SYSTEM_USERNAME);
+  printMessage(systemMessage, SYSTEM_PROFILE);
 } /* printSystemMessage */
 
 /**
@@ -87,13 +84,15 @@ function handleCommand(command) {
 /**
  * Initializes behavior of chat box in Versus mode
  */
-function init() {
+export function inititializeChat() {
   const chatInputButtonEl = document.querySelector('#chat_input_button');
   const chatInputEl = document.querySelector('#chat_input');
 
   attachChatCallbackFns({
-    handleInboundMessage,
+    printMessage,
   });
+
+  updateProfile(SYSTEM_PROFILE);
 
   chatInputButtonEl.addEventListener('click', handleOutboundMessage);
   chatInputEl.addEventListener('keypress', (e) => {
@@ -101,6 +100,4 @@ function init() {
   });
 
   printSystemMessage('Type /debug to toggle the debug menu');
-} /* init */
-
-window.addEventListener('DOMContentLoaded', init);
+} /* inititializeChat */
