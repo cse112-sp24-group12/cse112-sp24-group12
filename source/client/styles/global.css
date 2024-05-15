@@ -11,7 +11,7 @@
 
   --background-color: #341C3A;
 
-  --border-radius: 10px;
+  --border-radius: 1.225rem;
 }
 
 @font-face {
@@ -126,8 +126,36 @@ button {
 }
 
 .secondary-button {
-  background-image: linear-gradient(to bottom right, #717171 0%, #9e9898 9%, #d6d6d6 23%, #d6d6d6 68%, #9e9e9e 80%, #9a9a9a 84%);
-  border-image: linear-gradient(#9b9b9b 9%, #dcdcdc 25%, #8f8f8f 99%) 30;
+  color: #3E2605;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.secondary-button::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  border-radius: var(--border-radius);
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-shadow: 4px 4px 15px 0px rgba(108, 108, 108, 0.54);
+  border: 0.1px solid #838383;
+  background: radial-gradient(60.71% 50% at 50% 50%, #E1E1E1 71.13%, rgba(157, 157, 157, 0.85) 100%);
+}
+
+.secondary-button::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: var(--border-radius);
+  display: block;
+  width: calc(100% - 1rem);
+  height: calc(100% - 1rem);
+  border: 1.5px solid rgba(174, 174, 174, 0.59);
+  background: linear-gradient(95deg, #717171 -0.22%, #9E9898 10.66%, #D6D6D6 26.65%, #D6D6D6 78.95%, #9E9E9E 93%, #9A9A9A 97.24%);
 }
 
 .tertiary-button {

@@ -9,10 +9,16 @@ main {
   display: flex;
 }
 
-#main_button_list button {
+#main_button_list li {
+  height: 20rem;
+  display: flex;
+  align-items: center;
+}
+
+#main_button_list a {
   font-size: 1.75rem;
   width: 15rem;
-  height: 5rem;
+  height: 5.75rem;
 }
 
 header {
@@ -43,7 +49,29 @@ header {
   text-align: right;
 }
 
+#swords_container {
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.sword {
+  height: 100%;
+  bottom: 10%;
+  position: absolute;
+  z-index: -3;
+}
+
+.sword#sword_one {
+  rotate: 190deg;
+}
+
+.sword#sword_two {
+  scale: -1 1;
+  rotate: 170deg;
+}
 
 
 
