@@ -168,6 +168,7 @@ button {
   flex-direction: column;
   padding: 1rem;
   margin: 0.75rem;
+  z-index: 0;
 }
 
 .white-card {
