@@ -11,7 +11,7 @@ main {
 }
 
 #main_button_list li {
-  height: 20rem;
+  height: 10rem;
   display: flex;
   align-items: center;
 }
@@ -66,7 +66,7 @@ header {
   height: 100%;
   bottom: 7.5%;
   position: absolute;
-  z-index: 2;
+  z-index: -3;
   transition: transform 150ms ease-in-out;
 }
 
@@ -77,93 +77,4 @@ header {
 .sword#sword_two {
   scale: -1 1;
   rotate: 170deg;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.cards {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-}
-
-.cards-button {
-  display: inline-block;
-  font-size: 1.25rem;
-  color: #fff9;
-  background-color: #fff0;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 900;
-  text-decoration: none;
-  border: 3px solid #fff3;
-  transition: all 200ms;
-}
-
-.cards-button:hover {
-  background-color: #fff1;
-  color: #fff;
-  border-color: #fff;
-  scale: 1.05;
-}
-
-.cards-button:active {
-  scale: 0.98;
-}
-
-@media (min-width: 640px) {
-  .buttons {
-    flex-direction: row;
-  }
-
-  h1 {
-    font-size: 8rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-    top: -3rem;
-  }
-
-  .button-container > button {
-    font-size: 2rem;
-  }
-
-  .sword1 {
-    translate: 150% 90%;
-  }
-
-  .sword2 {
-    translate: -50% -10%;
-  }
-}
-
-@media (max-width: 700px) {
-  .content {
-    width: 300px;
-  }
-
-  h1 {
-    margin-top: 20vh;
-  }
-
-  li {
-    font-size: 1.25rem;
-  }
 }

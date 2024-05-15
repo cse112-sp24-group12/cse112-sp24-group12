@@ -64,7 +64,7 @@ button {
 .sword-slider img {
     height: 100%;
     position: absolute;
-    z-index: 2;
+    z-index: -3;
     transform: translateX(-10rem);
     transition: transform 250ms ease-in-out;
 }
