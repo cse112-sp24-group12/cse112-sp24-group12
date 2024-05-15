@@ -2,6 +2,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 8.25rem;
 }
 
 #main_button_list {
@@ -11,7 +12,7 @@ main {
 }
 
 #main_button_list li {
-  height: 10rem;
+  height: 9rem;
   display: flex;
   align-items: center;
 }
@@ -29,6 +30,7 @@ header {
 
 #main_title_wrapper {
   margin-left: 1rem;
+  position: relative;
 }
 
 #main_title {
@@ -48,6 +50,8 @@ header {
   right: 0;
   color: var(--white);
   text-align: right;
+  position: absolute;
+  bottom: 0;
 }
 
 #swords_container {
@@ -71,10 +75,10 @@ header {
 }
 
 .sword#sword_one {
-  rotate: 190deg;
+  rotate: 45deg;
 }
 
 .sword#sword_two {
   scale: -1 1;
-  rotate: 170deg;
+  rotate: -45deg;
 }
