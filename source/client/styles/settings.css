@@ -12,14 +12,14 @@
     padding: 1rem;
 }
 
-#settings-sidebar > button {
+#settings-sidebar button {
     width: 7.5rem;
     height: calc(0.4 * 7.5rem);
     font-size: 1.5rem;
     border-radius: 1.25rem;
 }
 
-#profile-settings-submit > button {
+#profile-settings-submit button {
     width: 6.5rem;
     height: calc(0.4 * 6.5rem);
     font-size: 1.5rem;
@@ -64,7 +64,7 @@
     justify-content: flex-end;
 }
 
-/* .sword-slider {
+.sword-slider {
     position: relative;
 }
 
@@ -72,10 +72,10 @@
     height: 100%;
     position: absolute;
     z-index: -3;
-    transform: translateX(-10rem);
+    transform: translateX(-15rem);
     transition: transform 250ms ease-in-out;
 }
 
-.sword-slider:has(button:hover) {
-    transform: translateX(0rem);
-} */
+.sword-slider:has(button:hover) img {
+    transform: translateX(-2rem);
+}
