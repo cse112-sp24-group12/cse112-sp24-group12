@@ -1,16 +1,36 @@
-*{
-    margin: 0;
-    padding: 0;
+#settings-container {
+    display: flex;
+    align-items: flex-start;
+    padding: 2rem;
+    gap: 5rem;
 }
 
-#setting-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    aside{grid-area: 1 / 2 / 6 / 5; }
-    section { grid-area: 1 / 1 / 6 / 2; }
+#settings-container > #settings-sidebar {    
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
 }
 
+#settings-sidebar > button {
+    width: 7.5rem;
+    height: calc(0.4 * 7.5rem);
+    font-size: 1.5rem;
+    border-radius: 1.25rem;
+}
+
+#settings-sidebar > button:hover {
+    transform: translateX(1.25rem);
+}
+
+#settings-container > section {
+    width: 60rem;
+    height: 25rem;
+    border-radius: 1.25rem;
+    color: #D9D9D9;
+}
+
+#settings-container > section:not(.active) {
+    display: none;
+}
 

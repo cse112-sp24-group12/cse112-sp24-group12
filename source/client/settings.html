@@ -7,49 +7,35 @@
     <title>Tarot, but a Game | Profile</title>
 
     <!-- stars background -->
-    <link rel="stylesheet" href="./styles/stars.css" />
+    <link rel="stylesheet" href="./styles/global.css" />
     <link rel="stylesheet" href="./styles/settings.css" />
     <script src="./scripts/stars.js" type="module"></script>
   </head>
   <header>
     <!--<img src="" alt="home icon"> -->
-    <button style="justify-content: left; margin: 2rem;"> Home </button>
+    <a href="index.html">Home</a>
   </header>
     <body>
-        <div id="setting-container" style="display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 1fr;
-        grid-column-gap: 0px;
-        grid-row-gap: 0px;">
-            <aside id="settings-sidebar" style="grid-area: 1 / 1 / 6 / 2;">
-              <ul>
-                <li>
-                  <button>Audio</button>
-                </li>
-                <li>
-                  <button>Profile</button>
-                </li>
-                <li>
-                  <button>Info</button>
-                </li>
-              </ul>
-            </aside>
-            <section style="grid-area: 1 / 2 / 2 / 5; background-color: white;">
-              <!-- Displaying the proper UI for it. IDK if we want to use like some kind of  -->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ligula diam, 
-                tincidunt at metus in, sodales ultricies justo. 
-                Vivamus eget molestie purus, quis mollis nisi. 
-                Praesent suscipit in nisi at porta. 
-                Mauris ut est placerat, maximus quam ut, mattis neque. 
-                Morbi fermentum urna at nisl convallis cursus. 
-                Curabitur sodales, elit at dignissim gravida, nulla 
-                turpis aliquet odio, et cursus massa lectus eu nunc. 
-                Proin porta gravida felis, in convallis ligula porta 
-                volutpat. Aenean libero augue, lacinia vel finibus a,
-                 pulvinar id diam. Praesent bibendum vehicula libero, 
-                 sit amet consectetur arcu malesuada vel.
-                </p>
-            </section>
-        </div>
+      <div id="settings-container">
+        <aside id="settings-sidebar">
+          <button class="secondary-button">Audio</button>
+          <button class="secondary-button">Profile</button>
+          <button class="secondary-button">Info</button>
+        </aside>
+        <section class="active card purple-card">
+          <section>
+            <h3>Music Volume:</h3>
+          </section>
+          <section>
+            <h3>Sound Effects Volume:</h3>
+          </section>
+        </section>
+        <section class="card purple-card">
+          Profile
+        </section>
+        <section class="card purple-card">
+          Information
+        </section>
+      </div>
     </body>
 </html>
