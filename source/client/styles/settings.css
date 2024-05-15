@@ -29,7 +29,7 @@ button {
     color: #D9D9D9;
 }
 
-#settings-container #volume-settings {
+#settings-container > #volume-settings {
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -41,10 +41,23 @@ button {
 }
 
 #settings-container > section:not(.active) {
-    display: none;
+    display: none !important;
 }
 
-.sword-slider {
+#settings-container > #profile-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+#profile-settings-submit {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+/* .sword-slider {
     position: relative;
 }
 
@@ -58,4 +71,4 @@ button {
 
 .sword-slider:has(button:hover) {
     transform: translateX(0rem);
-}
+} */
