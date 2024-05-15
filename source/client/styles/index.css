@@ -7,6 +7,7 @@ main {
 #main_button_list {
   list-style-type: none;
   display: flex;
+  gap: 5rem;
 }
 
 #main_button_list li {
@@ -57,11 +58,16 @@ header {
   justify-content: center;
 }
 
+#swords_container:has(a:hover) .sword {
+  transform: scale(1.05);
+}
+
 .sword {
   height: 100%;
-  bottom: 10%;
+  bottom: 7.5%;
   position: absolute;
   z-index: -3;
+  transition: transform 150ms ease-in-out;
 }
 
 .sword#sword_one {
