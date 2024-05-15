@@ -203,9 +203,7 @@ button {
 }
 
 #home_button {
-  padding: 10rem;
-  width: 5rem;
-  height: 5rem;
+  margin: 1rem;
   background-image: url(../assets/images/icons/house.webp)
 }
 
