@@ -61,6 +61,22 @@
     gap: 2rem;
     padding: 2rem;
 }
+#settings-container > #information-settings{
+    height: 32rem;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    div{
+        margin:0;
+        img{
+            height: 15rem;
+        }
+    }
+}
+
 
 #profile-settings-identity {
     display: flex;
@@ -104,6 +120,8 @@
     flex-direction: row;
     justify-content: flex-end;
 }
+
+
 
 .sword-slider {
     position: relative;
