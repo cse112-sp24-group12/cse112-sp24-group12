@@ -103,7 +103,7 @@ button {
 .primary-button::before {
   content: '';
   position: absolute;
-  z-index: -2;
+  z-index: 5;
   border-radius: var(--border-radius);
   display: block;
   width: 100%;
@@ -116,7 +116,7 @@ button {
 .primary-button::after {
   content: '';
   position: absolute;
-  z-index: -1;
+  z-index: 10;
   border-radius: var(--border-radius);
   display: block;
   width: calc(100% - 1rem);
@@ -136,7 +136,7 @@ button {
 .secondary-button::before {
   content: '';
   position: absolute;
-  z-index: -2;
+  z-index: 5;
   border-radius: var(--border-radius);
   display: block;
   width: 100%;
@@ -149,7 +149,7 @@ button {
 .secondary-button::after {
   content: '';
   position: absolute;
-  z-index: -1;
+  z-index: 10;
   border-radius: var(--border-radius);
   display: block;
   width: calc(100% - 1rem);

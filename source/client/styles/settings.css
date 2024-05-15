@@ -5,7 +5,7 @@
     gap: 3rem;
 }
 
-#settings-container > #settings-sidebar {    
+#settings-container #settings-sidebar {    
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -19,17 +19,17 @@ button {
     border-radius: 1.25rem;
 }
 
-#settings-sidebar > button:hover {
+#settings-sidebar button:hover {
     transform: translateX(1.25rem);
 }
 
-#settings-container > section {
+#settings-container section {
     width: 60rem;
     border-radius: 1.25rem;
     color: #D9D9D9;
 }
 
-#settings-container > #volume-settings {
+#settings-container #volume-settings {
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -41,5 +41,21 @@ button {
 }
 
 #settings-container > section:not(.active) {
-    display: none !important;
+    display: none;
+}
+
+.sword-slider {
+    position: relative;
+}
+
+.sword-slider img {
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    transform: translateX(-10rem);
+    transition: transform 250ms ease-in-out;
+}
+
+.sword-slider:has(button:hover) {
+    transform: translateX(0rem);
 }
