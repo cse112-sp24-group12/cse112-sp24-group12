@@ -54,7 +54,6 @@ h1 {
 
 h2 {
   margin: 0 auto;
-  /* max-width: max-content; */
   font-size: 2rem;
   font-family: 'Berkshire Swash';
   font-weight: normal;
@@ -119,18 +118,11 @@ h2 {
   -ms-transform: translate(-50%, -50%);
 }
 
-.button-container > button:hover {
-  transform-origin: 0 0;
-  scale: 1.05;
-}
-
 .button-container:has(button:hover) {
-  transform-origin: 0 0;
   scale: 1.05;
 }
 
-.button-container > button:active {
-  transform-origin: 0 0;
+.button-container:has(button:active) {
   scale: 0.98;
 }
 
@@ -158,50 +150,8 @@ h2 {
 }
 
 .gold {
-  background-image: linear-gradient(to bottom right, #da8207 0%, #dd9318 9%, #ffcb3c 23%, #ffcb3c 68%, #e39c1e 80%, #fbc63a 84%), url(../assets/images/sword.webp);
+  background-image: linear-gradient(to bottom right, #da8207 0%, #dd9318 9%, #ffcb3c 23%, #ffcb3c 68%, #e39c1e 80%, #fbc63a 84%);
   border-image: linear-gradient(#fdc83a 9%, #fdecba 25%, #f1b42d 99%) 30;
-}
-
-select {
-  font-size: 1.25rem;
-  color: #fff9;
-  background-color: #fff0;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 900;
-  border: none;
-}
-
-.cards {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-}
-
-.cards-button {
-  display: inline-block;
-  font-size: 1.25rem;
-  color: #fff9;
-  background-color: #fff0;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 900;
-  text-decoration: none;
-  border: 3px solid #fff3;
-  transition: all 200ms;
-}
-
-.cards-button:hover {
-  background-color: #fff1;
-  color: #fff;
-  border-color: #fff;
-  scale: 1.05;
-}
-
-.cards-button:active {
-  scale: 0.98;
 }
 
 @media (min-width: 640px) {
@@ -231,84 +181,6 @@ select {
   }
 }
 
-@keyframes fadeInLetters {
-  0% {
-    letter-spacing: 0.2em;
-    opacity: 0;
-  }
-  20% {
-    letter-spacing: 0.2em;
-    opacity: 0;
-  }
-  100% {
-    letter-spacing: normal;
-    opacity: 1;
-  }
-}
-
-.box {
-  background-color: black;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-p {
-  font-size: 17px;
-  align-items: center;
-}
-.box a {
-  display: inline-block;
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 3px;
-}
-.modal {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #fff3;
-  transition: all 0.4s;
-  visibility: hidden;
-  opacity: 0;
-}
-.content {
-  position: absolute;
-  background: white;
-  width: 660px;
-  padding: 1em 2em;
-  border-radius: 4px;
-}
-.modal:target {
-  visibility: visible;
-  opacity: 1;
-}
-.box-close {
-  position: absolute;
-  top: 0;
-  right: 15px;
-  color: #fe0606;
-  text-decoration: none;
-  font-size: 30px;
-}
-.instruct {
-  color: black;
-  font-size: 2.5rem;
-  align-items: center;
-}
-ol {
-  font-size: 1.5rem;
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
-  list-style-position: inside;
-  color: #6c1960;
-}
 @media (max-width: 700px) {
   .content {
     width: 300px;
