@@ -1,3 +1,4 @@
+import { getProfileImageUrl } from './profile.js';
 import tarotConfig from './tarot.js';
 
 /**
@@ -141,7 +142,7 @@ function generateCardsWithListeners(numCards) {
     cardContainerEl.className = 'card-container';
     cardContainerEl.id = `card-container-${i + 1}`;
 
-    cardEl.className = 'card';
+    cardEl.className = 'tarot-card';
     cardEl.id = `card-${i + 1}`;
 
     cardBackFaceEl.className = 'back face';
@@ -155,14 +156,6 @@ function generateCardsWithListeners(numCards) {
     return cardContainerEl;
   });
 } /* generateCards */
-
-/**
- * Fetches user's profile image
- * @returns { string } path to user's profile image
- */
-function getProfileImageUrl() {
-  return window.localStorage.getItem('userImage');
-} /* getProfileImageUrl */
 
 /**
  * Displays message to game screen as if it were spoken by the wizard,
@@ -204,7 +197,7 @@ function getCurPercentOfBarFill() {
  * after the game has already started
  */
 function attachProfileImageAndListener() {
-  const playerImageEl = document.querySelector('#output');
+  const playerImageEl = document.querySelector('#profile_image');
   const playerImageInputEl = document.querySelector('#file');
 
   playerImageEl.src = getProfileImageUrl();
