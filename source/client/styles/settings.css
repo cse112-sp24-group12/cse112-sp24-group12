@@ -12,9 +12,16 @@
     padding: 1rem;
 }
 
-button {
+#settings-sidebar > button {
     width: 7.5rem;
     height: calc(0.4 * 7.5rem);
+    font-size: 1.5rem;
+    border-radius: 1.25rem;
+}
+
+#profile-settings-submit > button {
+    width: 6.5rem;
+    height: calc(0.4 * 6.5rem);
     font-size: 1.5rem;
     border-radius: 1.25rem;
 }
