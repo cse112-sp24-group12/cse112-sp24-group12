@@ -1,4 +1,6 @@
-import * as Types from './types.js';
+/** @module profile */
+
+import * as Types from './versus/types.js';
 
 /**
  * @typedef { ('default'|'dragon'|'panda'|LOCAL_PROFILE_IMAGE_CUSTOM_FLAG) } ProfileImageName

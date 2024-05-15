@@ -19,7 +19,10 @@ export const S2C_ACTIONS = {
   START_ROUND: 'start_round',
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
+  UPDATE_PROFILE: 'update_profile',
 };
+
+export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
 
 /**
  * @typedef { string|null } UUID
@@ -114,6 +117,36 @@ export const S2C_ACTIONS = {
  *    action: S2C_ACTIONS.CHAT_MESSAGE,
  *    messageContents: string,
  *    profile: ServerToClientProfile
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.UPDATE_PROFILE,
+ *    profile: ServerToClientProfile
  *  }
  * } ServerToClientMessage
+ */
+
+/**
+ * @typedef { string } UUID
+ */
+
+/**
+ * @typedef { {
+ *  score: number,
+ *  remainingCards: Card[]
+ * } } PlayerGameState
+ */
+
+/**
+ * @typedef { {
+ *  selectedCard: Record<UUID, Card>,
+ *  roundWinner: UUID
+ * } } RoundState
+ */
+
+/**
+ * @typedef { {
+ *  byPlayer: Record<UUID, PlayerGameState>,
+ *  byRound: RoundState[],
+ *  isStarted: boolean
+ * } } GameState
  */

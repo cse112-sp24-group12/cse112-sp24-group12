@@ -54,6 +54,11 @@ function handleStartGame(webSocketConnection) {
   const gameInstance =
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
+  if (gameInstance.gameState.isStarted) {
+    console.log('Game already started');
+    return;
+  }
+
   // TODO: validate request is coming from host of the game
 
   const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);
@@ -100,20 +105,42 @@ function leaveInstance(webSocketConnection) {
  * @param { number } gameCode game code corresponding to game instance to join
  */
 function handleJoinInstance(webSocketConnection, gameCode) {
-  const gameInstance = gameInstancesByGameCode[gameCode];
+  const curGameInstance =
+    gameInstancesByPlayerUUID?.[webSocketConnection?.profile?.uuid];
+  const reqGameInstance = gameInstancesByGameCode[gameCode];
 
-  if (gameInstance.webSocketConnections.includes(webSocketConnection)) {
+  if (curGameInstance.gameState.isStarted) {
+    console.log('Cannot implicitly leave an in-progress game');
+    return;
+  }
+
+  if (!reqGameInstance) {
+    console.log(`Invalid game code: ${gameCode}`);
+    return;
+  }
+
+  if (reqGameInstance.gameState.isStarted) {
+    console.log(`Game ${gameCode} rejected connection: game started`);
+    return;
+  }
+
+  if (reqGameInstance.webSocketConnections.includes(webSocketConnection)) {
     console.log(`Game ${gameCode} rejected connection: already exists`);
     return;
   }
 
+  if (reqGameInstance.webSocketConnections.length >= 2) {
+    console.log(`Game ${gameCode} rejected connection: game instance full`);
+    return;
+  }
+
   leaveInstance(webSocketConnection);
-  gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = gameInstance;
-  gameInstance.webSocketConnections.push(webSocketConnection);
+  gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = reqGameInstance;
+  reqGameInstance.webSocketConnections.push(webSocketConnection);
 
-  console.log(`Secondary player joined instance with room code ${gameCode}`);
+  console.log(`Player joined instance with room code ${gameCode}`);
 
-  alertUpdateInstance(gameInstance);
+  alertUpdateInstance(reqGameInstance);
 } /* handleJoinInstance */
 
 /**
@@ -187,6 +214,9 @@ function createInstance(webSocketConnection) {
  * @param { Types.ClientToServerProfile } profile well-formed new profile data object
  */
 function handleUpdateProfile(webSocketConnection, profile) {
+  const gameInstance =
+    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+
   if (
     !areUnorderedArrsEqual(Object.keys(profile), [
       'username',
@@ -204,7 +234,12 @@ function handleUpdateProfile(webSocketConnection, profile) {
     ...profile,
   };
 
-  // TODO: send down updates to other player
+  gameInstance.webSocketConnections.forEach((conn) => {
+    sendMessage(conn, {
+      action: S2C_ACTIONS.UPDATE_PROFILE,
+      profile: webSocketConnection.profile,
+    });
+  });
 } /* handleUpdateProfile */
 
 /**
@@ -266,13 +301,23 @@ function endRound(gameInstance) {
  * @param { Types.Card } selectedCard card selected by client
  */
 function handleSelectCard(webSocketConnection, selectedCard) {
-  const gameInstance =
-    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-  const playerGameState =
-    gameInstance.gameState.byPlayer[webSocketConnection.profile.uuid];
+  const playerUUID = webSocketConnection.profile.uuid;
+  const gameInstance = gameInstancesByPlayerUUID[playerUUID];
+  const playerGameState = gameInstance.gameState.byPlayer[playerUUID];
+
+  if (!gameInstance.gameState.isStarted) {
+    console.log('Game not yet started');
+    return;
+  }
+
   const currentRoundState = getCurrentRoundState(gameInstance);
 
   // TODO: more robust handling here; return some error to client on failure
+
+  if (currentRoundState.selectedCard[playerUUID]) {
+    console.log('Card already selected this round');
+    return;
+  }
 
   if (!isCardValid(selectedCard)) {
     console.log('Invalid card format');
@@ -284,15 +329,14 @@ function handleSelectCard(webSocketConnection, selectedCard) {
       areCardsEqual(card, selectedCard),
     )
   ) {
-    console.log('Card already played');
+    console.log('Card not among remaining options');
     return;
   }
 
   playerGameState.remainingCards = playerGameState.remainingCards.filter(
     (card) => !areCardsEqual(card, selectedCard),
   );
-  currentRoundState.selectedCard[webSocketConnection.profile.uuid] =
-    selectedCard;
+  currentRoundState.selectedCard[playerUUID] = selectedCard;
 
   if (Object.keys(currentRoundState.selectedCard).length === 2) {
     endRound(gameInstance);
@@ -311,6 +355,16 @@ function handleSelectCard(webSocketConnection, selectedCard) {
 function handleStartRound(webSocketConnection) {
   const gameInstance =
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+
+  if (!gameInstance?.gameState?.isStarted) {
+    console.log('Game not yet started');
+    return;
+  }
+
+  if (!getCurrentRoundState(gameInstance).roundWinner) {
+    console.log('Current round not yet complete');
+    return;
+  }
 
   // TODO: validate request is coming from host
 
@@ -352,32 +406,29 @@ function handleChatMessage(webSocketConnection, messageContents) {
 function attemptRejoin(webSocketConnection, playerUUID) {
   if (!playerUUID) return false;
 
-  const requestedGameInstance = gameInstancesByPlayerUUID[playerUUID];
-  const requestedReplacedConnection =
-    requestedGameInstance?.webSocketConnections?.find(
-      (conn) => conn.profile.uuid === playerUUID,
-    );
+  const reqGameInstance = gameInstancesByPlayerUUID[playerUUID];
+  const reqReplacedConnection = reqGameInstance?.webSocketConnections?.find(
+    (conn) => conn.profile.uuid === playerUUID,
+  );
 
   if (
-    !requestedGameInstance ||
-    !requestedReplacedConnection ||
-    requestedReplacedConnection.connected
+    !reqGameInstance ||
+    !reqReplacedConnection ||
+    reqReplacedConnection.connected
   ) {
     return false;
   }
 
-  webSocketConnection.profile = requestedReplacedConnection.profile;
-  requestedGameInstance.webSocketConnections[
-    requestedGameInstance.webSocketConnections.indexOf(
-      requestedReplacedConnection,
-    )
+  webSocketConnection.profile = reqReplacedConnection.profile;
+  reqGameInstance.webSocketConnections[
+    reqGameInstance.webSocketConnections.indexOf(reqReplacedConnection)
   ] = webSocketConnection;
   sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.UPDATE_UUID,
     playerUUID: playerUUID,
   });
 
-  alertUpdateInstance(requestedGameInstance);
+  alertUpdateInstance(reqGameInstance);
   return true;
 } /* attemptRejoin */
 
@@ -387,39 +438,14 @@ function attemptRejoin(webSocketConnection, playerUUID) {
  * @param { Types.UUID } [playerUUID]
  */
 function handleInitialization(webSocketConnection, playerUUID) {
+  if (gameInstancesByPlayerUUID?.[playerUUID]?.isStarted) {
+    console.log('Cannot implicitly leave an in-progress game');
+    return;
+  }
+
   const rejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
   if (rejoinStatus === false) createInstance(webSocketConnection);
 } /* handleInitialization */
-
-/**
- * Provides surface-level validation of whether an action is in
- * the correct order, to be used in message handling to reject
- * invalid messages
- * @param { Types.WSConnection } webSocketConnection webSocketConnection requesting action
- * @param { any } currentAction action being requested
- * @returns { boolean } true if action is allowed; false if disallowed
- */
-function isActionAllowed(webSocketConnection, currentAction) {
-  const uuid = webSocketConnection?.profile?.uuid;
-  const gameInstance = gameInstancesByPlayerUUID?.[uuid];
-
-  switch (currentAction) {
-    case C2S_ACTIONS.INITIALIZE_INSTANCE:
-      return !gameInstance;
-    case C2S_ACTIONS.JOIN_INSTANCE:
-      return !gameInstance.gameState.isStarted;
-    case C2S_ACTIONS.START_GAME:
-      return !gameInstance.gameState.isStarted;
-    case C2S_ACTIONS.SELECT_CARD:
-      return !getCurrentRoundState(gameInstance).selectedCard[uuid];
-    case C2S_ACTIONS.START_ROUND:
-      return getCurrentRoundState(gameInstance).roundWinner;
-    case C2S_ACTIONS.CHAT_MESSAGE:
-      return true;
-    case C2S_ACTIONS.UPDATE_PROFILE:
-      return true;
-  }
-} /* isActionAllowed */
 
 /**
  * Handles a new request to the WebSocket server; always tries to accept
@@ -444,11 +470,6 @@ function handleRequest(webSocketRequest) {
     try {
       const messageObj = JSON.parse(data.utf8Data);
 
-      if (!isActionAllowed(webSocketConnection, messageObj.action)) {
-        console.log('Action received out-of-order');
-        return;
-      }
-
       switch (messageObj.action) {
         case C2S_ACTIONS.INITIALIZE_INSTANCE:
           handleInitialization(webSocketConnection, messageObj.playerUUID);
@@ -472,6 +493,7 @@ function handleRequest(webSocketRequest) {
           handleChatMessage(webSocketConnection, messageObj.messageContents);
           break;
         default:
+          console.log(`Unrecognized action: ${messageObj.action}`);
       }
     } catch (e) {
       console.log(

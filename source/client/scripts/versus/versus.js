@@ -1,13 +1,13 @@
 /** @module versus */
 
 import {
-  initializeWebSocket,
   selectCard,
   joinInstance,
   startGame,
   startRound,
   attachGameCallbackFns,
 } from './socket.js';
+import { updateProfile } from './store.js';
 import * as Types from './types.js';
 
 /**
@@ -24,9 +24,14 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
   selfGameCodeReadOnlyInputEl.value = gameCode;
 
   lobbyProfileListEl.replaceChildren(
-    ...profileList.map(({ username }) => {
+    ...profileList.map((profile) => {
+      updateProfile(profile);
+
       const profileListItemEl = document.createElement('li');
-      profileListItemEl.innerText = username;
+      const versusUsernameEl = document.createElement('versus-username');
+      versusUsernameEl.setAttribute('uuid', profile.uuid);
+
+      profileListItemEl.append(versusUsernameEl);
 
       return profileListItemEl;
     }),
@@ -38,7 +43,12 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
  * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from server
  */
 export function handleGameStart(drawnCardNames) {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
   const cardSelectEl = document.querySelector('#card_select_list');
+
+  lobbyWrapperEl.classList.add('hidden');
+  gameBoardWrapperEl.classList.remove('hidden');
 
   cardSelectEl.replaceChildren(
     ...drawnCardNames.map((drawnCardName) => {
@@ -51,6 +61,15 @@ export function handleGameStart(drawnCardNames) {
 
   handleStartRound();
 } /* handleGameStart */
+
+/**
+ * Rebuilds entire game board (without animation); can be used to resolve errors
+ * and in the case of re-joining instances
+ * @param { * } gameState 
+ */
+export function refreshEntireGame(gameState) {
+  // TODO: build out
+} /* refreshEntireGame */
 
 /**
  * Displays fact that opponent user has played a card, without yet revealing what
@@ -126,31 +145,15 @@ function sendJoinInstance() {
 } /* sendJoinInstance */
 
 /**
- * Relays attempt to start game instance to server while in lobby
- */
-function sendStartGame() {
-  startGame();
-} /* sendStartGame */
-
-/**
- * Relays attempt to start new round to server during gameplay
- */
-function sendStartRound() {
-  startRound();
-} /* sendStartRound */
-
-/**
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
  * and activates event listeners
  */
-function init() {
+export function initializeVersus() {
   const selectCardButtonEl = document.querySelector('#card_select_button');
   const joinGameButtonEl = document.querySelector('#join_game_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
   const startRoundButtonEl = document.querySelector('#start_round_button');
-
-  initializeWebSocket();
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -166,8 +169,7 @@ function init() {
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
-  startGameButtonEl.addEventListener('click', sendStartGame);
-  startRoundButtonEl.addEventListener('click', sendStartRound);
-} /* init */
-
-document.addEventListener('DOMContentLoaded', init);
+  startGameButtonEl.addEventListener('click', startGame);
+  startRoundButtonEl.addEventListener('click', startRound);
+} /* function initializeVersus() {
+ */

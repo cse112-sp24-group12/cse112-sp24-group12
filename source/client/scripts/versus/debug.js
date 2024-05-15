@@ -65,7 +65,7 @@ function debugRevealCards() {
 /**
  * Initializes listeners to debug menu in Versus mode
  */
-function init() {
+export function initializeDebug() {
   const startGameButtonEl = document.querySelector('#debug_start_game_button');
   const opponentMoveButtonEl = document.querySelector(
     '#debug_opponent_move_button',
@@ -77,6 +77,4 @@ function init() {
   startGameButtonEl.addEventListener('click', debugStartGame);
   opponentMoveButtonEl.addEventListener('click', debugOpponentMove);
   revealCardsButtonEl.addEventListener('click', debugRevealCards);
-} /* init */
-
-window.addEventListener('DOMContentLoaded', init);
+} /* initializeDebug */

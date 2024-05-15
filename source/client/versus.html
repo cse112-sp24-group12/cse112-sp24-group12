@@ -9,8 +9,7 @@
   <link rel="stylesheet" href="styles/global.css">
   <link rel="stylesheet" href="styles/versus.css">
 
-  <script src="scripts/versus.js" type="module"></script>
-  <script src="scripts/chat.js" type="module"></script>
+  <script src="scripts/versus/index.js" type="module"></script>
 </head>
 <body>
   <!-- LOBBY -->
@@ -36,7 +35,7 @@
   </section>
 
   <!-- GAMEPLAY -->
-  <section id="game_board" aria-labelledby="game_title">
+  <section id="game_board" aria-labelledby="game_title" class="hidden">
     <h2 id="game_title">Game</h2>
     <select name="card_select_list" id="card_select_list"></select>
     <button id="card_select_button">Select card</button>
@@ -62,6 +61,12 @@
     <button id="debug_start_game_button">Start game</button>
     <button id="debug_opponent_move_button">Opponent move (no reveal)</button>
     <button id="debug_reveal_cards_button">Reveal cards</button>
+  </section>
+
+  <!--CONNECTION STATUS-->
+  <section id="connection_status">
+    <h2>No connection</h2>
+    <p>Connecting...</p>
   </section>
 </body>
 </html>

@@ -1,0 +1,16 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+#setting-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    aside{grid-area: 1 / 2 / 6 / 5; }
+    section { grid-area: 1 / 1 / 6 / 2; }
+}
+
+

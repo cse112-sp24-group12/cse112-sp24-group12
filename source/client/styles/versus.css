@@ -2,3 +2,19 @@
   outline: 1px solid var(--white);
   padding: 1rem;
 }
+
+#connection_status {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 1rem;
+}
+
+#connection_status h2 {
+  color: var(--red);
+  margin: 0;
+}
+
+#connection_status p {
+  margin: 0.5rem 0 0 0;
+}
