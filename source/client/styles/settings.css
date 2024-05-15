@@ -69,14 +69,14 @@
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    div{
-        margin:0;
-        img{
-            height: 15rem;
-        }
-    }
 }
 
+#information-settings div{
+    margin:0;
+}
+#information-settings div img{
+    height: 15rem;
+}
 
 #profile-settings-identity {
     display: flex;
