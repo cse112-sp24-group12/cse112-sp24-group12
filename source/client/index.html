@@ -9,41 +9,36 @@
     <!-- <link rel="stylesheet" href="./styles/stars.css" /> -->
     <script src="./scripts/stars.js" type="module"></script>
 
+    <link rel="stylesheet" href="./styles/global.css" />
     <link rel="stylesheet" href="./styles/index.css" />
+    <link rel="stylesheet" href="./styles/settings.css" />
     <title>Tarot, but a Game | Home</title>
   </head>
 
   <body>
-    <div id="stars-container"></div>
-    <div id="content">
-      <header>
-        <input class="icon" type="image" src="./assets/images/icons/sound.webp">
-        <input class="icon" type="image" src="./assets/images/icons/gear.webp">
-      </header>
-      <main>
-        <h1>Tarot</h1>
-        <h2>but a game</h2>
-        <div class="buttons">
-          <div class="button-container">
-            <button class="silver">Solitare</button>
-          </div>
-          <div class="button-container">
-            <button class="gold">Versus</button>
-            <img class="sword sword1" src="./assets/images/sword.png">
-            <img class="sword sword2" src="./assets/images/sword.png">
-          </div>
-        </div>
-      </main>
-      <footer>
-        <!-- TODO: Implement a language picker: -->
-
-        <!-- <select id="language-select">
-        <option selected value="en">English</option>
-        <option value="es">Español</option>
-        <option value="fr">Français</option>
-        <option value="de">Deutsch</option>
-      </select> -->
-      </footer>
-    </div>
+    <header>
+      <div id="main_title_wrapper">
+        <h1 id="main_title">Tarot</h1>
+        <h2 id="main_subtitle">but a game</h2>
+      </div>
+      <ul id="short_settings_icon_list">
+        <li>
+          <button aria-label="Mute" id="mute_button" class="icon-button"></button>
+        </li>
+        <li>
+          <a href="settings.html" aria-label="Settings" id="settings_button" class="icon-button"></a>
+        </li>
+      </ul>
+    </header>
+    <main>
+      <ul id="main_button_list">
+        <li>
+          <button class="secondary-button">Solitaire</button>
+        </li>
+        <li>
+          <button class="primary-button" id="versus_button">Versus</button>
+        </li>
+      </ul>
+    </main>
   </body>
 </html>

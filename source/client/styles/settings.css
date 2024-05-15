@@ -34,3 +34,16 @@
     display: none;
 }
 
+#short_settings_icon_list {
+    list-style-type: none;
+    display: flex;
+    padding: 1rem;
+}
+
+#mute_button {
+    background-image: url(../assets/images/icons/sound.webp);
+}
+
+#settings_button {
+    background-image: url(../assets/images/icons/gear.webp);
+}
