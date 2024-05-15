@@ -63,7 +63,7 @@ header {
 }
 
 #swords_container:has(a:hover) .sword {
-  transform: scale(1.05);
+  transform: scale(1.025);
 }
 
 .sword {
