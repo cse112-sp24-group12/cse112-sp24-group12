@@ -3,21 +3,19 @@
  *  xPosPercent: number,
  *  yPosPercent: number,
  *  zPosPercent: number,
- *  htmlElement: HTMLElement
  * } } Star
  */
 
 const NUM_STARS = 250;
 const MAX_OPACITY_PERCENT = 0.95;
-const STAR_SPEED_PERCENTILE = 0.0015;
+const STAR_SPEED_PERCENTILE = 0.0007;
 const MOUSE_EFFECT_COEFF = 0.05;
 const CENTER_EXCLUSION_RADIUS = 0.2;
-const Z_AXIS_ORIGIN_PX = 250;
 
 /**
  * @type { {
- *  xPos: number,
- *  yPos: number
+ *  xPosPercentFromCenter: number,
+ *  yPosPercentFromCenter: number
  * } }
  */
 const mouseState = {
@@ -38,43 +36,31 @@ function updateMousePosition(event) {
 } /* updateMousePosition */
 
 /**
- * Generates a psuedo-random pair of XY coordinates for a star such that the
- * coordinates avoid the direct center of the screen, to avoid collisions
- * with the camera
- * @returns {{
- *  xPosPercent: number,
- *  yPosPercent: number
- * } } pair of (x, y) coords in range [0, 1]
+ * (Re)sizes canvas element to always cover the entire client screen
+ * @param starBgCanvasEl
  */
-function generateRandomXYPosPercents() {
-  let xPosPercent, yPosPercent;
-
-  do {
-    xPosPercent = Math.random();
-    yPosPercent = Math.random();
-  } while (
-    Math.hypot(xPosPercent - 0.5, yPosPercent - 0.5) < CENTER_EXCLUSION_RADIUS
-  );
-
-  return { xPosPercent, yPosPercent };
-} /* generateRandomXYPosPercents */
+function handleResize(starBgCanvasEl) {
+  starBgCanvasEl.width = document.body.clientWidth;
+  starBgCanvasEl.height = document.body.clientHeight;
+} /* handleResize */
 
 /**
- * Creates and returns new Star objects, which each include initial
- * x, y, & z positions as well as corresponding HTML elements
+ * Creates and returns new Star objects, each including initial x, y, & z positions
  * @param { number } numStars number of stars to create
  * @returns { Star[] } array of newly created stars
  */
 function generateStars(numStars) {
   return Array.from({ length: numStars }).map(() => {
-    const starEl = document.createElement('div');
-    starEl.className = 'star';
+    let xPosPercent, yPosPercent;
 
-    return {
-      ...generateRandomXYPosPercents(),
-      zPosPercent: Math.random(),
-      htmlElement: starEl,
-    };
+    do {
+      xPosPercent = Math.random();
+      yPosPercent = Math.random();
+    } while (
+      Math.hypot(xPosPercent - 0.5, yPosPercent - 0.5) < CENTER_EXCLUSION_RADIUS
+    );
+
+    return { xPosPercent, yPosPercent, zPosPercent: Math.random() };
   });
 } /* generateStars */
 
@@ -91,54 +77,58 @@ function getPercentOpacity(star) {
  * Handles animation of each frame; individually moves stars forward a step
  * in the direction of the camera. Self-invoking.
  * @param { Star[] } stars array of stars to animate
- * @param { HTMLElement } starsContainerEl container element of stars, used to control perspective
+ * @param { CanvasRenderingContext2D } canvasContext 2D canvas context to render onto
  */
-function animateNextFrame(stars, starsContainerEl) {
+function animateNextFrame(stars, canvasContext) {
   /* move perspective origin of parent to create mouse-movement effect*/
   const { xPosPercentFromCenter, yPosPercentFromCenter } = mouseState;
-  const xPerspPercent = 50 - 100 * xPosPercentFromCenter * MOUSE_EFFECT_COEFF;
-  const yPerspPercent = 50 - 100 * yPosPercentFromCenter * MOUSE_EFFECT_COEFF;
+  const Xc =
+    document.body.clientWidth *
+    (0.5 - xPosPercentFromCenter * MOUSE_EFFECT_COEFF);
+  const Yc =
+    document.body.clientHeight *
+    (0.5 - yPosPercentFromCenter * MOUSE_EFFECT_COEFF);
 
-  starsContainerEl.style.perspectiveOrigin = `${xPerspPercent}% ${yPerspPercent}%`;
+  canvasContext.clearRect(
+    0,
+    0,
+    document.body.clientWidth,
+    document.body.clientHeight,
+  );
 
   /* individually move stars closer to the camera */
   stars.forEach((star) => {
     star.zPosPercent = (star.zPosPercent + STAR_SPEED_PERCENTILE) % 1;
 
-    star.htmlElement.style.backgroundColor = `rgba(255, 255, 255, ${getPercentOpacity(star)})`;
-    star.htmlElement.style.transform = `translateZ(${star.zPosPercent * Z_AXIS_ORIGIN_PX}px)`;
+    const x = star.xPosPercent * document.body.clientWidth;
+    const y = star.yPosPercent * document.body.clientHeight;
+
+    const X_p = (x - Xc) * (1 / (1 - star.zPosPercent)) + Xc;
+    const Y_p = (y - Yc) * (1 / (1 - star.zPosPercent)) + Yc;
+
+    canvasContext.fillStyle = `rgba(255, 255, 255, ${getPercentOpacity(star)})`;
+    canvasContext.beginPath();
+    canvasContext.arc(X_p, Y_p, star.zPosPercent * 3, 0, Math.PI * 2);
+    canvasContext.fill();
   });
 
   /* self-invoke next frame */
-  requestAnimationFrame(() => animateNextFrame(stars, starsContainerEl));
+  requestAnimationFrame(() => animateNextFrame(stars, canvasContext));
 } /* animateNextFrame */
 
 /**
- * Places stars into parent container and positions them appropriately
- * @param { Star[] } stars stars to place onto screen
- * @param { HTMLElement } starsContainerEl parent to place stars into
- */
-function initializeStarPositions(stars, starsContainerEl) {
-  starsContainerEl.replaceChildren(...stars.map((star) => star.htmlElement));
-
-  stars.forEach((star) => {
-    star.htmlElement.style.left = `${star.xPosPercent * 100}%`;
-    star.htmlElement.style.top = `${star.yPosPercent * 100}%`;
-  });
-} /* initializeStarPositions */
-
-/**
- * Initializes creation and placement of stars into background and commences
- * animation frame sequence
+ * 
  */
 function init() {
-  const starsContainerEl = document.querySelector('#stars-container');
+  const starBgCanvasEl = document.createElement('canvas');
+  handleResize(starBgCanvasEl);
+  document.body.append(starBgCanvasEl);
 
-  const stars = generateStars(NUM_STARS);
+  const canvasContext = starBgCanvasEl.getContext('2d');
+  animateNextFrame(generateStars(NUM_STARS), canvasContext);
 
-  initializeStarPositions(stars, starsContainerEl);
-  animateNextFrame(stars, starsContainerEl);
+  window.addEventListener('mousemove', updateMousePosition, { passive: true });
+  window.addEventListener('resize', () => handleResize(starBgCanvasEl));
 } /* init */
 
 window.addEventListener('DOMContentLoaded', init);
-window.addEventListener('mousemove', updateMousePosition, { passive: true });
