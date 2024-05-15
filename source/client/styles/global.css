@@ -54,6 +54,18 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  font-size: 1em;
+}
+
 button {
   cursor: pointer;
 }
@@ -154,4 +166,25 @@ button {
 
 .icon-button:hover {
   transform: scale(1.05);
+}
+
+#short_settings_icon_list {
+  list-style-type: none;
+  display: flex;
+  padding: 1rem;
+}
+
+#home_button {
+  padding: 10rem;
+  width: 5rem;
+  height: 5rem;
+  background-image: url(../assets/images/icons/house.webp)
+}
+
+#mute_button {
+  background-image: url(../assets/images/icons/sound.webp);
+}
+
+#settings_button {
+  background-image: url(../assets/images/icons/gear.webp);
 }

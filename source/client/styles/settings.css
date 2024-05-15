@@ -2,7 +2,7 @@
     display: flex;
     align-items: flex-start;
     padding: 2rem;
-    gap: 5rem;
+    gap: 3rem;
 }
 
 #settings-container > #settings-sidebar {    
@@ -25,25 +25,21 @@
 
 #settings-container > section {
     width: 60rem;
-    height: 25rem;
     border-radius: 1.25rem;
     color: #D9D9D9;
 }
 
+#settings-container > #volume-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+#music-slider, #sfx-slider {
+    width: 100%;
+}
+
 #settings-container > section:not(.active) {
     display: none;
-}
-
-#short_settings_icon_list {
-    list-style-type: none;
-    display: flex;
-    padding: 1rem;
-}
-
-#mute_button {
-    background-image: url(../assets/images/icons/sound.webp);
-}
-
-#settings_button {
-    background-image: url(../assets/images/icons/gear.webp);
 }

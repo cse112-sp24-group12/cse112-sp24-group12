@@ -9,11 +9,9 @@
     <!-- stars background -->
     <link rel="stylesheet" href="./styles/global.css" />
     <link rel="stylesheet" href="./styles/settings.css" />
-    <script src="./scripts/stars.js" type="module"></script>
   </head>
   <header>
-    <!--<img src="" alt="home icon"> -->
-    <a href="index.html">Home</a>
+    <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
   </header>
     <body>
       <div id="settings-container">
@@ -22,18 +20,16 @@
           <button class="secondary-button">Profile</button>
           <button class="secondary-button">Info</button>
         </aside>
-        <section class="active card purple-card">
-          <section>
-            <h3>Music Volume:</h3>
-          </section>
-          <section>
-            <h3>Sound Effects Volume:</h3>
-          </section>
+        <section id="volume-settings" class="active card purple-card">
+          <h1>Music Volume:</h1>
+          <input type="range" id="music-slider">
+          <h1>Sound Effects Volume:</h1>
+          <input type="range" id="sfx-slider">
         </section>
-        <section class="card purple-card">
+        <section id="profile-settings" class="card purple-card">
           Profile
         </section>
-        <section class="card purple-card">
+        <section id="information-settings" class="card purple-card">
           Information
         </section>
       </div>
