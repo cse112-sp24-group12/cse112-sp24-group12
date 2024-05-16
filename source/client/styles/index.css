@@ -1,8 +1,14 @@
+body {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 10rem);
+}
+
 main {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 8.25rem;
+  flex: 1;
 }
 
 #main_button_list {
