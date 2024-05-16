@@ -10,6 +10,7 @@ const NUM_STARS = 250;
 const MAX_OPACITY_PERCENT = 0.95;
 const STAR_SPEED_PERCENTILE = 0.0007;
 const MOUSE_EFFECT_COEFF = 0.05;
+const STAR_RADIUS_COEFF = 3;
 const CENTER_EXCLUSION_RADIUS = 0.2;
 
 /**
@@ -37,7 +38,7 @@ function updateMousePosition(event) {
 
 /**
  * (Re)sizes canvas element to always cover the entire client screen
- * @param starBgCanvasEl
+ * @param { HTMLCanvasElement } starBgCanvasEl canvas element to resize
  */
 function handleResize(starBgCanvasEl) {
   starBgCanvasEl.width = document.body.clientWidth;
@@ -82,33 +83,42 @@ function getPercentOpacity(star) {
 function animateNextFrame(stars, canvasContext) {
   /* move perspective origin of parent to create mouse-movement effect*/
   const { xPosPercentFromCenter, yPosPercentFromCenter } = mouseState;
-  const Xc =
+  const cameraX =
     document.body.clientWidth *
     (0.5 - xPosPercentFromCenter * MOUSE_EFFECT_COEFF);
-  const Yc =
+  const cameraY =
     document.body.clientHeight *
     (0.5 - yPosPercentFromCenter * MOUSE_EFFECT_COEFF);
 
   canvasContext.clearRect(
     0,
     0,
-    document.body.clientWidth,
-    document.body.clientHeight,
+    canvasContext.canvas.width,
+    canvasContext.canvas.height,
   );
 
   /* individually move stars closer to the camera */
   stars.forEach((star) => {
     star.zPosPercent = (star.zPosPercent + STAR_SPEED_PERCENTILE) % 1;
 
-    const x = star.xPosPercent * document.body.clientWidth;
-    const y = star.yPosPercent * document.body.clientHeight;
-
-    const X_p = (x - Xc) * (1 / (1 - star.zPosPercent)) + Xc;
-    const Y_p = (y - Yc) * (1 / (1 - star.zPosPercent)) + Yc;
+    const projX =
+      (star.xPosPercent * document.body.clientWidth - cameraX) *
+        (1 / (1 - star.zPosPercent)) +
+      cameraX;
+    const projY =
+      (star.yPosPercent * document.body.clientHeight - cameraY) *
+        (1 / (1 - star.zPosPercent)) +
+      cameraY;
 
     canvasContext.fillStyle = `rgba(255, 255, 255, ${getPercentOpacity(star)})`;
     canvasContext.beginPath();
-    canvasContext.arc(X_p, Y_p, star.zPosPercent * 3, 0, Math.PI * 2);
+    canvasContext.arc(
+      projX,
+      projY,
+      star.zPosPercent * STAR_RADIUS_COEFF,
+      0,
+      Math.PI * 2,
+    );
     canvasContext.fill();
   });
 
@@ -117,18 +127,25 @@ function animateNextFrame(stars, canvasContext) {
 } /* animateNextFrame */
 
 /**
- * 
+ * Creates and attaches canvas element to page, and then initializes animation and
+ * appropriate event listeners
  */
 function init() {
+  /* create star canvas element */
   const starBgCanvasEl = document.createElement('canvas');
+  starBgCanvasEl.classList.add('star-bg');
   handleResize(starBgCanvasEl);
   document.body.append(starBgCanvasEl);
 
+  /* initialize animation */
   const canvasContext = starBgCanvasEl.getContext('2d');
   animateNextFrame(generateStars(NUM_STARS), canvasContext);
 
+  /* attach listeners */
   window.addEventListener('mousemove', updateMousePosition, { passive: true });
-  window.addEventListener('resize', () => handleResize(starBgCanvasEl));
+  window.addEventListener('resize', () => handleResize(starBgCanvasEl), {
+    passive: true,
+  });
 } /* init */
 
 window.addEventListener('DOMContentLoaded', init);
