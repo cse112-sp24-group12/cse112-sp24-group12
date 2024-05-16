@@ -5,6 +5,10 @@
     gap: 3rem;
 }
 
+#settings-container > section {
+    position: relative;
+}
+
 #settings-container > #settings-sidebar {    
     display: flex;
     flex-direction: column;
@@ -76,20 +80,23 @@
 #information-settings::before {
     content: '';
     position: absolute;
-    right: 0;
     bottom: 0;
+    left: 0;
     z-index: 1;
     pointer-events: none;
-    width: 60rem;
-    height: 10rem;
-    background-image: linear-gradient(#44235b00, #44235bFF);
+    width: 100%;
+    height: 25%;
+    border-radius: var(--border-radius);
+    background-image: linear-gradient(#44235b00, #44235bBF,#44235bFF, #44235bFF);
 }
 
-#information-settings div {
-    margin:0;
+#information-card-list > div {
+    margin: 0;
 }
-#information-settings div img {
-    height: 15rem;
+
+#information-settings img {
+    width: 8rem;
+    height: 14rem;
 }
 
 #profile-settings-identity {
@@ -134,8 +141,6 @@
     flex-direction: row;
     justify-content: flex-end;
 }
-
-
 
 .sword-slider {
     position: relative;
