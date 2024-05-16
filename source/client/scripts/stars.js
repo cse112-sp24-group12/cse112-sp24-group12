@@ -75,13 +75,47 @@ function getPercentOpacity(star) {
 } /* getPercentOpacity */
 
 /**
+ * Handles animation of a single star for a single frame
+ * @param { Star } star individual star to animate
+ * @param { CanvasRenderingContext2D } canvasContext 2D canvas context to render onto
+ * @param { number } cameraX x coordinate of viewing position
+ * @param { number } cameraY y coordinate of viewing position
+ */
+function animateSingleStar(star, canvasContext, cameraX, cameraY) {
+  /* move star a step toward the camera */
+  star.zPosPercent = (star.zPosPercent + STAR_SPEED_PERCENTILE) % 1;
+
+  /* project coordinate in 3D space to 2D space */
+  const projX =
+    (star.xPosPercent * document.body.clientWidth - cameraX) *
+      (1 / (1 - star.zPosPercent)) +
+    cameraX;
+  const projY =
+    (star.yPosPercent * document.body.clientHeight - cameraY) *
+      (1 / (1 - star.zPosPercent)) +
+    cameraY;
+
+  /* paint */
+  canvasContext.fillStyle = `rgba(255, 255, 255, ${getPercentOpacity(star)})`;
+  canvasContext.beginPath();
+  canvasContext.arc(
+    projX,
+    projY,
+    star.zPosPercent * STAR_RADIUS_COEFF,
+    0,
+    Math.PI * 2,
+  );
+  canvasContext.fill();
+} /* animateSingleStar */
+
+/**
  * Handles animation of each frame; individually moves stars forward a step
  * in the direction of the camera. Self-invoking.
  * @param { Star[] } stars array of stars to animate
  * @param { CanvasRenderingContext2D } canvasContext 2D canvas context to render onto
  */
 function animateNextFrame(stars, canvasContext) {
-  /* move perspective origin of parent to create mouse-movement effect*/
+  /* move camera location with the user's mouse (dampened) */
   const { xPosPercentFromCenter, yPosPercentFromCenter } = mouseState;
   const cameraX =
     document.body.clientWidth *
@@ -90,6 +124,7 @@ function animateNextFrame(stars, canvasContext) {
     document.body.clientHeight *
     (0.5 - yPosPercentFromCenter * MOUSE_EFFECT_COEFF);
 
+  /* paint */
   canvasContext.clearRect(
     0,
     0,
@@ -97,30 +132,9 @@ function animateNextFrame(stars, canvasContext) {
     canvasContext.canvas.height,
   );
 
-  /* individually move stars closer to the camera */
-  stars.forEach((star) => {
-    star.zPosPercent = (star.zPosPercent + STAR_SPEED_PERCENTILE) % 1;
-
-    const projX =
-      (star.xPosPercent * document.body.clientWidth - cameraX) *
-        (1 / (1 - star.zPosPercent)) +
-      cameraX;
-    const projY =
-      (star.yPosPercent * document.body.clientHeight - cameraY) *
-        (1 / (1 - star.zPosPercent)) +
-      cameraY;
-
-    canvasContext.fillStyle = `rgba(255, 255, 255, ${getPercentOpacity(star)})`;
-    canvasContext.beginPath();
-    canvasContext.arc(
-      projX,
-      projY,
-      star.zPosPercent * STAR_RADIUS_COEFF,
-      0,
-      Math.PI * 2,
-    );
-    canvasContext.fill();
-  });
+  stars.forEach((star) =>
+    animateSingleStar(star, canvasContext, cameraX, cameraY),
+  );
 
   /* self-invoke next frame */
   requestAnimationFrame(() => animateNextFrame(stars, canvasContext));
