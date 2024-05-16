@@ -30,14 +30,6 @@
     display: none !important;
 }
 
-#settings-sidebar button {
-    transition-delay: 125ms;
-}
-
-#settings-sidebar button:hover {
-    transform: translateX(1.25rem);
-}
-
 #volume_settings {
     display: flex;
     flex-direction: column;
@@ -151,6 +143,14 @@
     transition: transform 250ms ease-in-out;
 }
 
-.sword-slider:has(button:hover) img {
+.sword-slider.active img {
     transform: translateX(-2rem);
+}
+
+.sword-slider .button-translation-wrapper {
+    transition: transform 150ms 125ms ease-in-out;
+}
+
+.sword-slider.active .button-translation-wrapper {
+    transform: translateX(1.25rem);
 }

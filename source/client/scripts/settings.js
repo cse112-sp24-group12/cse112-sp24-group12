@@ -1,32 +1,36 @@
+/** @module settings */
 
 /**
- * Navigates to targeted settings section; disables all currently active sections
- * and activates targeted section
- * @param { HTMLElement } targetSectionEl 
+ * Connects each button/wrapper to its corresponding section, and attaches listeners
+ * to switch sections on button click
+ * @param { Record<string, string> } buttonWrapperIdToSectionIdMap 
  */
-function handleNavigation(targetSectionEl) {
-  [...document.querySelectorAll('section.active')].forEach((el) => {
-    el.classList.remove('active');
-  });
+function initializeNavigation(buttonWrapperIdToSectionIdMap) {
+  Object.entries(buttonWrapperIdToSectionIdMap).forEach(([buttonWrapperId, sectionId]) => {
+    const buttonWrapperEl = document.querySelector(buttonWrapperId);
+    const buttonEl = buttonWrapperEl.querySelector('button');
+    const sectionEl = document.querySelector(sectionId);
 
-  targetSectionEl.classList.add('active');
-} /* handleNavigation */
+    buttonEl.addEventListener('click', () => {
+      [...document.querySelectorAll('section.active, .sword-slider.active')].forEach((el) => {
+        el.classList.remove('active');
+      });
+
+      sectionEl.classList.add('active');
+      buttonWrapperEl.classList.add('active');
+    });
+  });
+} /* initializeNavigation */
 
 /**
  * Initializes event listeners for navigation
  */
 function initSettings() {
-  const audioMenuButtonEl = document.querySelector('#audio_menu_button');
-  const profileMenuButtonEl = document.querySelector('#profile_menu_button');
-  const infoMenuButtonEl = document.querySelector('#info_menu_button');
-
-  const audioMenuEl = document.querySelector('#volume_settings');
-  const profileMenuEl = document.querySelector('#profile_settings');
-  const infoMenuEl = document.querySelector('#information_settings');
-
-  audioMenuButtonEl.addEventListener('click', () => handleNavigation(audioMenuEl));
-  profileMenuButtonEl.addEventListener('click', () => handleNavigation(profileMenuEl));
-  infoMenuButtonEl.addEventListener('click', () => handleNavigation(infoMenuEl));
+  initializeNavigation({
+    '#audio_menu_button_wrapper': '#volume_settings',
+    '#profile_menu_button_wrapper': '#profile_settings',
+    '#info_menu_button_wrapper': '#information_settings',
+  });
 } /* initSettings */
 
 window.addEventListener('DOMContentLoaded', initSettings);

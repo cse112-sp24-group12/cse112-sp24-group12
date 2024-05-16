@@ -65,9 +65,10 @@ export function handleGameStart(drawnCardNames) {
 /**
  * Rebuilds entire game board (without animation); can be used to resolve errors
  * and in the case of re-joining instances
- * @param { * } gameState 
+ * @param { * } gameState
  */
 export function refreshEntireGame(gameState) {
+  
   // TODO: build out
 } /* refreshEntireGame */
 
