@@ -12,7 +12,7 @@
     color: var(--white);;
 }
 
-#settings-container > #settings-sidebar {    
+#settings-sidebar nav {    
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -38,7 +38,7 @@
     transform: translateX(1.25rem);
 }
 
-#settings-container > #volume-settings {
+#volume_settings {
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -49,7 +49,7 @@
     width: 100%;
 }
 
-#settings-container > #profile-settings {
+#profile_settings {
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -85,7 +85,7 @@
     color: var(--yellow);
 }
 
-#profile-settings-identity > #profile-settings-username {
+#profile-settings-username {
     border-radius: var(--border-radius);
     margin-top: -1.5rem;
     padding: 1rem;
@@ -106,7 +106,7 @@
     border-radius: 1.25rem;
 }
 
-#information-settings > #information-card-list {
+#information-card-list {
     padding: 2rem;
     height: 32rem;
     overflow-y: auto;
@@ -117,7 +117,7 @@
     grid-row-gap: 0px;
 }
 
-#information-settings::before {
+#information_settings::before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -134,7 +134,7 @@
     margin: 0;
 }
 
-#information-settings img {
+#information_settings img {
     width: 8rem;
     height: 14rem;
 }

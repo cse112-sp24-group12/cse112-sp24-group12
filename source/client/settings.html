@@ -7,115 +7,118 @@
     <title>Tarot, but a Game | Settings</title>
     <link rel="stylesheet" href="./styles/global.css" />
     <link rel="stylesheet" href="./styles/settings.css" />
+    <script src="./scripts/settings.js" type="module"></script>
   </head>
   <body>
     <header>
       <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
     </header>
-      <div id="settings-container">
-        <aside id="settings-sidebar">
+    <div id="settings-container">
+      <aside id="settings-sidebar">
+        <nav>
           <div class="sword-slider">
             <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
-            <button class="secondary-button">Audio</button>
-          </div>
-          <div class="sword-slider">
-            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
-            <button class="secondary-button">Profile</button>
+            <button class="secondary-button" id="audio_menu_button">Audio</button>
           </div>
           <div class="sword-slider">
             <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
-            <button class="secondary-button">Info</button>
+            <button class="secondary-button" id="profile_menu_button">Profile</button>
           </div>
-        </aside>
-        <section id="volume-settings" class="card purple-card">
-          <h1>Music Volume:</h1>
-          <input type="range" id="music-slider">
-          <h1>Sound Effects Volume:</h1>
-          <input type="range" id="sfx-slider">
-        </section>
-        <section id="profile-settings" class="card purple-card">
-          <div id="profile-settings-identity">
-            <div id="profile-settings-avatar">
-              <img src="./assets/images/oracle.png" alt="avatar">
-              <button>Change Avatar</button>
-            </div>
-            <input id="profile-settings-username" type="text" value="WizardMan_2012">
+          <div class="sword-slider">
+            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
+            <button class="secondary-button" id="info_menu_button">Info</button>
           </div>
-          <div id="profile-settings-submit">
-            <button class="primary-button">Save</button>
-            <button class="secondary-button">Reset</button>
+        </nav>
+      </aside>
+      <section id="volume_settings" class="active card purple-card">
+        <h1>Music Volume:</h1>
+        <input type="range" id="music-slider">
+        <h1>Sound Effects Volume:</h1>
+        <input type="range" id="sfx-slider">
+      </section>
+      <section id="profile_settings" class="card purple-card">
+        <div id="profile-settings-identity">
+          <div id="profile-settings-avatar">
+            <img src="./assets/images/oracle.png" alt="avatar">
+            <button>Change Avatar</button>
           </div>
-        </section>
-        <section id="information-settings" class="active card purple-card">
-          <!-- here for testing. can use js to populate this later, as a template or something-->
-          <div id="information-card-list">
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>          
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>          
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
-            <div class="card">
-              <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
-                  alt="The Fool" 
-                  >
-            </div>
+          <input id="profile-settings-username" type="text" value="WizardMan_2012">
+        </div>
+        <div id="profile-settings-submit">
+          <button class="primary-button">Save</button>
+          <button class="secondary-button">Reset</button>
+        </div>
+      </section>
+      <section id="information_settings" class="card purple-card">
+        <!-- here for testing. can use js to populate this later, as a template or something-->
+        <div id="information-card-list">
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
           </div>
-        </section>
-      </div>
-    </body>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>          
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>          
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+          <div class="card">
+            <img src="./assets/images/deck/RWS_Tarot_00_Fool.jpg" 
+                alt="The Fool" 
+                >
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
 </html>
