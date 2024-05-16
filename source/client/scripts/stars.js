@@ -2,7 +2,7 @@
  * @typedef { {
  *  xPosPercent: number,
  *  yPosPercent: number,
- *  zPosPercent: number,
+ *  zPosPercent: number
  * } } Star
  */
 
