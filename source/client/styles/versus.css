@@ -144,3 +144,13 @@ main {
   width: 15rem;
   height: 5.75rem;
 }
+
+#lobby_profile_list {
+  list-style-type: none;
+}
+
+#lobby_profile_list li {
+  background-color: var(--light-gray);
+  color: var(--black);
+  padding: 1rem;
+}
