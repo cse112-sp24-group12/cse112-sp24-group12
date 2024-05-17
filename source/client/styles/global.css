@@ -14,6 +14,8 @@
   --background-color: #341C3A;
 
   --border-radius: 1.225rem;
+  --default-scale: scale(1.05);
+  --default-transform-transition: transform 150ms ease-in-out;
 }
 
 @font-face {
@@ -95,13 +97,13 @@ input[type="number"] {
   padding: 0.75rem 1.75rem;
   margin: 0 0.75rem;
   display: inline-block;
-  transition: 150ms transform ease-in-out; 
+  transition: var(--default-transform-transition); 
 }
 
 .primary-button:hover,
 .secondary-button:hover,
 .tertiary-button:hover {
-  transform: scale(1.05);
+  transform: var(--default-scale);
 }
 
 .primary-button {
@@ -194,6 +196,11 @@ input[type="number"] {
   border: 2px solid var(--purple);
 }
 
+.icon-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 .icon-button {
   display: inline-block;
   width: 4rem;
@@ -202,11 +209,11 @@ input[type="number"] {
   background-repeat: no-repeat;
   border: none;
   background-color: transparent;
-  transition: transform 150ms ease-in-out;
+  transition: var(--default-transform-transition);
 }
 
 .icon-button:hover {
-  transform: scale(1.05);
+  transform: var(--default-scale);
 }
 
 #short_settings_icon_list {

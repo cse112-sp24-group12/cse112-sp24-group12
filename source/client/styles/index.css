@@ -77,7 +77,7 @@ header {
   bottom: 7.5%;
   position: absolute;
   z-index: -3;
-  transition: transform 150ms ease-in-out;
+  transition: var(--default-transform-transition);
 }
 
 .sword#sword_one {

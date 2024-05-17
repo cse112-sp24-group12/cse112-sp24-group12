@@ -136,7 +136,8 @@
 }
 
 .sword-slider .button-translation-wrapper {
-    transition: transform 150ms 125ms ease-in-out;
+    transition: var(--default-transform-transition);
+    transition-delay: 125ms;
 }
 
 .sword-slider.active .button-translation-wrapper {

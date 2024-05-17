@@ -12,61 +12,86 @@
   <script src="scripts/versus/index.js" type="module"></script>
 </head>
 <body>
-  <!-- LOBBY -->
-  <section id="lobby_menu" aria-labelledby="lobby_title">
-    <h2 id="lobby_title">Lobby</h2>
-    <section id="lobby_game_codes_wrapper" aria-labelledby="lobby_game_codes_title">
-      <h3 id="lobby_game_codes_title">Game codes</h3>
-      <div>
-        <input type="text" id="outbound_game_code" name="outbound_game_code">
-        <button id="join_game_button">Join game</button>
+  <header class="icon-header">
+    <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+    <ul id="short_settings_icon_list">
+      <li>
+        <button aria-label="Mute" title="Mute" id="mute_button" class="icon-button"></button>
+      </li>
+      <li>
+        <a href="settings.html" aria-label="Settings" title="Settings" id="settings_button" class="icon-button"></a>
+      </li>
+    </ul>
+  </header>
+  <main>
+    <!-- LOBBY -->
+    <section id="lobby_menu">
+      <section id="lobby_game_codes_wrapper" aria-labelledby="lobby_game_codes_title">
+        <div class="lobby-code-wrapper">
+          <label for="self_game_code">Room code</label>
+          <div class="lobby-code-input-wrapper">
+            <button id="copy_game_code_button" aria-label="Copy room code"></button>
+            <input type="text" id="self_game_code" name="self_game_code" readonly>
+          </div>
+        </div>
+        <div class="lobby-code-wrapper">
+          <div class="lobby-code-input-wrapper">
+            <input type="text" id="outbound_game_code" name="outbound_game_code">
+            <button id="join_game_button" aria-label="Join game"></button>
+          </div>
+          <label for="outbound_game_code" id="join_friend_label">Join a friend</label>
+        </div>
+      </section>
+      <section id="lobby_profile_list_wrapper" aria-labelledby="lobby_profile_list_title">
+        <h3 id="lobby_profile_list_title">Current players</h3>
+        <ul id="lobby_profile_list"></ul>
+      </section>
+      <div id="rules_wrapper">
+        <button id="open_rules_button">Rules
+          <img src="./assets/images/icons/closed_book.webp" alt="book"> 
+        </button>
       </div>
-      <div>
-        <input type="text" id="self_game_code" name="self_game_code" readonly>
+      <div id="lobby_button_wrapper">
+        <button id="start_game_button" class="primary-button">Start</button>
+        <button id="practice_game_button" class="secondary-button">Practice</button>
       </div>
     </section>
-    <section id="lobby_profile_list_wrapper" aria-labelledby="lobby_profile_list_title">
-      <h3 id="lobby_profile_list_title">Current players</h3>
-      <ul id="lobby_profile_list">
-        
-      </ul>
+
+    <!-- GAMEPLAY -->
+    <section id="game_board" aria-labelledby="game_title" class="hidden">
+      <h2 id="game_title">Game</h2>
+      <select name="card_select_list" id="card_select_list"></select>
+      <button id="card_select_button">Select card</button>
+      <p>Opponent card: <span id="opponent_card"></span></p>
+      <p>Round winner: <span id="round_winner"></span></p>
+      <button id="start_round_button">Start next round</button>
+      <p>Game winner: <span id="game_winner"></span></p>
+    </section>  
+
+    <!-- CHAT BOX -->
+    <section id="chat_box" aria-labelledby="chat_title" class="hidden">
+      <h2 id="chat_title">Chat</h2>
+      <div id="chat_feed" role="feed"></div>
+      <div>
+        <input type="text" name="chat_input" id="chat_input">
+        <button id="chat_input_button">Send message</button>
+      </div>
     </section>
-    <button id="start_game_button">Start game</button>
-  </section>
 
-  <!-- GAMEPLAY -->
-  <section id="game_board" aria-labelledby="game_title" class="hidden">
-    <h2 id="game_title">Game</h2>
-    <select name="card_select_list" id="card_select_list"></select>
-    <button id="card_select_button">Select card</button>
-    <p>Opponent card: <span id="opponent_card"></span></p>
-    <p>Round winner: <span id="round_winner"></span></p>
-    <button id="start_round_button">Start next round</button>
-    <p>Game winner: <span id="game_winner"></span></p>
-  </section>  
-
-  <!-- CHAT BOX -->
-  <section id="chat_box" aria-labelledby="chat_title">
-    <h2 id="chat_title">Chat</h2>
-    <div id="chat_feed" role="feed"></div>
-    <div>
-      <input type="text" name="chat_input" id="chat_input">
-      <button id="chat_input_button">Send message</button>
-    </div>
-  </section>
-
-  <!-- DEBUG MENU -->
-  <section id="debug_menu" aria-labelledby="debug_title" class="hidden">
-    <h2 id="debug_title">Debug</h2>
-    <button id="debug_start_game_button">Start game</button>
-    <button id="debug_opponent_move_button">Opponent move (no reveal)</button>
-    <button id="debug_reveal_cards_button">Reveal cards</button>
-  </section>
-
-  <!--CONNECTION STATUS-->
-  <section id="connection_status">
-    <h2>No connection</h2>
-    <p>Connecting...</p>
-  </section>
+    <!-- DEBUG MENU -->
+    <section id="debug_menu" aria-labelledby="debug_title" class="hidden">
+      <h2 id="debug_title">Debug</h2>
+      <button id="debug_start_game_button">Start game</button>
+      <button id="debug_opponent_move_button">Opponent move (no reveal)</button>
+      <button id="debug_reveal_cards_button">Reveal cards</button>
+    </section>
+  </main>
+  <footer>
+    <!--CONNECTION STATUS-->
+    <section id="connection_status">
+      <h2>No connection</h2>
+      <p>Connecting...</p>
+    </section>
+  </footer>
 </body>
 </html>

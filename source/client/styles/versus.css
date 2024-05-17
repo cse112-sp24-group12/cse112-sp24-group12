@@ -1,6 +1,92 @@
-#chat_box, #lobby_menu, #game_board {
-  outline: 1px solid var(--white);
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+#lobby_menu {
+  height: 100%;
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(2, auto);
   padding: 1rem;
+}
+
+#lobby_game_codes_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.lobby-code-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.lobby-code-wrapper label {
+  font-family: "Berkshire Swash";
+  font-size: 1.25rem;
+}
+
+.lobby-code-input-wrapper {
+  display: flex;
+}
+
+#self_game_code {
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+#outbound_game_code {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+#join_friend_label {
+  text-align: right;
+}
+
+.lobby-code-input-wrapper button {
+  width: 3rem;
+  background-color: var(--yellow);
+  transition: var(--default-transform-transition);
+  border: none;
+}
+
+.lobby-code-input-wrapper button:hover {
+  transform: var(--default-scale);
+}
+
+.lobby-code-input-wrapper button::before {
+  content: '';
+  display: inline-block;
+  width: 60%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;  
+  background-position: center;
+}
+
+#copy_game_code_button {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  margin-right: 0.5rem;
+}
+
+#copy_game_code_button::before {
+  background-image: url(./../assets/images/icons/copy_icon.svg);
+}
+
+#join_game_button {
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  margin-left: 0.5rem;
+}
+
+#join_game_button:before {
+  background-image: url(./../assets/images/icons/arrow_icon.svg);
 }
 
 #connection_status {
@@ -17,4 +103,44 @@
 
 #connection_status p {
   margin: 0.5rem 0 0 0;
+}
+
+#rules_wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+#open_rules_button {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-family: "Berkshire Swash";
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#open_rules_button img {
+  width: 5rem;
+  transition: var(--default-transform-transition);
+}
+
+#open_rules_button:hover img {
+  transform: var(--default-scale);
+}
+
+#lobby_button_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+#start_game_button,
+#practice_game_button {
+  font-size: 1.75rem;
+  width: 15rem;
+  height: 5.75rem;
 }
