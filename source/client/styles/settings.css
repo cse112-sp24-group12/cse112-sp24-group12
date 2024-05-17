@@ -9,7 +9,7 @@
     position: relative;
     width: 60rem;
     border-radius: 1.25rem;
-    color: var(--white);;
+    color: var(--white);
 }
 
 #settings-sidebar nav {    
@@ -22,8 +22,8 @@
 #settings-sidebar button {
     width: 7.5rem;
     height: calc(0.4 * 7.5rem);
-    font-size: 1.5rem;
-    border-radius: 1.25rem;
+    font-size: 1.125rem;
+    border-radius: var(--border-radius);
 }
 
 #settings-container > section:not(.active) {
@@ -37,7 +37,7 @@
     padding: 2rem;
 }
 
-#music-slider, #sfx-slider {
+#music_volume_slider, #sfx_volume_slider {
     width: 100%;
 }
 
@@ -48,54 +48,42 @@
     padding: 2rem;
 }
 
-#profile-settings-identity {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2rem
+#profile_settings_identity {
+    display: grid;
+    column-gap: 2rem;
+    row-gap: 0.5rem;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, auto);
+    grid-template-columns: auto 1fr;
 }
 
-#profile-settings-avatar {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-/* Placeholder settings */
-#profile-settings-avatar > img {
-    max-width: 7.5rem;
-    max-height: 7.5rem;
+#profile_settings_avatar {
+    width: 7.5rem;
+    height: 7.5rem;
     padding: 0.25rem;
     background-color: var(--background-color);
-    border-radius: 100rem;
+    border-radius: 50%;
 }
 
-#profile-settings-avatar > button {
+#change_image_button_wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+#change_image_button {
     font-size: 1rem;
     border: none;
     background: none;
     color: var(--yellow);
 }
 
-#profile-settings-username {
-    border-radius: var(--border-radius);
-    margin-top: -1.5rem;
-    padding: 1rem;
-    font-size: 1.5rem;
-    background-color: var(--white);
-}
-
-#profile-settings-submit {
+#profile_settings_username_wrapper {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+    align-items: center;
 }
 
-#profile-settings-submit button {
-    width: 6.5rem;
-    height: calc(0.4 * 6.5rem);
-    font-size: 1.5rem;
-    border-radius: 1.25rem;
+#profile_settings_username {
+    width: 20rem;
 }
 
 #information-card-list {
@@ -153,4 +141,29 @@
 
 .sword-slider.active .button-translation-wrapper {
     transform: translateX(1.25rem);
+}
+
+#profile_settings_control_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#profile_settings_control_wrapper button {
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+}
+
+#save_failed_msg,
+#save_successful_msg {
+
+}
+
+#save_failed_msg {
+    color: var(--red);
+}
+
+#save_successful_msg {
+    color: var(--yellow);
 }

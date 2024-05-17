@@ -68,7 +68,6 @@ export function handleGameStart(drawnCardNames) {
  * @param { * } gameState
  */
 export function refreshEntireGame(gameState) {
-  
   // TODO: build out
 } /* refreshEntireGame */
 

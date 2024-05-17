@@ -37,25 +37,30 @@
         </nav>
       </aside>
       <section id="volume_settings" class="active card purple-card">
-        <h1>Music Volume:</h1>
-        <input type="range" id="music-slider">
-        <h1>Sound Effects Volume:</h1>
-        <input type="range" id="sfx-slider">
+        <label for="music_volume_slider">Music volume</label>
+        <input type="range" name="music_volume" id="music_volume_slider">
+        <label for="sfx_volume_slider">Sound effects volume</label>
+        <input type="range" name="sfx_volume" id="sfx_volume_slider">
       </section>
       <section id="profile_settings" class="card purple-card">
-        <div id="profile-settings-identity">
-          <div id="profile-settings-avatar">
-            <img src="./assets/images/oracle.png" alt="avatar">
-            <button>Change Avatar</button>
-          </div>
-          <input id="profile-settings-username" type="text" value="WizardMan_2012">
+        <div id="profile_settings_identity">
+            <img id="profile_settings_avatar" src="" alt="avatar">
+            <div id="change_image_button_wrapper">
+              <button id="change_image_button">Change avatar</button>
+            </div>
+            <div id="profile_settings_username_wrapper">
+              <input id="profile_settings_username" type="text" value="">
+            </div>
         </div>
-        <div id="profile-settings-submit">
-          <button class="primary-button">Save</button>
-          <button class="secondary-button">Reset</button>
+        <div id="profile_settings_control_wrapper">
+          <p id="save_failed_msg" class="hidden">Save failed</p>
+          <p id="save_successful_msg" class="hidden">Save successful</p>
+          <button id="reset_settings_button" class="secondary-button">Reset</button>
+          <button id="save_settings_button" class="primary-button">Save</button>
         </div>
       </section>
       <section id="information_settings" class="card purple-card">
+        <h2>All cards</h2>
         <!-- here for testing. can use js to populate this later, as a template or something-->
         <div id="information-card-list">
           <div class="card">
