@@ -147,6 +147,8 @@ main {
 
 #lobby_profile_list {
   list-style-type: none;
+  overflow: hidden;
+  border-radius: var(--border-radius);
 }
 
 #lobby_profile_list li {
