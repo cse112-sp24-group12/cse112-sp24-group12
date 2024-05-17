@@ -69,15 +69,45 @@ export function getCurrentRoundState(gameInstance) {
 } /* getCurrentRoundState */
 
 /**
+ * Determines the multiplier for a given matchup
+ * @param { Types.Card } card1 card to compare
+ * @param { Types.Card } card2 card to compare
+ * @returns { Types.Card } matchup multiplier
+ */
+function getMultiplier(card1, card2) {
+  switch(card1.suite) {
+    case 'wands':
+      if (card2.suite === "cups") {
+        return 2.0;
+      } else if (card2.suite == "swords") {
+        return 0.5;
+      }
+    case 'cups':
+      if (card2.suite === "swords") {
+        return 2.0;
+      } else if (card2.suite == "wands") {
+        return 0.5;
+      }
+    case 'swords':
+      if (card2.suite === "wands") {
+        return 2.0;
+      } else if (card2.suite == "cups") {
+        return 0.5;
+      }
+    default:
+      return 1.0;
+  }
+}
+
+/**
  * Determines which of two cards wins a round
  * @param { Types.Card } card1 card to compare
  * @param { Types.Card } card2 card to compare
  * @returns { Types.Card } winning card of card1 and card2
  */
 export function getWinningCard(card1, card2) {
-  // TODO: add logic to pick winner
-
-  return card1.number > card2.number ? card1 : card2;
+  let multiplier = getMultiplier(card1, card2);
+  return card1.number * multiplier > card2.number ? card1 : card2;
 } /* getWinningCard */
 
 /**
