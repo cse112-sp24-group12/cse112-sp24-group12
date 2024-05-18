@@ -16,10 +16,12 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  max-width: 40rem;
 }
 
 #top_mid_wrapper {
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
@@ -28,6 +30,7 @@
 #top_right_wrapper {
   flex: 1;
   margin-top: 6rem;
+  max-width: 25rem;
 }
 
 #bottom_board_wrapper {
@@ -142,7 +145,7 @@
   border-radius: var(--border-radius);
   margin: 1rem 0;
   padding: 1rem;
-  width: 100%;
+  width: min(30rem, 100%);
 }
 
 #round_info {
@@ -154,4 +157,3 @@
   display: flex;
   justify-content: space-between;
 }
-
