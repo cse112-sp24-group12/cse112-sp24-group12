@@ -61,13 +61,6 @@
 
     <!-- GAMEPLAY -->
     <section id="game_board" class="hidden">
-      <!--
-      <select name="card_select_list" id="card_select_list"></select>
-      <button id="card_select_button">Select card</button>
-      <p>Opponent card: <span id="opponent_card"></span></p>
-      <p>Round winner: <span id="round_winner"></span></p>
-      <button id="start_round_button">Start next round</button>
-      <p>Game winner: <span id="game_winner"></span></p>-->
       <div id="top_board_wrapper">
         <div id="top_left_wrapper">
           <div id="opponent_cards">
@@ -99,14 +92,13 @@
             </div>
           </section>
           <section id="played_card_wrapper">
-            <div id="opp_played_card" class="card-slot empty-card-slot">
-
-            </div>
-            <div id="self_played_card" class="card-slot empty-card-slot">
-
-            </div>
+            <div id="opp_played_card" class="card-slot empty-card-slot"></div>
+            <div id="self_played_card" class="card-slot empty-card-slot"></div>
           </section>
-          <p id="current_instruction">Select and play a card</p>
+          <div id="round_control_wrapper">
+            <p id="current_instruction"></p>
+            <button id="start_round_button" class="primary-button hidden">Next round</button>
+          </div>
         </div>
         <div id="top_right_wrapper">
           <section class="card purple-card">

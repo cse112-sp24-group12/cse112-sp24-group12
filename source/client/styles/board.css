@@ -2,23 +2,27 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 #top_board_wrapper {
   flex: 1;
   display: flex;
+  overflow: hidden;
 }
 
 #top_left_wrapper {
   flex: 1.2;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 #top_mid_wrapper {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
 }
 
 #top_right_wrapper {
@@ -30,20 +34,35 @@
   height: 20rem;
 }
 
+#round_control_wrapper {
+  height: 6rem;
+  gap: 1rem;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 #current_instruction {
   text-align: center;
-  margin-top: 1rem;
+}
+
+#start_round_button {
+  width: fit-content;
+  margin-bottom: 1rem
 }
 
 #played_card_wrapper {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  margin-top: 2rem;
 }
 
 .card-slot {
   height: 20rem;
   aspect-ratio: 2 / 3;
+  color: var(--black);
 }
 
 .empty-card-slot {
@@ -55,12 +74,14 @@
   flex-direction: column;
   flex: 1;
   margin: 0 1rem;
+  overflow: hidden;
 }
 
 #chat_input_wrapper {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
 #chat_feed {
@@ -89,6 +110,10 @@
   height: 100%;
 }
 
+.user-card {
+  overflow: hidden;
+}
+
 .user-card input {
   appearance: none;
 }
@@ -96,6 +121,7 @@
 .user-card label {
   display: block;
   height: 100%;
+  color: var(--black);
 }
 
 .back-card {
@@ -116,6 +142,7 @@
   border-radius: var(--border-radius);
   margin: 1rem 0;
   padding: 1rem;
+  width: 100%;
 }
 
 #round_info {
@@ -127,3 +154,4 @@
   display: flex;
   justify-content: space-between;
 }
+

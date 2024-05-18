@@ -10,6 +10,9 @@ import {
 import { updateProfile } from './store.js';
 import * as Types from './types.js';
 
+const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
+const USER_MOVE_MESSAGE = 'Select and play a card';
+
 /**
  * Updates display of current user lobby, including game code and active players
  * @param { {
@@ -60,12 +63,14 @@ export function handleGameStart(drawnCardNames) {
       const cardLabelEl = drawnCardEl.querySelector('label');
       const cardContentEl = drawnCardEl.querySelector('.front-card');
 
-      const htmlIdName = `drawn_card_${i}`
+      const htmlIdName = `drawn_card_${i}`;
 
       cardLabelEl.htmlFor = htmlIdName;
       cardInputEl.id = htmlIdName;
       cardInputEl.value = JSON.stringify(drawnCardName);
       cardContentEl.innerText = JSON.stringify(drawnCardName);
+
+      cardInputEl.addEventListener('change', handleCardSelection);
 
       return drawnCardEl;
     }),
@@ -88,9 +93,9 @@ export function refreshEntireGame(gameState) {
  * that card is
  */
 export function handleOpponentMove() {
-  const opponentCardEl = document.querySelector('#opponent_card');
+  const opponentPlayedCardEl = document.querySelector('#opp_played_card');
 
-  opponentCardEl.innerText = 'Played';
+  opponentPlayedCardEl.style.backgroundColor = 'red'; // TODO : remove
 } /* handleOpponentMove */
 
 /**
@@ -99,22 +104,32 @@ export function handleOpponentMove() {
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
 export function handleRevealCards(opponentSelectedCard, roundWinner) {
-  const opponentCardEl = document.querySelector('#opponent_card');
-  const roundWinnerEl = document.querySelector('#round_winner');
+  const opponentPlayedCardEl = document.querySelector('#opp_played_card');
+  const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  opponentCardEl.innerText = JSON.stringify(opponentSelectedCard);
-  roundWinnerEl.innerText = roundWinner.username;
+  opponentPlayedCardEl.style.backgroundColor = 'white'; // TODO : remove
+  opponentPlayedCardEl.innerText = JSON.stringify(opponentSelectedCard);
+
+  updateCurrentInstruction(`${roundWinner.username} won the round!`);
+  startRoundButtonEl.classList.remove('hidden');
 } /* handleRevealCards */
 
 /**
  * Handles reset of UI at the start of each new round
  */
 export function handleStartRound() {
-  const opponentCardEl = document.querySelector('#opponent_card');
-  const roundWinnerEl = document.querySelector('#round_winner');
+  const startRoundButtonEl = document.querySelector('#start_round_button');
+  const opponentPlayedCardEl = document.querySelector('#opp_played_card');
+  const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
 
-  opponentCardEl.innerText = '';
-  roundWinnerEl.innerText = '';
+  startRoundButtonEl.classList.add('hidden');
+
+  opponentPlayedCardEl.style.backgroundColor = '';
+  opponentPlayedCardEl.innerText = '';
+
+  selfPlayedCardSlotEl.replaceChildren();
+
+  updateCurrentInstruction(USER_MOVE_MESSAGE);
 } /* handleStartRound */
 
 /**
@@ -122,25 +137,43 @@ export function handleStartRound() {
  * @param { Types.ServerToClientProfile } gameWinner profile data of (user/opponent) who won game
  */
 export function handleGameEnd(gameWinner) {
-  const gameWinnerEl = document.querySelector('#game_winner');
+  const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  gameWinnerEl.innerText = gameWinner.username;
+  startRoundButtonEl.classList.add('hidden');
+
+  updateCurrentInstruction(`${gameWinner.username} won the game!`);
 } /* handleGameEnd */
 
 /**
- * Relays card selection to server during gameplay
+ *
+ * @param { string } newInstruction
  */
-function sendSelectCard() {
-  const cardSelectEl = document.querySelector('#card_select_list');
+function updateCurrentInstruction(newInstruction) {
+  const currentInstructionEl = document.querySelector('#current_instruction');
 
-  if (!cardSelectEl.value) return;
+  currentInstructionEl.innerText = newInstruction;
+} /* updateCurrentInstruction */
 
-  selectCard(JSON.parse(cardSelectEl.value));
+/**
+ * Relays card selection to server during gameplay, and relocates
+ * corresponding card to center screen
+ */
+function handleCardSelection() {
+  const cardInputEls = document.querySelectorAll('input[name="selected_card"]');
+  const selectedCardInputEl = [...cardInputEls].find((el) => el.checked);
+  const selectedParentCardEl = selectedCardInputEl.closest('.user-card');
+  const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
 
-  cardSelectEl.removeChild(
-    [...cardSelectEl.children].find((el) => el.value === cardSelectEl.value),
-  );
-} /* sendSelectCard */
+  if (!selectedCardInputEl.value) return;
+
+  selectCard(JSON.parse(selectedCardInputEl.value));
+
+  selectedCardInputEl.remove();
+  selectedParentCardEl.remove();
+
+  selfPlayedCardSlotEl.replaceChildren(selectedParentCardEl);
+  updateCurrentInstruction(OPPONENT_MOVE_MESSAGE);
+} /* handleCardSelection */
 
 /**
  * Relays attempt to join new game instance to server while in lobby
@@ -161,7 +194,6 @@ function sendJoinInstance() {
  * and activates event listeners
  */
 export function initializeVersus() {
-  const selectCardButtonEl = document.querySelector('#card_select_button');
   const joinGameButtonEl = document.querySelector('#join_game_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
@@ -176,7 +208,6 @@ export function initializeVersus() {
     handleGameEnd,
   });
 
-  selectCardButtonEl.addEventListener('click', sendSelectCard);
   joinGameButtonEl.addEventListener('click', sendJoinInstance);
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
