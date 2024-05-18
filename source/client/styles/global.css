@@ -95,7 +95,6 @@ input[type="number"] {
   font-size: 1rem;
   border-radius: var(--border-radius);
   padding: 0.75rem 1.75rem;
-  margin: 0 0.75rem;
   display: inline-block;
   transition: var(--default-transform-transition); 
 }
@@ -181,7 +180,7 @@ input[type="number"] {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  margin: 0.75rem;
+  margin: 1rem;
   z-index: 0;
 }
 
@@ -199,6 +198,8 @@ input[type="number"] {
 .icon-header {
   display: flex;
   justify-content: space-between;
+  position: absolute;
+  width: 100%;
 }
 
 .icon-button {

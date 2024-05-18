@@ -45,16 +45,28 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
 export function handleGameStart(drawnCardNames) {
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
   const gameBoardWrapperEl = document.querySelector('#game_board');
-  const cardSelectEl = document.querySelector('#card_select_list');
+  const cardWrapperEl = document.querySelector('#user_cards');
 
   lobbyWrapperEl.classList.add('hidden');
   gameBoardWrapperEl.classList.remove('hidden');
 
-  cardSelectEl.replaceChildren(
-    ...drawnCardNames.map((drawnCardName) => {
-      const drawnCardEl = document.createElement('option');
-      drawnCardEl.value = JSON.stringify(drawnCardName);
-      drawnCardEl.innerText = JSON.stringify(drawnCardName);
+  const drawnCardTemplateEl = document.querySelector('#card-template');
+
+  cardWrapperEl.replaceChildren(
+    ...drawnCardNames.map((drawnCardName, i) => {
+      const drawnCardEl = drawnCardTemplateEl.content.cloneNode(true);
+
+      const cardInputEl = drawnCardEl.querySelector('input');
+      const cardLabelEl = drawnCardEl.querySelector('label');
+      const cardContentEl = drawnCardEl.querySelector('.front-card');
+
+      const htmlIdName = `drawn_card_${i}`
+
+      cardLabelEl.htmlFor = htmlIdName;
+      cardInputEl.id = htmlIdName;
+      cardInputEl.value = JSON.stringify(drawnCardName);
+      cardContentEl.innerText = JSON.stringify(drawnCardName);
+
       return drawnCardEl;
     }),
   );

@@ -156,11 +156,6 @@
     border-radius: var(--border-radius);
 }
 
-#save_failed_msg,
-#save_successful_msg {
-
-}
-
 #save_failed_msg {
     color: var(--red);
 }

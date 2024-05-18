@@ -1,0 +1,129 @@
+#game_board {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#top_board_wrapper {
+  flex: 1;
+  display: flex;
+}
+
+#top_left_wrapper {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+}
+
+#top_mid_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#top_right_wrapper {
+  flex: 1;
+  margin-top: 6rem;
+}
+
+#bottom_board_wrapper {
+  height: 20rem;
+}
+
+#current_instruction {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+#played_card_wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card-slot {
+  height: 20rem;
+  aspect-ratio: 2 / 3;
+}
+
+.empty-card-slot {
+  outline: 1px dashed white;
+}
+
+#chat_box {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: 0 1rem;
+}
+
+#chat_input_wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+#chat_feed {
+  flex: 1;
+  overflow: auto;
+}
+
+#chat_input {
+  flex: 1;
+}
+
+#opponent_cards {
+  display: flex;
+  justify-content: flex-end;
+  height: 12.5rem;
+  padding: 1rem;
+}
+
+#user_cards {
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1rem;
+  padding: 1rem;
+  height: 100%;
+}
+
+.user-card input {
+  appearance: none;
+}
+
+.user-card label {
+  display: block;
+  height: 100%;
+}
+
+.back-card {
+  height: 100%;
+  aspect-ratio: 2 / 3;
+  background-color: white;
+}
+
+.front-card {
+  height: 100%;
+  aspect-ratio: 2 / 3;
+  background-color: white;
+}
+
+#game_info {
+  background-color: var(--yellow);
+  color: var(--black);
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+#round_info {
+  display: flex;
+  justify-content: space-between;
+}
+
+#score_info {
+  display: flex;
+  justify-content: space-between;
+}
