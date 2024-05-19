@@ -7,7 +7,19 @@ import {
   startRound,
   attachGameCallbackFns,
 } from './socket.js';
-import { updateProfile } from './store.js';
+import {
+  updateProfile,
+  getScore,
+  getPlayerUUIDs,
+  initializePlayers,
+  setRemainingCards,
+  setGameIsStarted,
+  setSelfSelectedCard,
+  setOppSelectedCard,
+  setRoundWinner,
+  createNewRoundState,
+  getRoundNumber,
+} from './store.js';
 import * as Types from './types.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
@@ -17,7 +29,7 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
  * Updates display of current user lobby, including game code and active players
  * @param { {
  *  gameCode: number,
- *  profileList: Types.Profile[]
+ *  profileList: Types.ServerToClientProfile[]
  * } } instanceInfo new info about game instance
  */
 export function handleUpdateInstance({ gameCode, profileList } = {}) {
@@ -39,6 +51,8 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
       return profileListItemEl;
     }),
   );
+
+  initializePlayers(profileList.map((profile) => profile.uuid));
 } /* handleUpdateInstance */
 
 /**
@@ -48,11 +62,77 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
 export function handleGameStart(drawnCardNames) {
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
   const gameBoardWrapperEl = document.querySelector('#game_board');
-  const cardWrapperEl = document.querySelector('#user_cards');
 
   lobbyWrapperEl.classList.add('hidden');
   gameBoardWrapperEl.classList.remove('hidden');
 
+  setRemainingCards(drawnCardNames);
+  setGameIsStarted();
+
+  createCardElements(drawnCardNames);
+  initializeScoreboard();
+
+  handleStartRound();
+} /* handleGameStart */
+
+/**
+ * Initializes score, round, and time remaining counters
+ * located on the game board
+ */
+function initializeScoreboard() {
+  const scoreInfoWrapperEl = document.querySelector('#score_info');
+  const roundNumberEl = document.querySelector('#round_number');
+  const timeRemainingEl = document.querySelector('#time_remaining');
+
+  scoreInfoWrapperEl.replaceChildren(
+    ...getPlayerUUIDs().map((UUID) => {
+      const scoreInfoEl = document.createElement('p');
+      const scoreCounterEl = document.createElement('span');
+      scoreCounterEl.innerText = '0';
+
+      const versusUsernameEl = document.createElement('versus-username');
+      versusUsernameEl.setAttribute('uuid', UUID);
+
+      scoreInfoEl.replaceChildren(versusUsernameEl, ': ', scoreCounterEl);
+
+      return scoreInfoEl;
+    }),
+  );
+
+  roundNumberEl.innerText = '0';
+  timeRemainingEl.innerText = '0 sec';
+} /* initializeScoreboard */
+
+/**
+ *
+ */
+function updateScoreboardScores() {
+  const scoreInfoWrapperEl = document.querySelector('#score_info');
+  const scoreInfoEls = scoreInfoWrapperEl.querySelectorAll('p');
+
+  [...scoreInfoEls].forEach((scoreInfoEl) => {
+    const versusUsernameEl = scoreInfoEl.querySelector('versus-username');
+    const scoreCounterEl = scoreInfoEl.querySelector('span');
+
+    scoreCounterEl.innerText = getScore(versusUsernameEl.getAttribute('uuid'));
+  });
+} /* updateScoreboardScores */
+
+/**
+ *
+ */
+function updateScoreboardRoundNumber() {
+  const roundNumberEl = document.querySelector('#round_number');
+
+  roundNumberEl.innerText = getRoundNumber();
+} /* */
+
+/**
+ * Adds card images to the DOM at start of game
+ * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from the server
+ */
+function createCardElements(drawnCardNames) {
+  const cardWrapperEl = document.querySelector('#user_cards');
   const drawnCardTemplateEl = document.querySelector('#card-template');
 
   cardWrapperEl.replaceChildren(
@@ -75,16 +155,13 @@ export function handleGameStart(drawnCardNames) {
       return drawnCardEl;
     }),
   );
-
-  handleStartRound();
-} /* handleGameStart */
+} /* createCardElements */
 
 /**
  * Rebuilds entire game board (without animation); can be used to resolve errors
  * and in the case of re-joining instances
- * @param { * } gameState
  */
-export function refreshEntireGame(gameState) {
+export function refreshEntireGame() {
   // TODO: build out
 } /* refreshEntireGame */
 
@@ -96,6 +173,8 @@ export function handleOpponentMove() {
   const opponentPlayedCardEl = document.querySelector('#opp_played_card');
 
   opponentPlayedCardEl.style.backgroundColor = 'red'; // TODO : remove
+
+  setOppSelectedCard('played');
 } /* handleOpponentMove */
 
 /**
@@ -110,8 +189,15 @@ export function handleRevealCards(opponentSelectedCard, roundWinner) {
   opponentPlayedCardEl.style.backgroundColor = 'white'; // TODO : remove
   opponentPlayedCardEl.innerText = JSON.stringify(opponentSelectedCard);
 
-  updateCurrentInstruction(`${roundWinner.username} won the round!`);
+  const versusUsernameEl = document.createElement('versus-username');
+  versusUsernameEl.setAttribute('uuid', roundWinner.uuid);
+  updateCurrentInstruction(versusUsernameEl, ' won the game!');
+
   startRoundButtonEl.classList.remove('hidden');
+
+  setOppSelectedCard(opponentPlayedCardEl);
+  setRoundWinner(roundWinner.uuid);
+  updateScoreboardScores();
 } /* handleRevealCards */
 
 /**
@@ -130,6 +216,9 @@ export function handleStartRound() {
   selfPlayedCardSlotEl.replaceChildren();
 
   updateCurrentInstruction(USER_MOVE_MESSAGE);
+  createNewRoundState();
+
+  updateScoreboardRoundNumber();
 } /* handleStartRound */
 
 /**
@@ -141,17 +230,19 @@ export function handleGameEnd(gameWinner) {
 
   startRoundButtonEl.classList.add('hidden');
 
-  updateCurrentInstruction(`${gameWinner.username} won the game!`);
+  const versusUsernameEl = document.createElement('versus-username');
+  versusUsernameEl.setAttribute('uuid', gameWinner.uuid);
+  updateCurrentInstruction(versusUsernameEl, ' won the game!');
 } /* handleGameEnd */
 
 /**
  *
- * @param { string } newInstruction
+ * @param { (string|Node)[] } newChildEls
  */
-function updateCurrentInstruction(newInstruction) {
+function updateCurrentInstruction(...newChildEls) {
   const currentInstructionEl = document.querySelector('#current_instruction');
 
-  currentInstructionEl.innerText = newInstruction;
+  currentInstructionEl.replaceChildren(...newChildEls);
 } /* updateCurrentInstruction */
 
 /**
@@ -164,9 +255,11 @@ function handleCardSelection() {
   const selectedParentCardEl = selectedCardInputEl.closest('.user-card');
   const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
 
-  if (!selectedCardInputEl.value) return;
+  const selectedCard = selectedCardInputEl.value;
+  if (!selectedCard) return;
 
-  selectCard(JSON.parse(selectedCardInputEl.value));
+  selectCard(JSON.parse(selectedCard));
+  setSelfSelectedCard(selectedCard);
 
   selectedCardInputEl.remove();
   selectedParentCardEl.remove();

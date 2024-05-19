@@ -42,6 +42,17 @@ export function toggleDebugMenu() {
 } /* toggleDebugMenu */
 
 /**
+ * Toggles between lobby and game board views
+ */
+function debugToggleView() {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
+
+  lobbyWrapperEl.classList.toggle('hidden');
+  gameBoardWrapperEl.classList.toggle('hidden');
+} /* debugToggleView */
+
+/**
  * Simulates server-side message that cards have been drawn
  */
 function debugStartGame() {
@@ -66,15 +77,13 @@ function debugRevealCards() {
  * Initializes listeners to debug menu in Versus mode
  */
 export function initializeDebug() {
-  const startGameButtonEl = document.querySelector('#debug_start_game_button');
-  const opponentMoveButtonEl = document.querySelector(
-    '#debug_opponent_move_button',
-  );
-  const revealCardsButtonEl = document.querySelector(
-    '#debug_reveal_cards_button',
-  );
+  const toggleViewButtonEl = document.querySelector('#debug_toggle_view_btn');
+  const startGameButtonEl = document.querySelector('#debug_start_game_btn');
+  const oppMoveButtonEl = document.querySelector('#debug_opponent_move_btn');
+  const revealCardsButtonEl = document.querySelector('#debug_reveal_cards_btn');
 
+  toggleViewButtonEl.addEventListener('click', debugToggleView);
   startGameButtonEl.addEventListener('click', debugStartGame);
-  opponentMoveButtonEl.addEventListener('click', debugOpponentMove);
+  oppMoveButtonEl.addEventListener('click', debugOpponentMove);
   revealCardsButtonEl.addEventListener('click', debugRevealCards);
 } /* initializeDebug */

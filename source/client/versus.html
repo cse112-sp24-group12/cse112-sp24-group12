@@ -46,7 +46,7 @@
         </div>
       </section>
       <section id="lobby_profile_list_wrapper">
-        <ul id="lobby_profile_list"></ul>
+        <ul id="lobby_profile_list"><!-- dynamically populated --></ul>
       </section>
       <div id="rules_wrapper">
         <button id="open_rules_button">Rules
@@ -64,12 +64,10 @@
       <div id="top_board_wrapper">
         <div id="top_left_wrapper">
           <div id="opponent_cards">
-            <div class="back-card">
-
-            </div>
+            <div class="back-card"></div>
           </div>
           <section id="chat_box" aria-label="Chat">
-            <div id="chat_feed" role="feed"></div>
+            <div id="chat_feed" role="feed"><!-- dynamically populated --></div>
             <div id="chat_input_wrapper">
               <input type="text" name="chat_input" id="chat_input">
               <button id="chat_input_button" class="primary-button">Send</button>
@@ -79,24 +77,17 @@
         <div id="top_mid_wrapper">
           <section id="game_info">
             <div id="round_info">
-              <p>Round <span id="round_number">3</span></p>
-              <time>15 sec</time>
+              <p>Round <span id="round_number"><!-- dynamically populated --></span></p>
+              <time id="time_remaining"><!-- dynamically populated --></time>
             </div>
-            <div id="score_info">
-              <p>
-                You : 0
-              </p>
-              <p>
-                Them : 2
-              </p>
-            </div>
+            <div id="score_info"><!-- dynamically populated --></div>
           </section>
           <section id="played_card_wrapper">
-            <div id="opp_played_card" class="card-slot empty-card-slot"></div>
-            <div id="self_played_card" class="card-slot empty-card-slot"></div>
+            <div id="opp_played_card" class="card-slot empty-card-slot"><!-- dynamically populated --></div>
+            <div id="self_played_card" class="card-slot empty-card-slot"><!-- dynamically populated --></div>
           </section>
           <div id="round_control_wrapper">
-            <p id="current_instruction"></p>
+            <p id="current_instruction"><!-- dynamically populated --></p>
             <button id="start_round_button" class="primary-button hidden">Next round</button>
           </div>
         </div>
@@ -107,18 +98,17 @@
         </div>
       </div>
       <div id="bottom_board_wrapper">
-        <section id="user_cards">
-          
-        </section>
+        <section id="user_cards"><!-- dynamically populated --></section>
       </div>
     </section>
 
     <!-- DEBUG MENU -->
     <section id="debug_menu" aria-labelledby="debug_title" class="hidden">
       <h2 id="debug_title">Debug</h2>
-      <button id="debug_start_game_button">Start game</button>
-      <button id="debug_opponent_move_button">Opponent move (no reveal)</button>
-      <button id="debug_reveal_cards_button">Reveal cards</button>
+      <button id="debug_toggle_view_btn">Toggle view</button>
+      <button id="debug_start_game_btn">Start game</button>
+      <button id="debug_opponent_move_btn">Opponent move (no reveal)</button>
+      <button id="debug_reveal_cards_btn">Reveal cards</button>
     </section>
   </main>
 

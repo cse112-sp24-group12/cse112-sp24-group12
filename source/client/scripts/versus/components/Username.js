@@ -1,5 +1,6 @@
 import { UPDATE_USERNAME_LISTENER_NAME } from '../types.js';
 import { getProfile } from '../store.js';
+import { getPlayerUUID } from '../../profile.js';
 
 /**
  * Displays and automatically updates a username associated to a specific
@@ -39,10 +40,13 @@ export default class Username extends HTMLElement {
     const playerUUID = this.getAttribute('uuid');
     if (!playerUUID) return;
 
-    const profile = getProfile(playerUUID);
-    if (!profile) return;
+    const newUsername = playerUUID === getPlayerUUID()
+    ? 'You'
+    : getProfile(playerUUID)?.username;
 
-    this.innerText = profile.username;
+    if (!newUsername) return;
+
+    this.innerText = newUsername;
   } /* _handleUpdate */
 
   /**

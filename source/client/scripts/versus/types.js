@@ -51,6 +51,10 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  */
 
 /**
+ * @typedef { Card|'played' } IndeterminateCard
+ */
+
+/**
  * @typedef {
  *  {
  *    action: C2S_ACTIONS.INITIALIZE_INSTANCE,
