@@ -13,6 +13,7 @@ import {
   getPlayerUUIDs,
   initializePlayers,
   setRemainingCards,
+  getRemainingCards,
   setGameIsStarted,
   setSelfSelectedCard,
   setOppSelectedCard,
@@ -69,7 +70,7 @@ export function handleGameStart(drawnCardNames) {
   setRemainingCards(drawnCardNames);
   setGameIsStarted();
 
-  createCardElements(drawnCardNames);
+  createCardElements();
   initializeScoreboard();
 
   handleStartRound();
@@ -131,12 +132,12 @@ function updateScoreboardRoundNumber() {
  * Adds card images to the DOM at start of game
  * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from the server
  */
-function createCardElements(drawnCardNames) {
+function createCardElements() {
   const cardWrapperEl = document.querySelector('#user_cards');
   const drawnCardTemplateEl = document.querySelector('#card-template');
 
   cardWrapperEl.replaceChildren(
-    ...drawnCardNames.map((drawnCardName, i) => {
+    ...getRemainingCards().map((drawnCardName, i) => {
       const drawnCardEl = drawnCardTemplateEl.content.cloneNode(true);
 
       const cardInputEl = drawnCardEl.querySelector('input');

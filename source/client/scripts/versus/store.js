@@ -123,6 +123,14 @@ export function setRemainingCards(remainingCards) {
 } /* setRemainingCards */
 
 /**
+ * 
+ * @returns { Types.Card[] } 
+ */
+export function getRemainingCards() {
+  return gameState.byPlayer[getPlayerUUID()].remainingCards;
+} /* getRemainingCards */
+
+/**
  * Returns the UUIDs member to current game
  * @returns { Types.UUID[] } list of UUIDs active in game (length 2)
  */
