@@ -1,6 +1,9 @@
 /** @module settings */
 
-import { getProfileImageUrl, getUsername } from './profile.js';
+import { getProfileImageUrl, getUsername,
+  setProfileImage, setUsername,
+  getProfileImageNameOptions, getProfileImageUrlFromName,
+  getVolumeLevel, setVolumeLevel} from './profile.js';
 
 /**
  * Connects each button/wrapper to its corresponding section, and attaches listeners
@@ -27,9 +30,26 @@ function initializeNavigation(buttonWrapperIdToSectionIdMap) {
 /**
  * 
  */
-function initializeSaving() {
+function initializeVolumeInput(volumeEl, musicFlag) {
+  volumeEl.addEventListener('change', (event) => {
+    event.preventDefault();
+    console.log(volumeEl.value/100);
+    setVolumeLevel(musicFlag, volumeEl.value/100);
+  });
+} /* initializeVolumeInput */
 
-} /* intializeSaving */
+/**
+ * 
+ */
+function saveSettings() {
+  const usernameInputEl = document.querySelector('#profile_settings_username');
+  const avatarImageEl = document.querySelector('#profile_settings_avatar');
+
+  setUsername(usernameInputEl.value);
+  setProfileImage();
+
+  resetSettings();
+} /* saveSettings */
 
 /**
  * 
@@ -43,19 +63,38 @@ function resetSettings() {
 } /* resetSettings */
 
 /**
+ * 
+ */
+function saveVolume() {
+  const musicSettingsEl = document.querySelector('#music_volume_slider');
+  const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
+
+  musicSettingsEl.value = getVolumeLevel(true)*100;
+  sfxSettingsEl.value = getVolumeLevel(false)*100;
+} /* saveVolume */
+
+/**
  * Initializes event listeners for navigation
  */
 function initializeSettings() {
+  const musicSettingsEl = document.querySelector('#music_volume_slider');
+  const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
+  const saveSettingsButtonEl = document.querySelector('#save_settings_button');
   const resetSettingsButtonEl = document.querySelector('#reset_settings_button');
+  // const avatarSelectorEl = document.querySelector('#profile-settings-avatar-selector');
 
   resetSettings();
-  initializeSaving();
+  saveSettings();
+  saveVolume();
   initializeNavigation({
     '#audio_menu_button_wrapper': '#volume_settings',
     '#profile_menu_button_wrapper': '#profile_settings',
     '#info_menu_button_wrapper': '#information_settings',
   });
-
+  initializeVolumeInput(musicSettingsEl, true);
+  initializeVolumeInput(sfxSettingsEl, false);
+  
+  saveSettingsButtonEl.addEventListener('click', saveSettings);
   resetSettingsButtonEl.addEventListener('click', resetSettings);
 } /* initSettings */
 

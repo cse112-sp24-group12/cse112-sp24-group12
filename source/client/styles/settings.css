@@ -65,6 +65,17 @@
     border-radius: 50%;
 }
 
+#profile-settings-avatar-selector {
+    position: absolute;
+    height: 7.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
 #change_image_button_wrapper {
     display: flex;
     justify-content: center;

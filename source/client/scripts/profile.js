@@ -10,7 +10,8 @@ const LOCAL_PROFILE_IMAGE_NAME_LOCATION = 'user_profile.image_name';
 const LOCAL_PROFILE_IMAGE_CUSTOM_URL_LOCATION = 'user_profile.custom_image_url';
 const LOCAL_PROFILE_USERNAME_LOCATION = 'user_profile.username';
 const LOCAL_PROFILE_VOLUME_MUTE_LOCATION = 'user_profile.volume_mute';
-const LOCAL_PROFILE_VOLUME_LEVEL_LOCATION = 'user_profile.volume_level';
+const LOCAL_PROFILE_MUSIC_LEVEL_LOCATION = 'user_profile.music_level';
+const LOCAL_PROFILE_SFX_LEVEL_LOCATION = 'user_profile.sfx_level';
 const LOCAL_PROFILE_UUID_lOCATION = 'user_profile.uuid';
 
 const DEFAULT_USERNAME = 'User';
@@ -164,26 +165,39 @@ export function getIsMute() {
 
 /**
  * Saves volume level setting to local storage for access across sessions
+ * @param { boolean } musicFlag indicates a change in music or sfx
  * @param { number } volumeLevel volume level in range [0, 1]
  * @returns { boolean } true if saved successfully; otherwise false
  */
-export function setVolumeLevel(volumeLevel) {
+export function setVolumeLevel(musicFlag, volumeLevel) {
   if (isNaN(volumeLevel) || volumeLevel < 0 || volumeLevel > 1) return false;
 
-  window.localStorage.setItem(LOCAL_PROFILE_VOLUME_LEVEL_LOCATION, volumeLevel);
+  if (musicFlag) {
+    window.localStorage.setItem(LOCAL_PROFILE_MUSIC_LEVEL_LOCATION, volumeLevel);
+  } else {
+    window.localStorage.setItem(LOCAL_PROFILE_SFX_LEVEL_LOCATION, volumeLevel);
+  }
 
   return true;
 } /* setVolumeLevel */
 
 /**
  * Fetches volume level setting from browser's local storage
+ * @param { boolean } musicFlag indicates a change in music or sfx
  * @returns { number } saved volume level in range [0, 1]
  */
-export function getVolumeLevel() {
-  return +(
-    window.localStorage.getItem(LOCAL_PROFILE_VOLUME_LEVEL_LOCATION) ??
-    DEFAULT_VOLUME_LEVEL
-  );
+export function getVolumeLevel(musicFlag) {
+  if (musicFlag) {
+    return +(
+      window.localStorage.getItem(LOCAL_PROFILE_MUSIC_LEVEL_LOCATION) ??
+      DEFAULT_VOLUME_LEVEL
+    );
+  } else {
+    return +(
+      window.localStorage.getItem(LOCAL_PROFILE_SFX_LEVEL_LOCATION) ??
+      DEFAULT_VOLUME_LEVEL
+    );
+  }
 } /* getVolumeLevel */
 
 /**
