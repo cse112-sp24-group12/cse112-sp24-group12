@@ -82,13 +82,19 @@
     align-items: center;
 }
 
+#profile_settings_control_wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
 #profile_settings_username {
     width: 20rem;
 }
 
 #information-card-list {
     padding: 2rem;
-    height: 32rem;
+    height: 28rem;
     overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
