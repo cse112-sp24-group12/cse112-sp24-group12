@@ -21,3 +21,14 @@ export function areCardsEqual(card1, card2) {
 export function getCurrentRoundState(gameState) {
   return gameState.byRound[gameState.byRound.length - 1];
 } /* getCurrentRoundState */
+
+/**
+ * @param { string } suite
+ * @param { string|number } number 
+ * @returns { string }
+ */
+export function getCardURLFromName(suite, number) {
+  if (!suite || !number) return '';
+
+  return `./assets/images/deck_minor/${suite}/${number}.png`;
+} /* getCardURLFromName */

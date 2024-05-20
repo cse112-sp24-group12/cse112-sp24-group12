@@ -33,6 +33,13 @@ export default class Username extends HTMLElement {
   } /* disconnectedCallback */
 
   /**
+   * Refreshes display whenever UUID is updated
+   */
+  attributeChangedCallback() {
+    this._handleUpdate();
+  } /* attributeChangedCallback */
+
+  /**
    * Displays as text the most recently learned username from the server associated
    * to the attributed UUID
    */
@@ -48,11 +55,4 @@ export default class Username extends HTMLElement {
 
     this.innerText = newUsername;
   } /* _handleUpdate */
-
-  /**
-   * Refreshes display whenever UUID is updated
-   */
-  attributeChangedCallback() {
-    this._handleUpdate();
-  } /* attributeChangedCallback */
 } /* Username */

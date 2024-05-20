@@ -1,3 +1,4 @@
 import Username from './Username.js';
+import Card from './Card.js';
 
-export { Username };
+export { Username, Card };

@@ -49,3 +49,22 @@ main {
 #open_rules_button:hover img {
   transform: var(--default-scale);
 }
+
+versus-card img {
+  height: 100%;
+  width: 100%;
+}
+
+versus-card {
+  overflow: hidden;
+}
+
+versus-card input {
+  appearance: none;
+}
+
+versus-card label {
+  display: block;
+  height: 100%;
+  color: var(--black);
+}

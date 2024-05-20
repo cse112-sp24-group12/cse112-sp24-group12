@@ -70,6 +70,8 @@
 
 .empty-card-slot {
   outline: 1px dashed white;
+  padding: 0.25rem;
+  border-radius: 1rem;
 }
 
 #chat_box {
@@ -113,27 +115,7 @@
   height: 100%;
 }
 
-.user-card {
-  overflow: hidden;
-}
-
-.user-card input {
-  appearance: none;
-}
-
-.user-card label {
-  display: block;
-  height: 100%;
-  color: var(--black);
-}
-
 .back-card {
-  height: 100%;
-  aspect-ratio: 2 / 3;
-  background-color: white;
-}
-
-.front-card {
   height: 100%;
   aspect-ratio: 2 / 3;
   background-color: white;

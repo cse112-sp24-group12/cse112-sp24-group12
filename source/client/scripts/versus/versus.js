@@ -131,30 +131,21 @@ function updateScoreboardRoundNumber() {
 
 /**
  * Adds card images to the DOM at start of game
- * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from the server
  */
 function createCardElements() {
   const cardWrapperEl = document.querySelector('#user_cards');
-  const drawnCardTemplateEl = document.querySelector('#card-template');
-
+  
   cardWrapperEl.replaceChildren(
-    ...getRemainingCards().map((drawnCardName, i) => {
-      const drawnCardEl = drawnCardTemplateEl.content.cloneNode(true);
+    ...getRemainingCards().map((remainingCard) => {
+      const versusCardEl = document.createElement('versus-card');
 
-      const cardInputEl = drawnCardEl.querySelector('input');
-      const cardLabelEl = drawnCardEl.querySelector('label');
-      const cardContentEl = drawnCardEl.querySelector('.front-card');
+      versusCardEl.setAttribute('variant', 'front');
+      versusCardEl.setAttribute('suite', remainingCard.suite);
+      versusCardEl.setAttribute('number', remainingCard.number);
 
-      const htmlIdName = `drawn_card_${i}`;
+      versusCardEl.addEventListener('change', handleCardSelection);
 
-      cardLabelEl.htmlFor = htmlIdName;
-      cardInputEl.id = htmlIdName;
-      cardInputEl.value = JSON.stringify(drawnCardName);
-      cardContentEl.innerText = JSON.stringify(drawnCardName);
-
-      cardInputEl.addEventListener('change', handleCardSelection);
-
-      return drawnCardEl;
+      return versusCardEl;
     }),
   );
 } /* createCardElements */
@@ -181,9 +172,14 @@ export function refreshEntireGame() {
  * that card is
  */
 export function handleOpponentMove() {
-  const opponentPlayedCardEl = document.querySelector('#opp_played_card');
+  const oppCardSlotEl = document.querySelector('#opp_played_card');
 
-  opponentPlayedCardEl.style.backgroundColor = 'red'; // TODO : remove
+  const versusCardEl = document.createElement('versus-card');
+
+  versusCardEl.setAttribute('variant', 'back');
+  versusCardEl.toggleAttribute('disabled', true);
+
+  oppCardSlotEl.replaceChildren(versusCardEl);
 
   setOppSelectedCard('played');
 } /* handleOpponentMove */
@@ -194,11 +190,19 @@ export function handleOpponentMove() {
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
 export function handleRevealCards(opponentSelectedCard, roundWinner) {
-  const opponentPlayedCardEl = document.querySelector('#opp_played_card');
+  const oppCardSlotEl = document.querySelector('#opp_played_card');
   const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  opponentPlayedCardEl.style.backgroundColor = 'white'; // TODO : remove
-  opponentPlayedCardEl.innerText = JSON.stringify(opponentSelectedCard);
+  let oppVersusCardEl = oppCardSlotEl.querySelector('versus-card');
+  if (!oppVersusCardEl) {
+    oppVersusCardEl = document.createElement('versus-card');
+    oppVersusCardEl.toggleAttribute('disabled', true);
+    oppCardSlotEl.replaceChildren(oppVersusCardEl);
+  }
+
+  oppVersusCardEl.setAttribute('suite', opponentSelectedCard.suite);
+  oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
+  oppVersusCardEl.setAttribute('variant', 'front');
 
   const versusUsernameEl = document.createElement('versus-username');
   versusUsernameEl.setAttribute('uuid', roundWinner.uuid);
@@ -206,7 +210,7 @@ export function handleRevealCards(opponentSelectedCard, roundWinner) {
 
   startRoundButtonEl.classList.remove('hidden');
 
-  setOppSelectedCard(opponentPlayedCardEl);
+  setOppSelectedCard(opponentSelectedCard);
   setRoundWinner(roundWinner.uuid);
   updateScoreboardScores();
 } /* handleRevealCards */
@@ -216,15 +220,13 @@ export function handleRevealCards(opponentSelectedCard, roundWinner) {
  */
 export function handleStartRound() {
   const startRoundButtonEl = document.querySelector('#start_round_button');
-  const opponentPlayedCardEl = document.querySelector('#opp_played_card');
-  const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
+  const oppCardSlotEl = document.querySelector('#opp_played_card');
+  const selfCardSlotEl = document.querySelector('#self_played_card');
 
   startRoundButtonEl.classList.add('hidden');
-
-  opponentPlayedCardEl.style.backgroundColor = '';
-  opponentPlayedCardEl.innerText = '';
-
-  selfPlayedCardSlotEl.replaceChildren();
+  
+  oppCardSlotEl.replaceChildren();
+  selfCardSlotEl.replaceChildren();
 
   updateCurrentInstruction(USER_MOVE_MESSAGE);
   createNewRoundState();
@@ -259,11 +261,11 @@ function updateCurrentInstruction(...newChildEls) {
 /**
  * Relays card selection to server during gameplay, and relocates
  * corresponding card to center screen
+ * @param { MouseEvent } e 
  */
-function handleCardSelection() {
-  const cardInputEls = document.querySelectorAll('input[name="selected_card"]');
-  const selectedCardInputEl = [...cardInputEls].find((el) => el.checked);
-  const selectedParentCardEl = selectedCardInputEl.closest('.user-card');
+function handleCardSelection(e) {
+  const selectedVersusCardEl = e.currentTarget;
+  const selectedCardInputEl = selectedVersusCardEl.querySelector('input');
   const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
 
   const selectedCard = selectedCardInputEl.value;
@@ -272,10 +274,10 @@ function handleCardSelection() {
   selectCard(JSON.parse(selectedCard));
   setSelfSelectedCard(selectedCard);
 
+  selectedCardInputEl.setAttribute('disabled', true);
   selectedCardInputEl.remove();
-  selectedParentCardEl.remove();
 
-  selfPlayedCardSlotEl.replaceChildren(selectedParentCardEl);
+  selfPlayedCardSlotEl.replaceChildren(selectedVersusCardEl);
   updateCurrentInstruction(OPPONENT_MOVE_MESSAGE);
 } /* handleCardSelection */
 
