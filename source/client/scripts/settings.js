@@ -5,6 +5,8 @@ import { getProfileImageUrl, getUsername,
   getProfileImageNameOptions, getProfileImageUrlFromName,
   getVolumeLevel, setVolumeLevel} from './profile.js';
 
+import tarotConfig from './tarot.js';
+
 /**
  * Connects each button/wrapper to its corresponding section, and attaches listeners
  * to switch sections on button click
@@ -37,6 +39,26 @@ function initializeVolumeInput(volumeEl, musicFlag) {
     setVolumeLevel(musicFlag, volumeEl.value/100);
   });
 } /* initializeVolumeInput */
+
+/**
+ * 
+ */
+function initalizeCards() {
+  const cardListEl = document.querySelector('#information-card-list');
+  const cards = tarotConfig.tarot;
+
+  cards.forEach((card) => {
+    const newCard = document.createElement('div');
+    const img = document.createElement('img');
+
+    newCard.classList.add('card');
+    img.src = card.image;
+    img.alt = card.name;
+
+    newCard.appendChild(img);
+    cardListEl.appendChild(newCard);
+  });
+}
 
 /**
  * 
@@ -81,6 +103,7 @@ function initializeSettings() {
   const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
   const saveSettingsButtonEl = document.querySelector('#save_settings_button');
   const resetSettingsButtonEl = document.querySelector('#reset_settings_button');
+  // TODO: Implement avatar selection
   // const avatarSelectorEl = document.querySelector('#profile-settings-avatar-selector');
 
   resetSettings();
@@ -93,6 +116,7 @@ function initializeSettings() {
   });
   initializeVolumeInput(musicSettingsEl, true);
   initializeVolumeInput(sfxSettingsEl, false);
+  initalizeCards();
   
   saveSettingsButtonEl.addEventListener('click', saveSettings);
   resetSettingsButtonEl.addEventListener('click', resetSettings);
