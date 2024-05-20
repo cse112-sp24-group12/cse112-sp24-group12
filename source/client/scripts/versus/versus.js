@@ -15,6 +15,7 @@ import {
   setRemainingCards,
   getRemainingCards,
   setGameIsStarted,
+  getGameIsStarted,
   setSelfSelectedCard,
   setOppSelectedCard,
   setRoundWinner,
@@ -89,7 +90,7 @@ function initializeScoreboard() {
     ...getPlayerUUIDs().map((UUID) => {
       const scoreInfoEl = document.createElement('p');
       const scoreCounterEl = document.createElement('span');
-      scoreCounterEl.innerText = '0';
+      scoreCounterEl.innerText = getScore(UUID);
 
       const versusUsernameEl = document.createElement('versus-username');
       versusUsernameEl.setAttribute('uuid', UUID);
@@ -100,7 +101,7 @@ function initializeScoreboard() {
     }),
   );
 
-  roundNumberEl.innerText = '0';
+  roundNumberEl.innerText = getRoundNumber();
   timeRemainingEl.innerText = '0 sec';
 } /* initializeScoreboard */
 
@@ -159,11 +160,20 @@ function createCardElements() {
 } /* createCardElements */
 
 /**
- * Rebuilds entire game board (without animation); can be used to resolve errors
- * and in the case of re-joining instances
+ * Rebuilds entire game board; can be used to resolve errors and in the case of
+ * re-joining instances
  */
 export function refreshEntireGame() {
-  // TODO: build out
+  if (!getGameIsStarted()) return;
+
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
+
+  lobbyWrapperEl.classList.add('hidden');
+  gameBoardWrapperEl.classList.remove('hidden');
+
+  initializeScoreboard();
+  createCardElements();
 } /* refreshEntireGame */
 
 /**
@@ -300,6 +310,7 @@ export function initializeVersus() {
     handleRevealCards,
     handleStartRound,
     handleGameEnd,
+    refreshEntireGame,
   });
 
   joinGameButtonEl.addEventListener('click', sendJoinInstance);

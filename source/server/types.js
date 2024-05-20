@@ -20,6 +20,7 @@ export const S2C_ACTIONS = {
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
   UPDATE_PROFILE: 'update_profile',
+  FORCE_REFRESH: 'force_refresh',
 };
 
 /**
@@ -127,6 +128,10 @@ export const S2C_ACTIONS = {
  *  {
  *    action: S2C_ACTIONS.UPDATE_PROFILE,
  *    profile: ServerToClientProfile
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.FORCE_REFRESH,
+ *    gameState: GameState
  *  }
  * } ServerToClientMessage
  */

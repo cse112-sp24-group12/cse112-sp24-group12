@@ -12,6 +12,7 @@ import {
   getWinningCard,
   createNewRound,
   generateUniqueCards,
+  cleanGameState,
 } from './util.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
 import * as Types from './types.js';
@@ -270,22 +271,20 @@ function endRound(gameInstance) {
   );
   const roundWinnerUUID =
     getWinningCard(card1, card2) === card1 ? uuid1 : uuid2;
-
   const roundWinner = gameInstance.webSocketConnections.find(
     (conn) => conn.profile.uuid === roundWinnerUUID,
   ).profile;
 
   currentRoundState.roundWinner = roundWinnerUUID;
+  gameInstance.gameState.byPlayer[roundWinnerUUID].score += 1;
 
   gameInstance.webSocketConnections.forEach((conn) => {
-    const opponentSelectedCard =
-      currentRoundState.selectedCard[
-        getOtherPlayer(gameInstance, conn).profile.uuid
-      ];
-
     sendMessage(conn, {
       action: S2C_ACTIONS.REVEAL_CARDS,
-      opponentSelectedCard,
+      opponentSelectedCard:
+        currentRoundState.selectedCard[
+          getOtherPlayer(gameInstance, conn).profile.uuid
+        ],
       roundWinner,
     });
   });
@@ -429,6 +428,13 @@ function attemptRejoin(webSocketConnection, playerUUID) {
   });
 
   alertUpdateInstance(reqGameInstance);
+  sendMessage(webSocketConnection, {
+    action: S2C_ACTIONS.FORCE_REFRESH,
+    gameState: cleanGameState(
+      webSocketConnection.profile.uuid,
+      reqGameInstance.gameState,
+    ),
+  });
   return true;
 } /* attemptRejoin */
 

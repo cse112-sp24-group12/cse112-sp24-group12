@@ -6,7 +6,7 @@ import {
   getPlayerUUID,
   createProfileObject,
 } from '../profile.js';
-import { updateProfile } from './store.js';
+import { updateProfile, setGameState } from './store.js';
 import * as Types from './types.js';
 
 const WEB_SOCKET_URL = 'ws://localhost:8000';
@@ -24,6 +24,7 @@ const socketState = {
     handleRevealCards: () => {},
     handleStartRound: () => {},
     handleGameEnd: () => {},
+    refreshEntireGame: () => {},
   },
   chatCallbackFns: {
     printMessage: () => {},
@@ -53,6 +54,7 @@ function handleMessage(message) {
     handleRevealCards,
     handleStartRound,
     handleGameEnd,
+    refreshEntireGame,
   } = socketState.gameCallbackFns;
   const { printMessage } = socketState.chatCallbackFns;
 
@@ -88,6 +90,9 @@ function handleMessage(message) {
       case S2C_ACTIONS.UPDATE_PROFILE:
         updateProfile(messageObj.profile);
         break;
+      case S2C_ACTIONS.FORCE_REFRESH:
+        setGameState(messageObj.gameState);
+        refreshEntireGame();
       default:
     }
   } catch (e) {

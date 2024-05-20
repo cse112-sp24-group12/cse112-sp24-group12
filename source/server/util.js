@@ -107,3 +107,25 @@ export function generateUniqueCards(cardList, n) {
   /* choose first n and second n elements for each list */
   return [shuffledCardList.slice(0, n), shuffledCardList.slice(n, n + n)];
 } /* generateUniqueCards */
+
+/**
+ *
+ * @param { Types.UUID } playerUUID
+ * @param { Types.GameState } gameState
+ * @returns { Types.GameState }
+ */
+export function cleanGameState(playerUUID, gameState) {
+  const copiedState = structuredClone(gameState);
+  const currentRound = copiedState.byRound[copiedState.byRound.length - 1];
+
+  Object.keys(gameState.byPlayer).forEach((UUID) => {
+    if (UUID === playerUUID) return;
+
+    if (!currentRound.roundWinner && currentRound.selectedCard[UUID])
+      currentRound.selectedCard[UUID] = 'played';
+
+    copiedState.byPlayer[UUID].remainingCards = [];
+  });
+
+  return copiedState;
+} /* cleanGameState */

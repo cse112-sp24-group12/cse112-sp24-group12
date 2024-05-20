@@ -123,8 +123,8 @@ export function setRemainingCards(remainingCards) {
 } /* setRemainingCards */
 
 /**
- * 
- * @returns { Types.Card[] } 
+ *
+ * @returns { Types.Card[] }
  */
 export function getRemainingCards() {
   return gameState.byPlayer[getPlayerUUID()].remainingCards;
@@ -144,3 +144,20 @@ export function getPlayerUUIDs() {
 export function setGameIsStarted() {
   gameState.isStarted = true;
 } /* setGameIsStarted */
+
+/**
+ *
+ * @returns { boolean }
+ */
+export function getGameIsStarted() {
+  return gameState.isStarted;
+} /* getGameIsStarted */
+
+/**
+ *
+ * @param { Types.GameState }
+ * @param newGameState
+ */
+export function setGameState(newGameState) {
+  Object.assign(gameState, newGameState);
+} /* setGameState */
