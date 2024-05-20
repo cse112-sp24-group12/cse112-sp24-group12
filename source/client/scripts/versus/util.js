@@ -24,7 +24,7 @@ export function getCurrentRoundState(gameState) {
 
 /**
  * @param { string } suite
- * @param { string|number } number 
+ * @param { string|number } number
  * @returns { string }
  */
 export function getCardURLFromName(suite, number) {

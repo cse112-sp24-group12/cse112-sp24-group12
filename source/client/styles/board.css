@@ -64,15 +64,16 @@
   min-height: 0;
 }
 
-.card-slot {
-  aspect-ratio: 2 / 3;
-  color: var(--black);
+.card-outline { 
+  outline: 1px dashed var(--white);
+  border-radius: 1rem;
+  padding: 0.25rem;
 }
 
-.empty-card-slot {
-  outline: 1px dashed white;
-  padding: 0.25rem;
-  border-radius: 1rem;
+.card-slot {
+  height: 100%;
+  aspect-ratio: 2 / 3;
+  color: var(--black);
 }
 
 #chat_box {
@@ -136,4 +137,5 @@
 
 .trans-wrapper {
   transition: transform 350ms ease-in-out;
+  transform-origin: top left;
 }

@@ -134,7 +134,7 @@ function updateScoreboardRoundNumber() {
  */
 function createCardElements() {
   const cardWrapperEl = document.querySelector('#user_cards');
-  
+
   cardWrapperEl.replaceChildren(
     ...getRemainingCards().map((remainingCard) => {
       const versusCardEl = document.createElement('versus-card');
@@ -224,7 +224,7 @@ export function handleStartRound() {
   const selfCardSlotEl = document.querySelector('#self_played_card');
 
   startRoundButtonEl.classList.add('hidden');
-  
+
   oppCardSlotEl.replaceChildren();
   selfCardSlotEl.replaceChildren();
 
@@ -259,9 +259,9 @@ function updateCurrentInstruction(...newChildEls) {
 } /* updateCurrentInstruction */
 
 /**
- * 
+ *
  * @param { HTMLElement } targetEl
- * @param { HTMLElement } targetContainerEl 
+ * @param { HTMLElement } targetContainerEl
  */
 function animateSlidingToContainer(targetEl, targetContainerEl) {
   /* calculate difference between current and desired position */
@@ -271,6 +271,9 @@ function animateSlidingToContainer(targetEl, targetContainerEl) {
   const diffXPos = targetContainerElRect.left - targetElRect.left;
   const diffYPos = targetContainerElRect.top - targetElRect.top;
 
+  const scaleXDim = targetContainerElRect.width / targetElRect.width;
+  const scaleYDim = targetContainerElRect.height / targetElRect.height;
+
   /* wrap element in a new div to avoid transform conflicts */
   const transWrapperEl = document.createElement('div');
   transWrapperEl.classList.add('trans-wrapper');
@@ -278,20 +281,24 @@ function animateSlidingToContainer(targetEl, targetContainerEl) {
   transWrapperEl.append(targetEl);
 
   /* translate and swap after completion */
-  requestAnimationFrame(() => { /* necessary for transition rule to be processed */
-    transWrapperEl.style.transform = `translate(${diffXPos}px, ${diffYPos}px)`;
+  requestAnimationFrame(() => {
+    transWrapperEl.style.transform = `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`;
 
-    transWrapperEl.addEventListener('transitionend', () => {
-      targetContainerEl.replaceChildren(targetEl);
-      transWrapperEl.remove();
-    }, { once: true });
+    transWrapperEl.addEventListener(
+      'transitionend',
+      () => {
+        targetContainerEl.replaceChildren(targetEl);
+        transWrapperEl.remove();
+      },
+      { once: true },
+    );
   });
 } /* animateSlidingToContainer */
 
 /**
  * Relays card selection to server during gameplay, and relocates
  * corresponding card to center screen
- * @param { MouseEvent } e 
+ * @param { MouseEvent } e
  */
 function handleCardSelection(e) {
   const selectedVersusCardEl = e.currentTarget;
