@@ -104,7 +104,8 @@ function initializeSettings() {
   const saveSettingsButtonEl = document.querySelector('#save_settings_button');
   const resetSettingsButtonEl = document.querySelector('#reset_settings_button');
   // TODO: Implement avatar selection
-  // const avatarSelectorEl = document.querySelector('#profile-settings-avatar-selector');
+  // TODO: Card information onclick
+  // TODO: Refactor code
 
   resetSettings();
   saveSettings();
