@@ -26,7 +26,7 @@
     border-radius: var(--border-radius);
 }
 
-#settings-container > section:not(.active) {
+#settings-container > section:not(.active), #select-profile-picture-wrapper:not(.active), #card-information-wrapper:not(.active) {
     display: none !important;
 }
 
@@ -134,9 +134,10 @@
 #information_settings img {
     width: 8rem;
     height: 14rem;
+    cursor: help;
 }
 
-#information_settings > #card-information-wrapper {
+#information_settings > #card-information-wrapper, #select-profile-picture-wrapper{
     position: absolute;
     margin: 0;
     top: 0;
@@ -146,10 +147,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    pointer-events: none;
 }
 
-#card-information {
+#card-information, #select-profile-picture{
     position: relative;
     width: 30rem;
     height: 20rem;
@@ -160,7 +160,8 @@
     gap: 2rem;
 }
 
-#card-information-close {
+
+#card-information-close, #select-profile-picture-close {
     position: absolute;
     top: 1rem;
     right: 1rem;

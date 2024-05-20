@@ -104,7 +104,28 @@ function initializeSettings() {
   const saveSettingsButtonEl = document.querySelector('#save_settings_button');
   const resetSettingsButtonEl = document.querySelector('#reset_settings_button');
   // TODO: Implement avatar selection
+
+  const changeAvatarButton = document.querySelector("#change_image_button");
+  changeAvatarButton.addEventListener('click', () => {
+    document.querySelector("#select-profile-picture-wrapper").classList.add('active');
+  });
+  const closeAvatarButton = document.querySelector("#select-profile-picture-close");
+  closeAvatarButton.addEventListener('click', () => {
+    document.querySelector("#select-profile-picture-wrapper").classList.remove('active');
+  })
+  
   // TODO: Card information onclick
+  /*
+  const cardInfoPopup = document.querySelector("card");
+  cardInfoPopup.addEventListener('click', () => {
+    document.querySelector("#card-information-wrapper").classList.add('active');
+  });
+
+  const closeInfoButton = document.querySelector("#card-information-close");
+  closeInfoButton.addEventListener('click', () => {
+    document.querySelector("#card-information-wrapper").classList.remove('active');
+  })
+  */
   // TODO: Refactor code
 
   resetSettings();
