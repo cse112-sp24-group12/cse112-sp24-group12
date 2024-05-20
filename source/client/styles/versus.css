@@ -50,13 +50,15 @@ main {
   transform: var(--default-scale);
 }
 
-versus-card img {
+versus-card {
+  display: block;
   height: 100%;
-  width: 100%;
+  overflow: hidden;
 }
 
-versus-card {
-  overflow: hidden;
+versus-card img {
+  height: 100%;
+  aspect-ratio: 2 / 3;
 }
 
 versus-card input {

@@ -206,7 +206,7 @@ export function handleRevealCards(opponentSelectedCard, roundWinner) {
 
   const versusUsernameEl = document.createElement('versus-username');
   versusUsernameEl.setAttribute('uuid', roundWinner.uuid);
-  updateCurrentInstruction(versusUsernameEl, ' won the game!');
+  updateCurrentInstruction(versusUsernameEl, ' won the round!');
 
   startRoundButtonEl.classList.remove('hidden');
 
@@ -259,6 +259,36 @@ function updateCurrentInstruction(...newChildEls) {
 } /* updateCurrentInstruction */
 
 /**
+ * 
+ * @param { HTMLElement } targetEl
+ * @param { HTMLElement } targetContainerEl 
+ */
+function animateSlidingToContainer(targetEl, targetContainerEl) {
+  /* calculate difference between current and desired position */
+  const targetElRect = targetEl.getBoundingClientRect();
+  const targetContainerElRect = targetContainerEl.getBoundingClientRect();
+
+  const diffXPos = targetContainerElRect.left - targetElRect.left;
+  const diffYPos = targetContainerElRect.top - targetElRect.top;
+
+  /* wrap element in a new div to avoid transform conflicts */
+  const transWrapperEl = document.createElement('div');
+  transWrapperEl.classList.add('trans-wrapper');
+  targetEl.parentElement.insertBefore(transWrapperEl, targetEl);
+  transWrapperEl.append(targetEl);
+
+  /* translate and swap after completion */
+  requestAnimationFrame(() => { /* necessary for transition rule to be processed */
+    transWrapperEl.style.transform = `translate(${diffXPos}px, ${diffYPos}px)`;
+
+    transWrapperEl.addEventListener('transitionend', () => {
+      targetContainerEl.replaceChildren(targetEl);
+      transWrapperEl.remove();
+    }, { once: true });
+  });
+} /* animateSlidingToContainer */
+
+/**
  * Relays card selection to server during gameplay, and relocates
  * corresponding card to center screen
  * @param { MouseEvent } e 
@@ -274,10 +304,10 @@ function handleCardSelection(e) {
   selectCard(JSON.parse(selectedCard));
   setSelfSelectedCard(selectedCard);
 
-  selectedCardInputEl.setAttribute('disabled', true);
-  selectedCardInputEl.remove();
+  selectedVersusCardEl.toggleAttribute('disabled', true);
 
-  selfPlayedCardSlotEl.replaceChildren(selectedVersusCardEl);
+  animateSlidingToContainer(selectedVersusCardEl, selfPlayedCardSlotEl);
+
   updateCurrentInstruction(OPPONENT_MOVE_MESSAGE);
 } /* handleCardSelection */
 
@@ -321,5 +351,4 @@ export function initializeVersus() {
   });
   startGameButtonEl.addEventListener('click', startGame);
   startRoundButtonEl.addEventListener('click', startRound);
-} /* function initializeVersus() {
- */
+} /* initializeVersus */
