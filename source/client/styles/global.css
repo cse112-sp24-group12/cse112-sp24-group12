@@ -53,6 +53,13 @@ body {
   background-color: var(--background-color);
 }
 
+canvas.star-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: "Berkshire Swash";
   font-weight: normal;
