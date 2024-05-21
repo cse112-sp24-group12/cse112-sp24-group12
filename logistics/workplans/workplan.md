@@ -11,21 +11,21 @@
 
 ## Issues
 ### Current sprint
-- Animate opponent player's card sliding in
-- Animate card flip
-- Animate card winning decision
-- Animate cards being dealt
-- Make lobby player list look better
-- Add destruction of lobbies
-- Add notifcation on player leave / reconnect
-- Allow users to actually leave a game
-- Allow ties between cards
-- Create list of all world events
-- Add world events to game
-- Continue settings development
-- Add legend to game board
+- Animate opponent player's card sliding in [Luke]
+- Animate card flip [Kristin, Eric]
+- Animate card winning decision [Kristin, Eric]
+- Animate cards being dealt [Harshil, Alex]
+- Make lobby player list look better [Brandon, Geo]
+- Add destruction of lobbies [Luke]
+- Add notifcation on player leave / reconnect [Arjun, Shijun]
+- Allow users to actually leave a game [Luke]
+- Create list of all world events [Harshil, Alex]
+- Add world events to game [Harshil, Alex]
+- Continue settings development [Brandon, Geo]
+- Add legend to game board [Anyone who finishes early]
 
 ### Backlog
+- Allow ties between cards 
 - Automated image compression (CI/CD) [3 points]
 - JS minification (CI/CD) [2 points]
 - Conform various screens to new style guide [8 points] 
