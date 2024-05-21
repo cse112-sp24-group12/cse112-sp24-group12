@@ -15,15 +15,18 @@ body {
   height: 100vh;
   overflow: clip;
   backdrop-filter: blur(0.2vw);
+  perspective: 200px;
 }
 
 #content {
   position: absolute;
   inset: 0;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .star {
   position: absolute;
   border-radius: 50%;
+  width: 1.5px;
+  aspect-ratio: 1 / 1;
 }

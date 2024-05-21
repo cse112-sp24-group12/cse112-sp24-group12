@@ -15,6 +15,12 @@
     "jsdoc"
   ],
   "rules": {
+    "jsdoc/check-tag-names": [
+      "error",
+      {
+        "definedTags": ["jest-environment"]
+      }
+    ]
   },
   "ignorePatterns": ["scripts/swiper-bundle.min.js"]
 }

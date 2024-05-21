@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarot, but a Game | Settings</title>
+    <link rel="stylesheet" href="./styles/global.css" />
+    <link rel="stylesheet" href="./styles/settings.css" />
+    <script src="./scripts/settings.js" type="module"></script>
+  </head>
+  <body>
+    <header>
+      <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+    </header>
+    <div id="settings-container">
+      <aside id="settings-sidebar">
+        <nav>
+          <div class="sword-slider active" id="audio_menu_button_wrapper">
+            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
+            <div class="button-translation-wrapper">
+              <button class="secondary-button" id="audio_menu_button">Audio</button>
+            </div>
+          </div>
+          <div class="sword-slider" id="profile_menu_button_wrapper">
+            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
+            <div class="button-translation-wrapper">
+              <button class="secondary-button" id="profile_menu_button">Profile</button>
+            </div>
+          </div>
+          <div class="sword-slider" id="info_menu_button_wrapper">
+            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
+            <div class="button-translation-wrapper">
+              <button class="secondary-button" id="info_menu_button">Info</button>
+            </div>
+          </div>
+        </nav>
+      </aside>
+      <section id="volume_settings" class="active card purple-card">
+        <label for="music_volume_slider">Music volume</label>
+        <input type="range" name="music_volume" id="music_volume_slider">
+        <label for="sfx_volume_slider">Sound effects volume</label>
+        <input type="range" name="sfx_volume" id="sfx_volume_slider">
+      </section>
+      <section id="profile_settings" class="card purple-card">
+        <div id="profile_settings_identity">
+            <img id="profile_settings_avatar" src="" alt="avatar">
+            <div id="change_image_button_wrapper">
+              <button id="change_image_button">Change avatar</button>
+
+              <div id="select-profile-picture-wrapper">
+                <div id="select-profile-picture" class="card white-card">
+                  <button id="select-profile-picture-close">X</button>
+                  <h2>Choose a profile picture</h2>
+                  <label><input type="radio" name="avatar-radio" value="./source/client/assets/images/characters/panda.png">
+                    <img
+                    src="./assets/images/characters/panda.png"
+                    value= "./assets/images/characters/panda.png"
+                    alt="Panda"
+                    width="50"
+                    height="50" />
+                  </label>
+                  <label><input type="radio" name="avatar-radio" value="./source/client/assets/images/characters/dragon.png" checked>
+                    <img
+                    src="./assets/images/characters/dragon.png"
+                    value= "./assets/images/characters/dragon.png"
+                    alt="Dragon"
+                    width="50"
+                    height="50" />
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div id="profile_settings_username_wrapper">
+              <input id="profile_settings_username" type="text" value="">
+            </div>
+        </div>
+        <div id="profile_settings_control_wrapper">
+          <p id="save_failed_msg" class="hidden">Save failed</p>
+          <p id="save_successful_msg" class="hidden">Save successful</p>
+          <button id="reset_settings_button" class="secondary-button">Reset</button>
+          <button id="save_settings_button" class="primary-button">Save</button>
+        </div>
+      </section>
+      <section id="information_settings" class="card purple-card">
+        <h2>All cards</h2>
+        <div id="information-card-list"></div>
+        <div id="card-information-wrapper">
+          <div id="card-information" class="card white-card">
+            <button id="card-information-close">X</button>
+            <h1>The Fool</h1>
+            <h2>freedom, faith, inexperience, innocence</h2>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

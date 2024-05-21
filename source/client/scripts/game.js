@@ -1,3 +1,4 @@
+import { getProfileImageUrl } from './profile.js';
 import tarotConfig from './tarot.js';
 
 /**
@@ -17,7 +18,7 @@ const TAROT_CARDS = tarotConfig.tarot;
  * @type { {
  *  luck: number,
  *  chosenCards: Card[],
- *  messageResetTimeout: (NodeJS.Timeout | undefined)
+ *  messageResetTimeout: (number | undefined)
  * } }
  */
 const gameState = {
@@ -82,7 +83,7 @@ export function getUniqueCard() {
  * and redirects users to results screen
  */
 function endGame() {
-  setTimeout(() => {
+  window.setTimeout(() => {
     localStorage.setItem(
       'chosenCards',
       JSON.stringify(gameState.chosenCards.map((card) => card.name)),
@@ -141,7 +142,7 @@ function generateCardsWithListeners(numCards) {
     cardContainerEl.className = 'card-container';
     cardContainerEl.id = `card-container-${i + 1}`;
 
-    cardEl.className = 'card';
+    cardEl.className = 'tarot-card';
     cardEl.id = `card-${i + 1}`;
 
     cardBackFaceEl.className = 'back face';
@@ -157,14 +158,6 @@ function generateCardsWithListeners(numCards) {
 } /* generateCards */
 
 /**
- * Fetches user's profile image
- * @returns { string } path to user's profile image
- */
-function getProfileImageUrl() {
-  return window.localStorage.getItem('userImage');
-} /* getProfileImageUrl */
-
-/**
  * Displays message to game screen as if it were spoken by the wizard,
  * resetting back to instructions after MESSAGE_DISPLAY_LENGTH_MS milliseconds
  * @param { string } message message to be displayed by wizard
@@ -174,8 +167,8 @@ function displayMessage(message) {
 
   oracleMsgEl.innerText = message;
 
-  clearTimeout(gameState.messageResetTimeout);
-  gameState.messageResetTimeout = setTimeout(() => {
+  window.clearTimeout(gameState.messageResetTimeout);
+  gameState.messageResetTimeout = window.setTimeout(() => {
     const numCardsLeft = MAX_CHOSEN_CARDS - gameState.chosenCards.length;
     oracleMsgEl.innerText = `Draw ${numCardsLeft} more card${
       numCardsLeft === 1 ? '' : 's'
@@ -204,7 +197,7 @@ function getCurPercentOfBarFill() {
  * after the game has already started
  */
 function attachProfileImageAndListener() {
-  const playerImageEl = document.querySelector('#output');
+  const playerImageEl = document.querySelector('#profile_image');
   const playerImageInputEl = document.querySelector('#file');
 
   playerImageEl.src = getProfileImageUrl();
