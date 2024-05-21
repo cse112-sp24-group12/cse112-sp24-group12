@@ -1,6 +1,7 @@
 /** @module socket */
 
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
+import { WEB_SOCKET_URL } from './env.js';
 import {
   setPlayerUUID,
   getPlayerUUID,
@@ -9,7 +10,6 @@ import {
 import { updateProfile, setGameState } from './store.js';
 import * as Types from './types.js';
 
-const WEB_SOCKET_URL = 'ws://localhost:8000';
 const REQUESTED_PROTOCOL = 'tarot-versus-protocol';
 
 const CLOSED_WEB_SOCKET_STATE = 3;
