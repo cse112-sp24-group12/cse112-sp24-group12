@@ -121,15 +121,21 @@ function initializeSettings() {
   );
   // TODO: Implement avatar selection
 
-  const changeAvatarButton = document.querySelector("#change_image_button");
+  const changeAvatarButton = document.querySelector('#change_image_button');
   changeAvatarButton.addEventListener('click', () => {
-    document.querySelector("#select-profile-picture-wrapper").classList.add('active');
+    document
+      .querySelector('#select-profile-picture-wrapper')
+      .classList.add('active');
   });
-  const closeAvatarButton = document.querySelector("#select-profile-picture-close");
+  const closeAvatarButton = document.querySelector(
+    '#select-profile-picture-close',
+  );
   closeAvatarButton.addEventListener('click', () => {
-    document.querySelector("#select-profile-picture-wrapper").classList.remove('active');
-  })
-  
+    document
+      .querySelector('#select-profile-picture-wrapper')
+      .classList.remove('active');
+  });
+
   // TODO: Card information onclick
   /*
   const cardInfoPopup = document.querySelector("card");
