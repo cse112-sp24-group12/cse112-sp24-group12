@@ -1,0 +1,72 @@
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  overflow: hidden;
+}
+
+#connection_status {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 1rem;
+}
+
+#connection_status h2 {
+  color: var(--red);
+  margin: 0;
+}
+
+#connection_status p {
+  margin: 0.5rem 0 0 0;
+}
+
+#rules_wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+#open_rules_button {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-family: "Berkshire Swash";
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#open_rules_button img {
+  width: 5rem;
+  transition: var(--default-transform-transition);
+}
+
+#open_rules_button:hover img {
+  transform: var(--default-scale);
+}
+
+versus-card {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+versus-card img {
+  height: 100%;
+  aspect-ratio: 2 / 3;
+}
+
+versus-card input {
+  appearance: none;
+}
+
+versus-card label {
+  display: block;
+  height: 100%;
+  color: var(--black);
+}

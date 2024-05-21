@@ -21,3 +21,5 @@
 ### Important links 🔗
 - JSDocs (Documentation): [GitHub Pages](https://cse112-sp24-group12.github.io/cse112-sp24-group12/)
 - Team intro video: [YouTube](https://www.youtube.com/watch?v=iKq6aLO0iRA)
+
+Pipeline information detailed in `CONTRIBUTING.md` and [`/design/architecture/ci/PIPELINE.md`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/blob/main/design/architecture/ci/PIPELINE.md). Please read `CONTRIBUTING.md` before contributing.

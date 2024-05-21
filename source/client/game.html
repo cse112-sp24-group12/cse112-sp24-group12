@@ -5,11 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tarot, but a Game | Game</title>
+    <link rel="stylesheet" href="./styles/global.css" />
     <link rel="stylesheet" href="./styles/game.css" />
     <script src="./scripts/game.js" type="module"></script>
   </head>
 
   <body>
+    <header>
+      <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+    </header>
     <!-- instructions modal -->
     <div id="popup-box" class="howto-modal">
       <div class="content">
@@ -36,8 +40,7 @@
 
     <div class="grid">
       <div class="buttons">
-        <a href="#popup-box" id="how-to-play-btn">How to play</a>
-        <a href="./camera.html" id="back-btn">Back</a>
+        <a href="#popup-box" id="how-to-play-btn" class="secondary-button">How to play</a>
       </div>
 
       <div class="oracle">
@@ -51,21 +54,11 @@
       <!-- end of board div -->
 
       <div class="player">
-        <div class="profile-pic">
-          <label class="-label" for="file">
-            <span>Change Image</span>
-          </label>
-          <input
-            id="file"
-            type="file"
-            accept=".png, .jpg, .jpeg"
-          />
-          <img
-            src="./assets/images/characters/dragon.png"
-            id="output"
+        <img
+            src="#"
+            id="profile_image"
             alt="Player Image"
           />
-        </div>
         <div class="bars">
           <div class="luck-bar">
             <div class="fill"></div>

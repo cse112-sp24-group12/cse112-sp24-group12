@@ -8,6 +8,22 @@ On top of the guidelines set by ESLint and Prettier, we adhere to the following 
 - Use `camelCase` for JavaScript `variableNames`, and upper case for `ClassNames`
 - Use `forEach`, `map` and other functional loops over their classical counterparts (i.e., `for` loops)
 - Use `querySelector` and `querySelectorAll` over `getElementById` or `getElementsByClassName`
+  
+### Example function:
+  ```javascript
+  /**
+   * This is a function-level comment explaining what the function does
+   * @param { string } exampleParam This is a description of exampleParam
+   * @returns { string } This is a description of the returned value
+   /
+  function fooBar(exampleParam) {
+    const pageTitleEl = document.querySelector('#page_title');
+
+    pageTitleEl.innerText = exampleParam;
+
+    return 'FizzBuzz';
+  } /* fooBar */
+  ```
 
 ## Tests and linting
 You can run the testing suite and linter locally with the following commands.

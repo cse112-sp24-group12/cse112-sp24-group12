@@ -4,62 +4,44 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Tarot, but a Game | Home</title>
     
     <link rel="stylesheet" href="./styles/index.css" />
     <link rel="stylesheet" href="./styles/global.css" />
     <script src="./scripts/stars.js" type="module"></script>
   </head>
-
   <body>
-    <div id="stars-container"></div>
-    <div id="content">
-      <header>
-        <div class="cards">
-          <a href="./cards.html" class="cards-button">All cards</a>
-        </div>
-      </header>
-      <main>
-        <h1>Tarot</h1>
-        <h2>but game</h2>
-        <div class="buttons">
-          <a href="./camera.html">Play</a>
-          <a href="#popup-box">How to play</a>
-        </div>
-        <div id="popup-box" class="modal">
-          <div class="content">
-            <b>
-              <span class="instruct">How to Play</span>
-              <ol>
-                <li>Select your avatar, take a picture if you would like.</li>
-                <li>Click on the cards to attack them.</li>
-                <li>Reduce the opponent fortune teller's HP bar to win.</li>
-                <li>Your luck is determined by the Lucky Point system.</li>
-                <li>
-                  The Lucky Point bar oscillates between negative and positive
-                  luck.
-                </li>
-                <li>
-                  Click on the cards when the Lucky Point bar is in the positive
-                  zone.
-                </li>
-                <li>Find out your fortune!</li>
-              </ol>
-            </b>
-            <a href="#" class="box-close"> × </a>
-          </div>
-        </div>
-      </main>
-      <footer>
-        <!-- TODO: Implement a language picker: -->
-
-        <!-- <select id="language-select">
-        <option selected value="en">English</option>
-        <option value="es">Español</option>
-        <option value="fr">Français</option>
-        <option value="de">Deutsch</option>
-      </select> -->
-      </footer>
-    </div>
+    <noscript>This site requires JavaScript.</noscript>
+    <header>
+      <div id="main_title_wrapper">
+        <h1 id="main_title">Tarot</h1>
+        <h2 id="main_subtitle">but a game</h2>
+      </div>
+      <ul id="short_settings_icon_list">
+        <li>
+          <button aria-label="Mute" title="Mute" id="mute_button" class="icon-button"></button>
+        </li>
+        <li>
+          <a href="settings.html" aria-label="Settings" title="Settings" id="settings_button" class="icon-button"></a>
+        </li>
+      </ul>
+    </header>
+    <main>
+      <nav>
+        <ul id="main_button_list">
+          <li>
+            <a href="game.html" class="secondary-button">Solo</a>
+          </li>
+          <li>
+            <div id="swords_container">
+              <a href="versus.html" class="primary-button" id="versus_button">Versus</a>
+              <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true" class="sword" id="sword_one" draggable="false">
+              <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true" class="sword" id="sword_two" draggable="false">
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </main>
   </body>
 </html>
