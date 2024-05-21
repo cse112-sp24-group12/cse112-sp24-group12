@@ -93,6 +93,7 @@ function handleMessage(message) {
       case S2C_ACTIONS.FORCE_REFRESH:
         setGameState(messageObj.gameState);
         refreshEntireGame();
+        break;
       default:
     }
   } catch (e) {

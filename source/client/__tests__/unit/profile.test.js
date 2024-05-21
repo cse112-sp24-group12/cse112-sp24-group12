@@ -10,8 +10,10 @@ import {
   LOCAL_PROFILE_IMAGE_CUSTOM_FLAG,
   setIsMute,
   getIsMute,
-  setVolumeLevel,
-  getVolumeLevel,
+  setMusicVolumeLevel,
+  getMusicVolumeLevel,
+  setSFXVolumeLevel,
+  getSFXVolumeLevel,
   getProfileImageNameOptions,
 } from '../../scripts/profile.js';
 
@@ -65,47 +67,47 @@ const VALID_VOLUME_LEVEL_TWO = 0.2;
 const INVALID_VOLUME_LEVEL_HIGH = 1.2;
 const INVALID_VOLUME_LEVEL_LOW = -0.3;
 const INVALID_VOLUME_LEVEL_BAD_TYPE = '0.4';
-describe('setVolumeLevel and getVolumeLevel unit testing', () => {
+describe('setSFXVolumeLevel/setMusicVolumeLevel and get... unit testing', () => {
   beforeEach(() => {
     window.localStorage.clear();
   });
 
   it('should return the exact volume level if it is valid when getting and setting', () => {
-    setVolumeLevel(VALID_VOLUME_LEVEL);
-    expect(getVolumeLevel()).toBe(VALID_VOLUME_LEVEL);
-    expect(getVolumeLevel()).toBe(VALID_VOLUME_LEVEL);
-    setVolumeLevel(VALID_VOLUME_LEVEL_TWO);
-    expect(getVolumeLevel()).toBe(VALID_VOLUME_LEVEL_TWO);
-    expect(getVolumeLevel()).toBe(VALID_VOLUME_LEVEL_TWO);
+    setSFXVolumeLevel(VALID_VOLUME_LEVEL);
+    expect(getSFXVolumeLevel()).toBe(VALID_VOLUME_LEVEL);
+    expect(getSFXVolumeLevel()).toBe(VALID_VOLUME_LEVEL);
+    setSFXVolumeLevel(VALID_VOLUME_LEVEL_TWO);
+    expect(getSFXVolumeLevel()).toBe(VALID_VOLUME_LEVEL_TWO);
+    expect(getSFXVolumeLevel()).toBe(VALID_VOLUME_LEVEL_TWO);
   });
 
   it('should return true if the volume level is valid when setting', () => {
-    expect(setVolumeLevel(VALID_VOLUME_LEVEL)).toBe(true);
+    expect(setMusicVolumeLevel(VALID_VOLUME_LEVEL)).toBe(true);
   });
 
   it('should return false if the volume level is too low when setting', () => {
-    expect(setVolumeLevel(INVALID_VOLUME_LEVEL_LOW)).toBe(false);
+    expect(setSFXVolumeLevel(INVALID_VOLUME_LEVEL_LOW)).toBe(false);
   });
 
   it('should return false if the volume level is too high when setting', () => {
-    expect(setVolumeLevel(INVALID_VOLUME_LEVEL_HIGH)).toBe(false);
+    expect(setMusicVolumeLevel(INVALID_VOLUME_LEVEL_HIGH)).toBe(false);
   });
 
   it('should not assign the volume level if it is invalid when setting', () => {
-    setVolumeLevel(INVALID_VOLUME_LEVEL_HIGH);
-    expect(getVolumeLevel()).not.toBe(INVALID_VOLUME_LEVEL_HIGH);
+    setMusicVolumeLevel(INVALID_VOLUME_LEVEL_HIGH);
+    expect(getMusicVolumeLevel()).not.toBe(INVALID_VOLUME_LEVEL_HIGH);
   });
 
   it('should provide some valid default fallback if a value is not set', () => {
-    const defaultVolumeLevel = getVolumeLevel();
+    const defaultVolumeLevel = getMusicVolumeLevel();
     expect(typeof defaultVolumeLevel).toBe('number');
     expect(defaultVolumeLevel).toBeGreaterThanOrEqual(0);
     expect(defaultVolumeLevel).toBeLessThanOrEqual(1);
   });
 
   it('should provide some valid default fallback if an invalid value is set', () => {
-    setVolumeLevel(INVALID_VOLUME_LEVEL_BAD_TYPE);
-    const defaultVolumeLevel = getVolumeLevel();
+    setSFXVolumeLevel(INVALID_VOLUME_LEVEL_BAD_TYPE);
+    const defaultVolumeLevel = getSFXVolumeLevel();
     expect(typeof defaultVolumeLevel).toBe('number');
     expect(defaultVolumeLevel).toBeGreaterThanOrEqual(0);
     expect(defaultVolumeLevel).toBeLessThanOrEqual(1);

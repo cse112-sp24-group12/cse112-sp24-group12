@@ -53,7 +53,7 @@ export default class Card extends HTMLElement {
       const cardInputEl = this.querySelector('input');
       cardInputEl.disabled = true;
     }
-  } /* handleUpdate */
+  }; /* handleUpdate */
 
   /**
    * Displays appropriate image for a back-facing card
@@ -64,7 +64,7 @@ export default class Card extends HTMLElement {
     const cardImageEl = this.querySelector('img');
 
     cardImageEl.src = CARD_BACK_IMAGE_URL;
-  } /* handleUpdateBack */
+  }; /* handleUpdateBack */
 
   /**
    * Displays appropriate image on card and handles input elements
@@ -87,5 +87,5 @@ export default class Card extends HTMLElement {
     cardInputEl.value = JSON.stringify({ suite, number: +number });
 
     cardImageEl.src = getCardURLFromName(suite, number);
-  } /* _handleUpdateFront */
+  }; /* _handleUpdateFront */
 } /* Card */

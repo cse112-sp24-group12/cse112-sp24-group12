@@ -249,8 +249,8 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
- *
- * @param { (string|Node)[] } newChildEls
+ * Inserts new content into the instruction box, overriding any existing content
+ * @param { ...(string|Node) } newChildEls new elements or strings to insert
  */
 function updateCurrentInstruction(...newChildEls) {
   const currentInstructionEl = document.querySelector('#current_instruction');
@@ -259,9 +259,10 @@ function updateCurrentInstruction(...newChildEls) {
 } /* updateCurrentInstruction */
 
 /**
- *
- * @param { HTMLElement } targetEl
- * @param { HTMLElement } targetContainerEl
+ * Animates an object sliding into a container; at the end of the animation, seamlessly moves
+ * said object into the container in the DOM as well
+ * @param { HTMLElement } targetEl element to animate
+ * @param { HTMLElement } targetContainerEl container that element should end up in
  */
 function animateSlidingToContainer(targetEl, targetContainerEl) {
   /* calculate difference between current and desired position */
@@ -298,7 +299,7 @@ function animateSlidingToContainer(targetEl, targetContainerEl) {
 /**
  * Relays card selection to server during gameplay, and relocates
  * corresponding card to center screen
- * @param { MouseEvent } e
+ * @param { MouseEvent } e click event passed by event listener
  */
 function handleCardSelection(e) {
   const selectedVersusCardEl = e.currentTarget;

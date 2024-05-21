@@ -16,7 +16,8 @@ const LOCAL_PROFILE_UUID_lOCATION = 'user_profile.uuid';
 
 const DEFAULT_USERNAME = 'User';
 const DEFAULT_MUTE = false;
-const DEFAULT_VOLUME_LEVEL = 0.5;
+const DEFAULT_MUSIC_VOLUME_LEVEL = 0.5;
+const DEFAULT_SFX_VOLUME_LEVEL = 0.5;
 const LOCAL_PROFILE_IMAGE_STANDARD_URLS = {
   default: './assets/images/characters/default.png',
   dragon: './assets/images/characters/dragon.png',
@@ -164,41 +165,52 @@ export function getIsMute() {
 } /* getIsMute */
 
 /**
- * Saves volume level setting to local storage for access across sessions
- * @param { boolean } musicFlag indicates a change in music or sfx
+ * Saves music volume level setting to local storage for access across sessions
  * @param { number } volumeLevel volume level in range [0, 1]
- * @returns { boolean } true if saved successfully; otherwise false
+ * @returns { boolean } true if saved successfully; false otherwise
  */
-export function setVolumeLevel(musicFlag, volumeLevel) {
+export function setMusicVolumeLevel(volumeLevel) {
   if (isNaN(volumeLevel) || volumeLevel < 0 || volumeLevel > 1) return false;
 
-  if (musicFlag) {
-    window.localStorage.setItem(LOCAL_PROFILE_MUSIC_LEVEL_LOCATION, volumeLevel);
-  } else {
-    window.localStorage.setItem(LOCAL_PROFILE_SFX_LEVEL_LOCATION, volumeLevel);
-  }
+  window.localStorage.setItem(LOCAL_PROFILE_MUSIC_LEVEL_LOCATION, volumeLevel);
 
   return true;
-} /* setVolumeLevel */
+} /* setMusicVolumeLevel */
 
 /**
- * Fetches volume level setting from browser's local storage
- * @param { boolean } musicFlag indicates a change in music or sfx
- * @returns { number } saved volume level in range [0, 1]
+ * Saves special effects volume level setting to local storage for access across sessions
+ * @param { number } volumeLevel volume level in range [0, 1]
+ * @returns { boolean } true if saved successfully; false otherwise
  */
-export function getVolumeLevel(musicFlag) {
-  if (musicFlag) {
-    return +(
-      window.localStorage.getItem(LOCAL_PROFILE_MUSIC_LEVEL_LOCATION) ??
-      DEFAULT_VOLUME_LEVEL
-    );
-  } else {
-    return +(
-      window.localStorage.getItem(LOCAL_PROFILE_SFX_LEVEL_LOCATION) ??
-      DEFAULT_VOLUME_LEVEL
-    );
-  }
-} /* getVolumeLevel */
+export function setSFXVolumeLevel(volumeLevel) {
+  if (isNaN(volumeLevel) || volumeLevel < 0 || volumeLevel > 1) return false;
+
+  window.localStorage.setItem(LOCAL_PROFILE_SFX_LEVEL_LOCATION, volumeLevel);
+
+  return true;
+} /* setSFXVolumeLevel */
+
+/**
+ * Fetches current music volume from browser's local storage
+ * @returns { number } currently saved music volume in range [0, 1]
+ */
+export function getMusicVolumeLevel() {
+  return +(
+    window.localStorage.getItem(LOCAL_PROFILE_MUSIC_LEVEL_LOCATION) ??
+    DEFAULT_MUSIC_VOLUME_LEVEL
+  );
+} /* getMusicVolumeLevel */
+
+/**
+ * Fetches current special effects volume from browser's local storage
+ * @returns { number } currently saved SFX volume in range [0, 1]
+ */
+export function getSFXVolumeLevel() {
+  return +(
+    window.localStorage.getItem(LOCAL_PROFILE_SFX_LEVEL_LOCATION) ??
+    DEFAULT_SFX_VOLUME_LEVEL
+  );
+} /* getSFXVolumeLevel */
 
 /**
  * Attaches UUID sent from server to profile instance by saving it to browser's

@@ -23,6 +23,13 @@ export const S2C_ACTIONS = {
   FORCE_REFRESH: 'force_refresh',
 };
 
+export const SUITES = {
+  WANDS: 'wands',
+  CUPS: 'cups',
+  SWORDS: 'swords',
+  PENTACLES: 'pentacles',
+};
+
 /**
  * @typedef { any } WSConnection
  */

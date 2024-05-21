@@ -1,3 +1,4 @@
+import { SUITES } from './types.js';
 import * as Types from './types.js';
 
 /**
@@ -69,35 +70,30 @@ export function getCurrentRoundState(gameInstance) {
 } /* getCurrentRoundState */
 
 /**
- * Determines the multiplier for a given matchup
- * @param { Types.Card } card1 card to compare
+ * Determines the multiplier for a given matchup between two cards
+ * (Positive multiplier implies that card1 has a suite-based advantage over card2)
+ * @param { Types.Card } card1 card to compare, target of multiplier
  * @param { Types.Card } card2 card to compare
- * @returns { Types.Card } matchup multiplier
+ * @returns { Types.Card } matchup multiplier for card1 with reference to card2
  */
 function getMultiplier(card1, card2) {
-  switch(card1.suite) {
-    case 'wands':
-      if (card2.suite === "cups") {
-        return 2.0;
-      } else if (card2.suite == "swords") {
-        return 0.5;
-      }
-    case 'cups':
-      if (card2.suite === "swords") {
-        return 2.0;
-      } else if (card2.suite == "wands") {
-        return 0.5;
-      }
-    case 'swords':
-      if (card2.suite === "wands") {
-        return 2.0;
-      } else if (card2.suite == "cups") {
-        return 0.5;
-      }
+  switch (card1.suite) {
+    case SUITES.WANDS:
+      if (card2.suite === SUITES.CUPS) return 2;
+      else if (card2.suite == SUITES.SWORDS) return 0.5;
+      return 1;
+    case SUITES.CUPS:
+      if (card2.suite === SUITES.SWORDS) return 2;
+      else if (card2.suite == SUITES.WANDS) return 0.5;
+      return 1;
+    case SUITES.SWORDS:
+      if (card2.suite === SUITES.WANDS) return 2;
+      else if (card2.suite == SUITES.CUPS) return 0.5;
+      return 1;
     default:
-      return 1.0;
+      return 1;
   }
-}
+} /* getMultiplier */
 
 /**
  * Determines which of two cards wins a round
@@ -106,8 +102,9 @@ function getMultiplier(card1, card2) {
  * @returns { Types.Card } winning card of card1 and card2
  */
 export function getWinningCard(card1, card2) {
-  let multiplier = getMultiplier(card1, card2);
-  return card1.number * multiplier > card2.number ? card1 : card2;
+  return card1.number * getMultiplier(card1, card2) > card2.number
+    ? card1
+    : card2;
 } /* getWinningCard */
 
 /**
@@ -139,10 +136,13 @@ export function generateUniqueCards(cardList, n) {
 } /* generateUniqueCards */
 
 /**
- *
- * @param { Types.UUID } playerUUID
- * @param { Types.GameState } gameState
- * @returns { Types.GameState }
+ * Strips sensitive data (i.e., currently-selected card) from a specific game state
+ * object so that it can be sent downstream to the specified user without fear that
+ * it exposes behind-the-screens info
+ * @param { Types.UUID } playerUUID user who the game state is destined for
+ * @param { Types.GameState } gameState initial (dirty) game state
+ * @returns { Types.GameState } game state cleaned of any data that should be
+ * private to the given user
  */
 export function cleanGameState(playerUUID, gameState) {
   const copiedState = structuredClone(gameState);

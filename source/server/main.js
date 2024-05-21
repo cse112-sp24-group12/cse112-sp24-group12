@@ -397,9 +397,11 @@ function handleChatMessage(webSocketConnection, messageContents) {
 } /* handleChatMessage */
 
 /**
- *
- * @param { Types.WSConnection } webSocketConnection
- * @param { Types.UUID } [playerUUID]
+ * Handles request where a user has a remaining UUID from their own sessionStorage and
+ * wants to rejoin the game instance associated to that UUID; authenticates that connection
+ * is appropriate and facilitates reconciliation
+ * @param { Types.WSConnection } webSocketConnection connection of requester
+ * @param { Types.UUID } [playerUUID] unique identifier passed by user
  * @returns { boolean } success status of rejoin attempt (i.e., true iff instance rejoined)
  */
 function attemptRejoin(webSocketConnection, playerUUID) {
@@ -439,9 +441,10 @@ function attemptRejoin(webSocketConnection, playerUUID) {
 } /* attemptRejoin */
 
 /**
- *
- * @param { Types.WSConnection } webSocketConnection
- * @param { Types.UUID } [playerUUID]
+ * Attempts to force user back through rejoin logic, and creates a new instance for
+ * them if that fails
+ * @param { Types.WSConnection } webSocketConnection connection of requester
+ * @param { Types.UUID } [playerUUID] unique identifier passed by the user from their sessionStorage
  */
 function handleInitialization(webSocketConnection, playerUUID) {
   if (gameInstancesByPlayerUUID?.[playerUUID]?.isStarted) {
@@ -449,8 +452,8 @@ function handleInitialization(webSocketConnection, playerUUID) {
     return;
   }
 
-  const rejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
-  if (rejoinStatus === false) createInstance(webSocketConnection);
+  const attemptRejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
+  if (!attemptRejoinStatus) createInstance(webSocketConnection);
 } /* handleInitialization */
 
 /**

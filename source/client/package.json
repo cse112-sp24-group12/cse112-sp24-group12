@@ -17,8 +17,8 @@
   },
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint ./scripts/**/*.js ./__tests__/**/*.js",
-    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint ./scripts/**/*.js ./__tests__/**/*.js --fix"
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js'",
+    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js' --fix"
   },
   "jest": {
     "verbose": true,

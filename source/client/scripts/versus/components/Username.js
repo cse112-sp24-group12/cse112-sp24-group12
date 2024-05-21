@@ -29,7 +29,10 @@ export default class Username extends HTMLElement {
    * Destructs listeners
    */
   disconnectedCallback() {
-    window.removeEventListener(UPDATE_USERNAME_LISTENER_NAME, this._handleUpdate);
+    window.removeEventListener(
+      UPDATE_USERNAME_LISTENER_NAME,
+      this._handleUpdate,
+    );
   } /* disconnectedCallback */
 
   /**
@@ -47,12 +50,11 @@ export default class Username extends HTMLElement {
     const playerUUID = this.getAttribute('uuid');
     if (!playerUUID) return;
 
-    const newUsername = playerUUID === getPlayerUUID()
-    ? 'You'
-    : getProfile(playerUUID)?.username;
+    const newUsername =
+      playerUUID === getPlayerUUID() ? 'You' : getProfile(playerUUID)?.username;
 
     if (!newUsername) return;
 
     this.innerText = newUsername;
-  } /* _handleUpdate */
+  }; /* _handleUpdate */
 } /* Username */

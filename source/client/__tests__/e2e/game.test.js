@@ -57,7 +57,7 @@ describe('E2E button/link testing', () => {
   }, 5000);
 
   it('Check that after clicking 4 cards, cannot click another', async () => {
-    const card = await page.$$('.card');
+    const card = await page.$$('.tarot-card');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();
@@ -86,7 +86,7 @@ describe('Testing local storage contents is as expected', () => {
   afterEach(defaultTeardown);
 
   it('Check local storage contents for luck being transfered to results page', async () => {
-    const card = await page.$$('.card');
+    const card = await page.$$('.tarot-card');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();
@@ -99,7 +99,7 @@ describe('Testing local storage contents is as expected', () => {
   }, 10000);
 
   it('Check local storage contents of chosen cards being transfered to results page', async () => {
-    const card = await page.$$('.card');
+    const card = await page.$$('.tarot-card');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();
@@ -112,7 +112,7 @@ describe('Testing local storage contents is as expected', () => {
   }, 10000);
 
   it('Check window location after clicking 4 cards is as expected', async () => {
-    const card = await page.$$('.card');
+    const card = await page.$$('.tarot-card');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();
