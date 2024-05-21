@@ -11,7 +11,19 @@
 
 ## Issues
 ### Current sprint
-- 
+- Animate opponent player's card sliding in
+- Animate card flip
+- Animate card winning decision
+- Animate cards being dealt
+- Make lobby player list look better
+- Add destruction of lobbies
+- Add notifcation on player leave / reconnect
+- Allow users to actually leave a game
+- Allow ties between cards
+- Create list of all world events
+- Add world events to game
+- Continue settings development
+- Add legend to game board
 
 ### Backlog
 - Automated image compression (CI/CD) [3 points]
