@@ -111,7 +111,7 @@ function initializeScoreboard() {
 } /* initializeScoreboard */
 
 /**
- *
+ * Populates scoreboard scores with most recent scores from store
  */
 function updateScoreboardScores() {
   const scoreInfoWrapperEl = document.querySelector('#score_info');
@@ -126,7 +126,7 @@ function updateScoreboardScores() {
 } /* updateScoreboardScores */
 
 /**
- *
+ * Populates scoreboard round number with current round from store
  */
 function updateScoreboardRoundNumber() {
   const roundNumberEl = document.querySelector('#round_number');
