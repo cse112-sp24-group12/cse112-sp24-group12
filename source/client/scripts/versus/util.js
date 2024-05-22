@@ -37,3 +37,13 @@ export function getCardURLFromName(suite, number) {
 
   return `${MINOR_DECK_FACE_PATH_PREFIX}/${suite}/${number}.${MINOR_DECK_FACE_PATH_FORMAT}`;
 } /* getCardURLFromName */
+
+/**
+ * Picks a random item from an array
+ * @template A
+ * @param { Array<A> } arr list of items
+ * @returns { A } random item from list
+ */
+export function getRandFromArr(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
