@@ -447,8 +447,9 @@ function handleStartRound(webSocketConnection) {
  * Validates and relays chat message from client
  * @param { Types.WSConnection } webSocketConnection connection sending chat message
  * @param { string } messageContents text content of message being received
+ * @param { boolean } systemMessage whether the message should be sent as a system message
  */
-function handleChatMessage(webSocketConnection, messageContents, systemMessage=false) {
+function handleChatMessage(webSocketConnection, messageContents, systemMessage = false) {
   const gameInstance =
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
@@ -456,8 +457,8 @@ function handleChatMessage(webSocketConnection, messageContents, systemMessage=f
   let profile = structuredClone(webSocketConnection.profile);
 
   if (systemMessage) {
-    profile.uuid = "system";
-    profile.username = "System";
+    profile.uuid = 'system';
+    profile.username = 'System';
   }
 
   gameInstance.webSocketConnections.forEach((conn) => {
@@ -537,7 +538,7 @@ function handleInitialization(webSocketConnection, playerUUID) {
   if (!attemptRejoinStatus) {
     createInstance(webSocketConnection);
   } else {
-    const rejoinMessage = webSocketConnection.profile.username + " rejoined the game.";
+    const rejoinMessage = webSocketConnection.profile.username + ' rejoined the game.';
     handleChatMessage(webSocketConnection, rejoinMessage, true);
   }
 } /* handleInitialization */
