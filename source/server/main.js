@@ -465,6 +465,7 @@ function handleInitialization(webSocketConnection, playerUUID) {
     createInstance(webSocketConnection);
   } else {
     const rejoinMessage = webSocketConnection.profile.username + ' rejoined the game.';
+
     handleChatMessage(webSocketConnection, rejoinMessage, true);
   }
 } /* handleInitialization */
@@ -536,8 +537,8 @@ function handleRequest(webSocketRequest) {
     );
 
     const leaveMessage = webSocketConnection.profile.username + ' left the game.';
+    
     handleChatMessage(webSocketConnection, leaveMessage, true);
-
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);
