@@ -539,6 +539,7 @@ function handleInitialization(webSocketConnection, playerUUID) {
     createInstance(webSocketConnection);
   } else {
     const rejoinMessage = webSocketConnection.profile.username + ' rejoined the game.';
+
     handleChatMessage(webSocketConnection, rejoinMessage, true);
   }
 } /* handleInitialization */
