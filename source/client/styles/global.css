@@ -13,6 +13,8 @@
 
   --background-color: #341C3A;
 
+  --backdrop-background-color: #0000004e;
+
   --border-radius: 1.225rem;
   --default-scale: scale(1.05);
   --default-transform-transition: transform 150ms ease-in-out;
@@ -75,6 +77,22 @@ h2 {
 
 h3 {
   font-size: 1em;
+}
+
+dialog {
+  margin: auto;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+}
+
+dialog form[method="dialog"] {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 2rem;
+}
+
+::backdrop {
+  background-color: var(--backdrop-background-color);
 }
 
 button {
@@ -207,6 +225,7 @@ input[type="number"] {
   justify-content: space-between;
   position: absolute;
   width: 100%;
+  padding: 1rem;
 }
 
 .icon-button {
@@ -227,11 +246,9 @@ input[type="number"] {
 #short_settings_icon_list {
   list-style-type: none;
   display: flex;
-  padding: 1rem;
 }
 
 #home_button {
-  margin: 1rem;
   background-image: url(../assets/images/icons/house.webp)
 }
 

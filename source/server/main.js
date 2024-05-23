@@ -23,8 +23,23 @@ const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 
 const NUM_ROUNDS = 5;
-// const INSTANCE_TIMEOUT_MS = 300_000;
-const INSTANCE_TIMEOUT_MS = 1_000;
+
+/**
+ * @type { number } time until an instance is deleted after a user disconnects
+ * and fails to reconnect (in milliseconds)
+ */
+const DISCONNECTED_TIMEOUT_MS = 1_000;
+
+/**
+ * @type { number } time between game end and instance deletion (in milliseconds)
+ */
+const GAME_END_TIMEOUT_MS = 2_500;
+
+/**
+ * @type { number } time between when a player permanently leaves a game and the
+ * game instance is deleted (in milliseconds)
+ */
+const PLAYER_LEFT_TIMEOUT_MS = 1_000;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -101,34 +116,44 @@ function leaveInstance(webSocketConnection) {
   );
   delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  if (gameInstance.gameState.isStarted) startInstanceCloseTimeout(gameInstance);
+  if (gameInstance.gameState.isStarted) setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
 } /* leaveInstance */
 
 /**
  *
- * @param { Types.GameInstance } gameInstance
+ * @param { Types.GameInstance } gameInstance game instance to close
  */
-function startInstanceCloseTimeout(gameInstance) {
-  if (!gameInstance || gameInstance.closeInstanceTimeoutID) return;
-
-  gameInstance.closeInstanceTimeoutID = setTimeout(() => {
-    delete gameInstancesByGameCode[gameInstance.gameCode];
-    gameInstance.webSocketConnections.forEach((webSocketConnection) => {
-      sendMessage(webSocketConnection, {
-        action: S2C_ACTIONS.INSTANCE_CLOSED,
-      });
-      delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+function closeInstance(gameInstance) {
+  delete gameInstancesByGameCode[gameInstance.gameCode];
+  gameInstance.webSocketConnections.forEach((webSocketConnection) => {
+    sendMessage(webSocketConnection, {
+      action: S2C_ACTIONS.INSTANCE_CLOSED,
     });
-  }, INSTANCE_TIMEOUT_MS);
-} /* startInstanceCloseTimeout */
+    delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+  });
+} /* closeInstance */
 
 /**
  *
  * @param { Types.GameInstance } gameInstance
  */
-function cancelInstanceCloseTimeout(gameInstance) {
+function startDisconnectedInstanceCloseTimeout(gameInstance) {
+  if (!gameInstance || gameInstance.closeInstanceTimeoutID) return;
+
+  gameInstance.closeInstanceTimeoutID = setTimeout(
+    () => closeInstance(gameInstance),
+    DISCONNECTED_TIMEOUT_MS,
+  );
+} /* startDisconnectedInstanceCloseTimeout */
+
+/**
+ *
+ * @param { Types.GameInstance } gameInstance
+ */
+function cancelDisconnectedInstanceCloseTimeout(gameInstance) {
   clearTimeout(gameInstance.closeInstanceTimeoutID);
-} /* cancelInstanceCloseTimeout */
+  gameInstance.closeInstanceTimeoutID = null;
+} /* cancelDisconnectedInstanceCloseTimeout */
 
 /**
  * For a given connection, joins the game instance corresponding to the gameCode
@@ -290,6 +315,8 @@ function endGame(gameInstance) {
       gameWinner,
     });
   });
+
+  setTimeout(() => closeInstance(gameInstance), GAME_END_TIMEOUT_MS);
 } /* endGame */
 
 /**
@@ -399,7 +426,7 @@ function handleStartRound(webSocketConnection) {
     return;
   }
 
-  // TODO: validate request is coming from host
+  // TODO: validate request is coming from host?
 
   gameInstance.gameState.byRound.push(createNewRound());
 
@@ -458,11 +485,15 @@ function attemptRejoin(webSocketConnection, playerUUID) {
   reqGameInstance.webSocketConnections[
     reqGameInstance.webSocketConnections.indexOf(reqReplacedConnection)
   ] = webSocketConnection;
+
   sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.UPDATE_UUID,
     playerUUID: playerUUID,
   });
-
+  
+  if (reqGameInstance.webSocketConnections.filter((conn) => conn.connected).length == 2)
+    cancelDisconnectedInstanceCloseTimeout(reqGameInstance);
+  
   alertUpdateInstance(reqGameInstance);
   sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.FORCE_REFRESH,
@@ -471,6 +502,7 @@ function attemptRejoin(webSocketConnection, playerUUID) {
       reqGameInstance.gameState,
     ),
   });
+
   return true;
 } /* attemptRejoin */
 
@@ -556,9 +588,8 @@ function handleRequest(webSocketRequest) {
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
     );
 
-    startInstanceCloseTimeout(
-      gameInstancesByPlayerUUID[webSocketConnection.profile.uuid],
-    );
+    const gameInstance = gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+    if (gameInstance.gameState.isStarted) startDisconnectedInstanceCloseTimeout(gameInstance);
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);

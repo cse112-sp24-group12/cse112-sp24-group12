@@ -63,19 +63,12 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
  * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from server
  */
 export function handleGameStart(drawnCardNames) {
-  const lobbyWrapperEl = document.querySelector('#lobby_menu');
-  const gameBoardWrapperEl = document.querySelector('#game_board');
-
-  lobbyWrapperEl.classList.add('hidden');
-  gameBoardWrapperEl.classList.remove('hidden');
-
   setRemainingCards(drawnCardNames);
   setGameIsStarted();
-
   createCardElements();
   initializeScoreboard();
-
   handleStartRound();
+  toggleToGameboardView();
 } /* handleGameStart */
 
 /**
@@ -152,20 +145,45 @@ function createCardElements() {
 } /* createCardElements */
 
 /**
+ *
+ */
+function toggleToGameboardView() {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
+  const leaveGameButtonEl = document.querySelector('#leave_game_button');
+  const homeButtonEl = document.querySelector('#home_button');
+
+  lobbyWrapperEl.classList.add('hidden');
+  homeButtonEl.classList.add('hidden');
+  gameBoardWrapperEl.classList.remove('hidden');
+  leaveGameButtonEl.classList.remove('hidden');
+} /* toggleToGameboardView */
+
+/**
+ *
+ */
+function toggleToLobbyView() {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
+  const leaveGameButtonEl = document.querySelector('#leave_game_button');
+  const homeButtonEl = document.querySelector('#home_button');
+
+  gameBoardWrapperEl.classList.add('hidden');
+  leaveGameButtonEl.classList.add('hidden');
+  lobbyWrapperEl.classList.remove('hidden');
+  homeButtonEl.classList.remove('hidden');
+} /* toggleToLobbyView */
+
+/**
  * Rebuilds entire game board; can be used to resolve errors and in the case of
  * re-joining instances
  */
 export function refreshEntireGame() {
   if (!getGameIsStarted()) return;
 
-  const lobbyWrapperEl = document.querySelector('#lobby_menu');
-  const gameBoardWrapperEl = document.querySelector('#game_board');
-
-  lobbyWrapperEl.classList.add('hidden');
-  gameBoardWrapperEl.classList.remove('hidden');
-
   initializeScoreboard();
   createCardElements();
+  toggleToGameboardView();
 } /* refreshEntireGame */
 
 /**
@@ -250,15 +268,10 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
- * 
+ *
  */
 function returnToLobby() {
-  const lobbyWrapperEl = document.querySelector('#lobby_menu');
-  const gameBoardWrapperEl = document.querySelector('#game_board');
-
-  lobbyWrapperEl.classList.remove('hidden');
-  gameBoardWrapperEl.classList.add('hidden');
-
+  toggleToLobbyView();
   sendInitializationRequest();
 } /* returnToLobby */
 
@@ -358,16 +371,20 @@ function sendJoinInstance() {
 } /* sendJoinInstance */
 
 /**
- * 
+ *
  */
 function handleLeaveGame() {
   const confirmLeaveModalEl = document.querySelector('#confirm_leave_modal');
   const confirmLeaveButtonEl = document.querySelector('#confirm_leave_button');
 
-  confirmLeaveButtonEl.addEventListener('click', () => {
-    confirmLeaveModalEl.close();
-    returnToLobby();
-  }, { once: true });
+  confirmLeaveButtonEl.addEventListener(
+    'click',
+    () => {
+      confirmLeaveModalEl.close();
+      returnToLobby();
+    },
+    { once: true },
+  );
 
   confirmLeaveModalEl.showModal();
 } /* handleLeaveGame */

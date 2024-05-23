@@ -14,10 +14,11 @@
   <script src="scripts/versus/index.js" type="module"></script>
 </head>
 <body>
+  <!-- HEADER -->
   <header class="icon-header">
     <div>
       <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
-      <button id="leave_game_button" class="primary-button">Leave</button>
+      <button id="leave_game_button" class="primary-button hidden">Leave</button>
     </div>
     <ul id="short_settings_icon_list">
       <li>
@@ -109,22 +110,6 @@
       </div>
     </section>
 
-    <!-- MODALS -->
-    <dialog id="instance_closed_modal">
-      <p>The game you are in has ended.</p>
-      <form method="dialog">
-        <button class="primary-button">Go home</button>
-      </form>
-    </dialog>
-
-    <dialog id="confirm_leave_modal">
-      <p>Are you sure you want to leave the game? This action is irreversible.</p>
-      <form method="dialog">
-        <button class="secondary-button">Stay</button>
-        <button type="button" id="confirm_leave_button" class="primary-button">Leave</button>
-      </form>
-    </dialog>
-
     <!-- DEBUG MENU -->
     <section id="debug_menu" aria-labelledby="debug_title" class="hidden">
       <h2 id="debug_title">Debug</h2>
@@ -142,6 +127,22 @@
       <p>Connecting...</p>
     </section>
   </footer>
+
+  <!-- MODALS -->
+  <dialog id="instance_closed_modal">
+    <p>The game you are in has ended.</p>
+    <form method="dialog">
+      <button class="primary-button">Go home</button>
+    </form>
+  </dialog>
+
+  <dialog id="confirm_leave_modal">
+    <p>Are you sure you want to leave the game? This action is irreversible.</p>
+    <form method="dialog">
+      <button class="secondary-button">Stay</button>
+      <button type="button" id="confirm_leave_button" class="primary-button">Leave</button>
+    </form>
+  </dialog>
 
   <!-- TEMPLATES -->
   <template id="card-template">

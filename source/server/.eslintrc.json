@@ -15,5 +15,8 @@
     "jsdoc"
   ],
   "rules": {
+  },
+  "globals": {
+    "NodeJS": true
   }
 }
