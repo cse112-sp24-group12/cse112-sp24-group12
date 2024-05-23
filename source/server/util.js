@@ -154,7 +154,10 @@ export function cleanGameState(playerUUID, gameState) {
     if (!currentRound.roundWinner && currentRound.selectedCard[UUID])
       currentRound.selectedCard[UUID] = 'played';
 
-    copiedState.byPlayer[UUID].remainingCards = [];
+    const playerState = copiedState.byPlayer[UUID];
+    playerState.remainingCards = Array.from({
+      length: playerState.remainingCards.length,
+    });
   });
 
   return copiedState;

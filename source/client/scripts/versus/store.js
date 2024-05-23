@@ -50,18 +50,36 @@ export function setSelfSelectedCard(selectedCard) {
 } /* setSelfSelectedCard */
 
 /**
- * For the current round, sets the opponent's selected card
+ * Determines the UUID of the opponent player by finding the first (only)
+ * UUID that doesn't match the client user
+ * @returns { Types.UUID } UUID of opponent user
+ */
+export function getOpponentUUID() {
+  const playerUUID = getPlayerUUID();
+  return Object.keys(gameState.byPlayer).find((UUID) => UUID !== playerUUID);
+} /* getOpponentUUID */
+
+/**
+ * For the current round, sets the opponent's selected card and tosses out
+ * a random card from the opponent's remaining cards (b/c they are anonymized anyways)
  * @param { Types.IndeterminateCard } selectedCard card selected by the
  * opponent user, passed from the server
  */
 export function setOppSelectedCard(selectedCard) {
-  const playerUUID = getPlayerUUID();
-  const oppUUID = Object.keys(gameState.byPlayer).find(
-    (UUID) => UUID !== playerUUID,
-  );
+  const opponentUUID = getOpponentUUID();
 
-  getCurrentRoundState(gameState).selectedCard[oppUUID] = selectedCard;
+  getCurrentRoundState(gameState).selectedCard[opponentUUID] = selectedCard;
+  gameState.byPlayer[opponentUUID].remainingCards.pop();
 } /* setOppSelectedCard */
+
+/**
+ * For the current round, returns whether or not the opponent player has already
+ * played a card
+ * @returns { boolean } true if opponent has played this round; false otherwise
+ */
+export function getOppHasPlayedRound() {
+  return !!getCurrentRoundState(gameState).selectedCard[getOpponentUUID()];
+} /* getOppHasPlayedRound */
 
 /**
  * Updates profile to store by UUID and emits appropriate event listener
@@ -134,6 +152,26 @@ export function setRemainingCards(remainingCards) {
 export function getRemainingCards() {
   return gameState.byPlayer[getPlayerUUID()].remainingCards;
 } /* getRemainingCards */
+
+/**
+ * Fetches the number of cards that the opponent still has (cards themselves
+ * are still unknown)
+ * @returns { number } number of cards that opponent has in hand
+ */
+export function getNumOpponentCards() {
+  return gameState.byPlayer[getOpponentUUID()].remainingCards.length;
+} /* getNumOpponentCards */
+
+/**
+ * Sets an anonymized list of cards of same length as numOpponentCards in the data store
+ * for future access
+ * @param { number } numOpponentCards number of remaining cards that the opponent has
+ */
+export function setNumOpponentCards(numOpponentCards) {
+  gameState.byPlayer[getOpponentUUID()].remainingCards = Array.from({
+    length: numOpponentCards,
+  });
+} /* setNumOpponentCards */
 
 /**
  * Returns the UUIDs member to current game
