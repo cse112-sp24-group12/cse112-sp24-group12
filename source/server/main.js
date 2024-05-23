@@ -382,17 +382,23 @@ function handleStartRound(webSocketConnection) {
  * @param { Types.WSConnection } webSocketConnection connection sending chat message
  * @param { string } messageContents text content of message being received
  */
-function handleChatMessage(webSocketConnection, messageContents) {
+function handleChatMessage(webSocketConnection, messageContents, systemMessage=false) {
   const gameInstance =
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   // TODO: validate chat message contents
+  let profile = structuredClone(webSocketConnection.profile);
+
+  if (systemMessage) {
+    profile.uuid = "system";
+    profile.username = "System";
+  }
 
   gameInstance.webSocketConnections.forEach((conn) => {
     sendMessage(conn, {
       action: S2C_ACTIONS.CHAT_MESSAGE,
       messageContents,
-      profile: webSocketConnection.profile,
+      profile: profile,
     });
   });
 } /* handleChatMessage */
@@ -457,8 +463,8 @@ function handleInitialization(webSocketConnection, playerUUID) {
   if (!attemptRejoinStatus) {
     createInstance(webSocketConnection);
   } else {
-    const rejoinMessage = webSocketConnection.profile.username + " rejoined the game.";  
-    handleChatMessage(webSocketConnection, rejoinMessage);
+    const rejoinMessage = webSocketConnection.profile.username + " rejoined the game.";
+    handleChatMessage(webSocketConnection, rejoinMessage, true);
   }
 } /* handleInitialization */
 
@@ -528,8 +534,8 @@ function handleRequest(webSocketRequest) {
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
     );
 
-    const leaveMessage = webSocketConnection.profile.username + " left the game.";  
-    handleChatMessage(webSocketConnection, leaveMessage);  
+    const leaveMessage = webSocketConnection.profile.username + " left the game.";
+    handleChatMessage(webSocketConnection, leaveMessage, true);  
 
   } /* handleClose */
 
