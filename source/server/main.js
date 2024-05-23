@@ -248,6 +248,7 @@ function handleUpdateProfile(webSocketConnection, profile) {
  * @param { Types.GameInstance } gameInstance game instance to end
  */
 function endGame(gameInstance) {
+  // TODO: Determine game winner by number of rounds won
   const gameWinner = gameInstance.webSocketConnections[0].profile;
 
   gameInstance.webSocketConnections.forEach((conn) => {
@@ -453,7 +454,12 @@ function handleInitialization(webSocketConnection, playerUUID) {
   }
 
   const attemptRejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
-  if (!attemptRejoinStatus) createInstance(webSocketConnection);
+  if (!attemptRejoinStatus) {
+    createInstance(webSocketConnection);
+  } else {
+    const rejoinMessage = webSocketConnection.profile.username + " rejoined the game.";  
+    handleChatMessage(webSocketConnection, rejoinMessage);
+  }
 } /* handleInitialization */
 
 /**
@@ -521,6 +527,10 @@ function handleRequest(webSocketRequest) {
     console.log(
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
     );
+
+    const leaveMessage = webSocketConnection.profile.username + " left the game.";  
+    handleChatMessage(webSocketConnection, leaveMessage);  
+
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);
