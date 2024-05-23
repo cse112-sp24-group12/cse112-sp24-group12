@@ -528,7 +528,12 @@ function handleInitialization(webSocketConnection, playerUUID) {
   }
 
   const attemptRejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
-  if (!attemptRejoinStatus) createInstance(webSocketConnection);
+  if (!attemptRejoinStatus) {
+    createInstance(webSocketConnection);
+  } else {
+    const rejoinMessage = webSocketConnection.profile.username + " rejoined the game.";  
+    handleChatMessage(webSocketConnection, rejoinMessage);
+  }
 } /* handleInitialization */
 
 /**
