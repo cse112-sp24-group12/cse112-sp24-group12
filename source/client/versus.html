@@ -15,7 +15,10 @@
 </head>
 <body>
   <header class="icon-header">
-    <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+    <div>
+      <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+      <button id="leave_game_button" class="primary-button">Leave</button>
+    </div>
     <ul id="short_settings_icon_list">
       <li>
         <button aria-label="Mute" title="Mute" id="mute_button" class="icon-button"></button>
@@ -105,6 +108,22 @@
         <section id="user_cards"><!-- dynamically populated --></section>
       </div>
     </section>
+
+    <!-- MODALS -->
+    <dialog id="instance_closed_modal">
+      <p>The game you are in has ended.</p>
+      <form method="dialog">
+        <button class="primary-button">Go home</button>
+      </form>
+    </dialog>
+
+    <dialog id="confirm_leave_modal">
+      <p>Are you sure you want to leave the game? This action is irreversible.</p>
+      <form method="dialog">
+        <button class="secondary-button">Stay</button>
+        <button type="button" id="confirm_leave_button" class="primary-button">Leave</button>
+      </form>
+    </dialog>
 
     <!-- DEBUG MENU -->
     <section id="debug_menu" aria-labelledby="debug_title" class="hidden">

@@ -17,18 +17,8 @@ const WS_RECONNECTION_DELAY_MS = 3500;
 
 const socketState = {
   webSocket: null,
-  gameCallbackFns: {
-    handleUpdateInstance: () => {},
-    handleGameStart: () => {},
-    handleOpponentMove: () => {},
-    handleRevealCards: () => {},
-    handleStartRound: () => {},
-    handleGameEnd: () => {},
-    refreshEntireGame: () => {},
-  },
-  chatCallbackFns: {
-    printMessage: () => {},
-  },
+  gameCallbackFns: {},
+  chatCallbackFns: {},
 };
 
 /**
@@ -54,6 +44,7 @@ function handleMessage(message) {
     handleRevealCards,
     handleStartRound,
     handleGameEnd,
+    handleInstanceClosed,
     refreshEntireGame,
   } = socketState.gameCallbackFns;
   const { printMessage } = socketState.chatCallbackFns;
@@ -93,6 +84,9 @@ function handleMessage(message) {
       case S2C_ACTIONS.FORCE_REFRESH:
         setGameState(messageObj.gameState);
         refreshEntireGame();
+        break;
+      case S2C_ACTIONS.INSTANCE_CLOSED:
+        handleInstanceClosed();
         break;
       default:
     }
@@ -165,6 +159,17 @@ export function sendChatMessage(messageContents) {
 } /* sendChatMessage */
 
 /**
+ *
+ * @param { Types.UUID } [previousUUID]
+ */
+export function sendInitializationRequest(previousUUID) {
+  sendMessage({
+    action: C2S_ACTIONS.INITIALIZE_INSTANCE,
+    playerUUID: previousUUID,
+  });
+} /* sendInitializationRequest */
+
+/**
  * Attaches functions to WebSocket instance to orchestrate Versus gameplay behavior;
  * avoids cyclic use of import statements
  * @param { Record<string, Function> } callbackFns object literal map of functions
@@ -190,12 +195,7 @@ function handleWebSocketOpen() {
     document.querySelector('#connection_status');
   connectionStatusWrapperEl.classList.add('hidden');
 
-  const previousInstancePlayerUUID = getPlayerUUID();
-
-  sendMessage({
-    action: C2S_ACTIONS.INITIALIZE_INSTANCE,
-    playerUUID: previousInstancePlayerUUID,
-  });
+  sendInitializationRequest(getPlayerUUID());
 
   sendProfile();
 } /* handleWebSocketOpen */

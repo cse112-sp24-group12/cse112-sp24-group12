@@ -21,6 +21,7 @@ export const S2C_ACTIONS = {
   CHAT_MESSAGE: 'chat_message',
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
+  INSTANCE_CLOSED: 'instance_closed',
 };
 
 export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
@@ -130,6 +131,9 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *  {
  *    action: S2C_ACTIONS.FORCE_REFRESH,
  *    gameState: GameState
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.INSTANCE_CLOSED
  *  }
  * } ServerToClientMessage
  */

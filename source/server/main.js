@@ -19,10 +19,12 @@ import * as Types from './types.js';
 
 const CARD_LIST = JSON.parse(readFileSync('./card_list.json'));
 
-const NUM_ROUNDS = 5;
-
 const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
+
+const NUM_ROUNDS = 5;
+// const INSTANCE_TIMEOUT_MS = 300_000;
+const INSTANCE_TIMEOUT_MS = 1_000;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -90,15 +92,43 @@ function handleStartGame(webSocketConnection) {
  */
 function leaveInstance(webSocketConnection) {
   const gameInstance =
-    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+    gameInstancesByPlayerUUID?.[webSocketConnection?.profile?.uuid];
+
+  if (!gameInstance) return;
 
   gameInstance.webSocketConnections = gameInstance.webSocketConnections.filter(
     (conn) => conn != webSocketConnection,
   );
   delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  // TODO: add logic for destruction of past game instances after some condition (e.g., 0 players left + timeout)
+  if (gameInstance.gameState.isStarted) startInstanceCloseTimeout(gameInstance);
 } /* leaveInstance */
+
+/**
+ *
+ * @param { Types.GameInstance } gameInstance
+ */
+function startInstanceCloseTimeout(gameInstance) {
+  if (!gameInstance || gameInstance.closeInstanceTimeoutID) return;
+
+  gameInstance.closeInstanceTimeoutID = setTimeout(() => {
+    delete gameInstancesByGameCode[gameInstance.gameCode];
+    gameInstance.webSocketConnections.forEach((webSocketConnection) => {
+      sendMessage(webSocketConnection, {
+        action: S2C_ACTIONS.INSTANCE_CLOSED,
+      });
+      delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+    });
+  }, INSTANCE_TIMEOUT_MS);
+} /* startInstanceCloseTimeout */
+
+/**
+ *
+ * @param { Types.GameInstance } gameInstance
+ */
+function cancelInstanceCloseTimeout(gameInstance) {
+  clearTimeout(gameInstance.closeInstanceTimeoutID);
+} /* cancelInstanceCloseTimeout */
 
 /**
  * For a given connection, joins the game instance corresponding to the gameCode
@@ -110,7 +140,7 @@ function handleJoinInstance(webSocketConnection, gameCode) {
     gameInstancesByPlayerUUID?.[webSocketConnection?.profile?.uuid];
   const reqGameInstance = gameInstancesByGameCode[gameCode];
 
-  if (curGameInstance.gameState.isStarted) {
+  if (curGameInstance?.gameState?.isStarted) {
     console.log('Cannot implicitly leave an in-progress game');
     return;
   }
@@ -193,6 +223,9 @@ function alertUpdateInstance(gameInstance) {
  * @param { Types.WSConnection } webSocketConnection connection to attach to the game instance
  */
 function createInstance(webSocketConnection) {
+  leaveInstance(webSocketConnection);
+
+  /** @type { Types.GameInstance } */
   const gameInstance = {
     gameCode: generateGameCode(), // TODO: ensure game code is unique
     webSocketConnections: [webSocketConnection],
@@ -201,6 +234,7 @@ function createInstance(webSocketConnection) {
       byRound: [],
       isStarted: false,
     },
+    closeInstanceTimeoutID: null,
   };
 
   gameInstancesByGameCode[gameInstance.gameCode] = gameInstance;
@@ -520,6 +554,10 @@ function handleRequest(webSocketRequest) {
   function handleClose(code, desc) {
     console.log(
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
+    );
+
+    startInstanceCloseTimeout(
+      gameInstancesByPlayerUUID[webSocketConnection.profile.uuid],
     );
   } /* handleClose */
 

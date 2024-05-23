@@ -6,6 +6,7 @@ import {
   startGame,
   startRound,
   attachGameCallbackFns,
+  sendInitializationRequest,
 } from './socket.js';
 import {
   updateProfile,
@@ -249,6 +250,29 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
+ * 
+ */
+function returnToLobby() {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
+
+  lobbyWrapperEl.classList.remove('hidden');
+  gameBoardWrapperEl.classList.add('hidden');
+
+  sendInitializationRequest();
+} /* returnToLobby */
+
+/**
+ *
+ */
+export function handleInstanceClosed() {
+  const instClosedModalEl = document.querySelector('#instance_closed_modal');
+
+  instClosedModalEl.addEventListener('close', returnToLobby);
+  instClosedModalEl.showModal();
+} /* handleInstanceClosed */
+
+/**
  * Inserts new content into the instruction box, overriding any existing content
  * @param { ...(string|Node) } newChildEls new elements or strings to insert
  */
@@ -334,6 +358,21 @@ function sendJoinInstance() {
 } /* sendJoinInstance */
 
 /**
+ * 
+ */
+function handleLeaveGame() {
+  const confirmLeaveModalEl = document.querySelector('#confirm_leave_modal');
+  const confirmLeaveButtonEl = document.querySelector('#confirm_leave_button');
+
+  confirmLeaveButtonEl.addEventListener('click', () => {
+    confirmLeaveModalEl.close();
+    returnToLobby();
+  }, { once: true });
+
+  confirmLeaveModalEl.showModal();
+} /* handleLeaveGame */
+
+/**
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
  * and activates event listeners
  */
@@ -342,6 +381,7 @@ export function initializeVersus() {
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
   const startRoundButtonEl = document.querySelector('#start_round_button');
+  const leaveGameButton = document.querySelector('#leave_game_button');
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -350,6 +390,7 @@ export function initializeVersus() {
     handleRevealCards,
     handleStartRound,
     handleGameEnd,
+    handleInstanceClosed,
     refreshEntireGame,
   });
 
@@ -359,4 +400,5 @@ export function initializeVersus() {
   });
   startGameButtonEl.addEventListener('click', startGame);
   startRoundButtonEl.addEventListener('click', startRound);
+  leaveGameButton.addEventListener('click', handleLeaveGame);
 } /* initializeVersus */
