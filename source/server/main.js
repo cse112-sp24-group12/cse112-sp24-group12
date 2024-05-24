@@ -28,18 +28,18 @@ const NUM_ROUNDS = 5;
  * @type { number } time until an instance is deleted after a user disconnects
  * and fails to reconnect (in milliseconds)
  */
-const DISCONNECTED_TIMEOUT_MS = 1_000;
+const DISCONNECTED_TIMEOUT_MS = 180_000; // 3 minutes
 
 /**
  * @type { number } time between game end and instance deletion (in milliseconds)
  */
-const GAME_END_TIMEOUT_MS = 2_500;
+const GAME_END_TIMEOUT_MS = 5_000;
 
 /**
  * @type { number } time between when a player permanently leaves a game and the
  * game instance is deleted (in milliseconds)
  */
-const PLAYER_LEFT_TIMEOUT_MS = 1_000;
+const PLAYER_LEFT_TIMEOUT_MS = 1_500;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -589,7 +589,7 @@ function handleRequest(webSocketRequest) {
     );
 
     const gameInstance = gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-    if (gameInstance.gameState.isStarted) startDisconnectedInstanceCloseTimeout(gameInstance);
+    if (gameInstance?.gameState?.isStarted) startDisconnectedInstanceCloseTimeout(gameInstance);
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);
