@@ -25,19 +25,22 @@ const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 const NUM_ROUNDS = 5;
 
 /**
- * @type { number } time until an instance is deleted after a user disconnects
- * and fails to reconnect (in milliseconds)
+ * Time until an instance is deleted after a user disconnects and fails to reconnect
+ * (in milliseconds)
+ * @type { number }
  */
 const DISCONNECTED_TIMEOUT_MS = 180_000; // 3 minutes
 
 /**
- * @type { number } time between game end and instance deletion (in milliseconds)
+ * Time between game end and instance deletion (in milliseconds)
+ * @type { number }
  */
 const GAME_END_TIMEOUT_MS = 5_000;
 
 /**
- * @type { number } time between when a player permanently leaves a game and the
- * game instance is deleted (in milliseconds)
+ * Time between when a player permanently leaves a game and the game instance is deleted
+ * (in milliseconds)
+ * @type { number }
  */
 const PLAYER_LEFT_TIMEOUT_MS = 1_500;
 
@@ -116,11 +119,13 @@ function leaveInstance(webSocketConnection) {
   );
   delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  if (gameInstance.gameState.isStarted) setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
+  if (gameInstance.gameState.isStarted)
+    setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
 } /* leaveInstance */
 
 /**
- *
+ * Completely closes out and deletes a game instance, alerting any member
+ * players
  * @param { Types.GameInstance } gameInstance game instance to close
  */
 function closeInstance(gameInstance) {
@@ -134,8 +139,9 @@ function closeInstance(gameInstance) {
 } /* closeInstance */
 
 /**
- *
- * @param { Types.GameInstance } gameInstance
+ * Starts the timer to close out a game instance, to be used when a player
+ * loses connections
+ * @param { Types.GameInstance } gameInstance game instance to close
  */
 function startDisconnectedInstanceCloseTimeout(gameInstance) {
   if (!gameInstance || gameInstance.closeInstanceTimeoutID) return;
@@ -147,8 +153,9 @@ function startDisconnectedInstanceCloseTimeout(gameInstance) {
 } /* startDisconnectedInstanceCloseTimeout */
 
 /**
- *
- * @param { Types.GameInstance } gameInstance
+ * Cancels any existing timesout that would close a game instance due to players
+ * losing connection
+ * @param { Types.GameInstance } gameInstance game instance to protect from closing
  */
 function cancelDisconnectedInstanceCloseTimeout(gameInstance) {
   clearTimeout(gameInstance.closeInstanceTimeoutID);
@@ -490,10 +497,13 @@ function attemptRejoin(webSocketConnection, playerUUID) {
     action: S2C_ACTIONS.UPDATE_UUID,
     playerUUID: playerUUID,
   });
-  
-  if (reqGameInstance.webSocketConnections.filter((conn) => conn.connected).length == 2)
+
+  if (
+    reqGameInstance.webSocketConnections.filter((conn) => conn.connected)
+      .length == 2
+  )
     cancelDisconnectedInstanceCloseTimeout(reqGameInstance);
-  
+
   alertUpdateInstance(reqGameInstance);
   sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.FORCE_REFRESH,
@@ -588,8 +598,10 @@ function handleRequest(webSocketRequest) {
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
     );
 
-    const gameInstance = gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-    if (gameInstance?.gameState?.isStarted) startDisconnectedInstanceCloseTimeout(gameInstance);
+    const gameInstance =
+      gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+    if (gameInstance?.gameState?.isStarted)
+      startDisconnectedInstanceCloseTimeout(gameInstance);
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);

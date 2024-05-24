@@ -159,8 +159,8 @@ export function sendChatMessage(messageContents) {
 } /* sendChatMessage */
 
 /**
- *
- * @param { Types.UUID } [previousUUID]
+ * Asks backend to add client to a new lobby, or restore to a previous lobby if possible
+ * @param { Types.UUID } [previousUUID] any previous UUID to client, used for restoration
  */
 export function sendInitializationRequest(previousUUID) {
   sendMessage({
