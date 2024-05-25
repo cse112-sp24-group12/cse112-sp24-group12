@@ -46,7 +46,7 @@ describe('getGameWinnerProfile unit testing', () => {
           remainingCards: [{}, {}],
         },
       },
-      byRound: {},
+      byRound: [],
       isStarted: true,
     };
 
