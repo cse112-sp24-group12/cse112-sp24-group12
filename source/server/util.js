@@ -1,4 +1,5 @@
 import { SUITES } from './types.js';
+import { WORLD_EVENTS } from './types.js';
 import * as Types from './types.js';
 
 /**
@@ -99,9 +100,11 @@ function getMultiplier(card1, card2) {
  * Determines which of two cards wins a round
  * @param { Types.Card } card1 card to compare
  * @param { Types.Card } card2 card to compare
+ * @param { String } worldEvent world event object
  * @returns { Types.Card } winning card of card1 and card2
  */
 export function getWinningCard(card1, card2) {
+
   return card1.number * getMultiplier(card1, card2) > card2.number
     ? card1
     : card2;
