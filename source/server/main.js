@@ -14,7 +14,6 @@ import {
   generateUniqueCards,
   cleanGameState,
 } from './util.js';
-import { log } from './logging.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
 import * as Types from './types.js';
 
@@ -36,7 +35,7 @@ const webSocketServer = new server({
   autoAcceptConnections: false,
 });
 
-log('Server online', { severity: 'log' });
+console.log('Server online');
 
 /**
  * For a given connection, sends stringified version of object for re-parsing on other side
@@ -57,11 +56,7 @@ function handleStartGame(webSocketConnection) {
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   if (gameInstance.gameState.isStarted) {
-    log('Game start rejected: game already started', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Game already started');
     return;
   }
 
@@ -86,7 +81,7 @@ function handleStartGame(webSocketConnection) {
     });
   });
 
-  log('Game started', { webSocketConnection, gameInstance, severity: 'log' });
+  console.log(`Game ${gameInstance.gameCode} started`);
 } /* handleStartGame */
 
 /**
@@ -116,46 +111,27 @@ function handleJoinInstance(webSocketConnection, gameCode) {
   const reqGameInstance = gameInstancesByGameCode[gameCode];
 
   if (curGameInstance.gameState.isStarted) {
-    log('Join instance rejected: cannot implicitly leave an in-progress game', {
-      webSocketConnection,
-      gameInstance: curGameInstance,
-      severity: 'error',
-    });
+    console.log('Cannot implicitly leave an in-progress game');
     return;
   }
 
   if (!reqGameInstance) {
-    log(`Join instance rejected: invalid game code "${gameCode}"`, {
-      webSocketConnection,
-      gameInstance: curGameInstance,
-      severity: 'warn',
-    });
+    console.log(`Invalid game code: ${gameCode}`);
     return;
   }
 
   if (reqGameInstance.gameState.isStarted) {
-    log(`Join instance rejected: game ${gameCode} already started`, {
-      webSocketConnection,
-      gameInstance: curGameInstance,
-      severity: 'warn',
-    });
+    console.log(`Game ${gameCode} rejected connection: game started`);
     return;
   }
 
   if (reqGameInstance.webSocketConnections.includes(webSocketConnection)) {
-    log(
-      `Join instance rejected: connection to game ${gameCode} already exists`,
-      { webSocketConnection, gameInstance: curGameInstance, severity: 'warn' },
-    );
+    console.log(`Game ${gameCode} rejected connection: already exists`);
     return;
   }
 
   if (reqGameInstance.webSocketConnections.length >= 2) {
-    log(`Join instance rejected: game ${gameCode} already full`, {
-      webSocketConnection,
-      gameInstance: curGameInstance,
-      severity: 'warn',
-    });
+    console.log(`Game ${gameCode} rejected connection: game instance full`);
     return;
   }
 
@@ -163,11 +139,7 @@ function handleJoinInstance(webSocketConnection, gameCode) {
   gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = reqGameInstance;
   reqGameInstance.webSocketConnections.push(webSocketConnection);
 
-  log(`Player joined instance successfully`, {
-    webSocketConnection,
-    gameInstance: reqGameInstance,
-    severity: 'log',
-  });
+  console.log(`Player joined instance with room code ${gameCode}`);
 
   alertUpdateInstance(reqGameInstance);
 } /* handleJoinInstance */
@@ -254,11 +226,7 @@ function handleUpdateProfile(webSocketConnection, profile) {
     typeof profile.username !== 'string' ||
     typeof profile.profileImageName !== 'string'
   ) {
-    log('Invalid profile uploaded', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Invalid profile uploaded');
     return;
   }
 
@@ -337,11 +305,7 @@ function handleSelectCard(webSocketConnection, selectedCard) {
   const playerGameState = gameInstance.gameState.byPlayer[playerUUID];
 
   if (!gameInstance.gameState.isStarted) {
-    log('Card selection rejected: game not yet started', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Game not yet started');
     return;
   }
 
@@ -350,20 +314,12 @@ function handleSelectCard(webSocketConnection, selectedCard) {
   // TODO: more robust handling here; return some error to client on failure
 
   if (currentRoundState.selectedCard[playerUUID]) {
-    log('Card selection rejected: card already selected this round', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Card already selected this round');
     return;
   }
 
   if (!isCardValid(selectedCard)) {
-    log('Card selection rejected: invalid card format', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Invalid card format');
     return;
   }
 
@@ -372,11 +328,7 @@ function handleSelectCard(webSocketConnection, selectedCard) {
       areCardsEqual(card, selectedCard),
     )
   ) {
-    log('Card selection rejected: card not among remaining options', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Card not among remaining options');
     return;
   }
 
@@ -404,20 +356,12 @@ function handleStartRound(webSocketConnection) {
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   if (!gameInstance?.gameState?.isStarted) {
-    log('Round start rejected: game not yet started', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Game not yet started');
     return;
   }
 
   if (!getCurrentRoundState(gameInstance).roundWinner) {
-    log('Round start rejected: current round not complete', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
+    console.log('Current round not yet complete');
     return;
   }
 
@@ -504,14 +448,7 @@ function attemptRejoin(webSocketConnection, playerUUID) {
  */
 function handleInitialization(webSocketConnection, playerUUID) {
   if (gameInstancesByPlayerUUID?.[playerUUID]?.isStarted) {
-    log(
-      'Initialization rejected: cannot implicitly leave an in-progress game',
-      {
-        webSocketConnection,
-        gameInstance: gameInstancesByPlayerUUID[playerUUID],
-        severity: 'error',
-      },
-    );
+    console.log('Cannot implicitly leave an in-progress game');
     return;
   }
 
@@ -524,24 +461,19 @@ function handleInitialization(webSocketConnection, playerUUID) {
  * @param { Types.WSRequest } webSocketRequest inbound WebSocket request object
  */
 function handleRequest(webSocketRequest) {
-  log(`Request received at "${webSocketRequest.remoteAddress}"`, {
-    severity: 'connection',
-  });
+  console.log(`Request received at "${webSocketRequest.remoteAddress}"`);
 
   const webSocketConnection = acceptRequest(webSocketRequest);
 
-  log(`WebSocket connected at "${webSocketConnection.remoteAddress}"`, {
-    severity: 'connection',
-  });
+  console.log(`WebSocket connected at "${webSocketConnection.remoteAddress}"`);
 
   /**
    * Handles message event for a given WebSocket connection
    * @param { { type: 'utf8'|'binary', utf8Data: string } } data message object received
    */
   function handleMessage(data) {
-    log(
-      `Message received at ${webSocketConnection.remoteAddress}: "${data.utf8Data}"`,
-      { severity: 'raw' },
+    console.log(
+      `Message received at "${webSocketConnection.remoteAddress}": "${data.utf8Data}"`,
     );
 
     try {
@@ -570,9 +502,7 @@ function handleRequest(webSocketRequest) {
           handleChatMessage(webSocketConnection, messageObj.messageContents);
           break;
         default:
-          log(`Unrecognized action: ${messageObj.action}`, {
-            severity: 'warn',
-          });
+          console.log(`Unrecognized action: ${messageObj.action}`);
       }
     } catch (e) {
       console.log(
@@ -588,9 +518,8 @@ function handleRequest(webSocketRequest) {
    * @param { string } desc textual description corresponding to close reason
    */
   function handleClose(code, desc) {
-    log(
+    console.log(
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
-      { severity: 'connection' },
     );
   } /* handleClose */
 
