@@ -9,7 +9,7 @@ import {
   areCardsEqual,
   getOtherPlayer,
   getCurrentRoundState,
-  getWinningCard,
+  getRoundWinnerUUID,
   createNewRound,
   generateUniqueCards,
   cleanGameState,
@@ -265,12 +265,7 @@ function endGame(gameInstance) {
  */
 function endRound(gameInstance) {
   const currentRoundState = getCurrentRoundState(gameInstance);
-
-  const [[uuid1, card1], [uuid2, card2]] = Object.entries(
-    currentRoundState.selectedCard,
-  );
-  const roundWinnerUUID =
-    getWinningCard(card1, card2) === card1 ? uuid1 : uuid2;
+  const roundWinnerUUID = getRoundWinnerUUID(gameInstance);
   const roundWinner = gameInstance.webSocketConnections.find(
     (conn) => conn.profile.uuid === roundWinnerUUID,
   ).profile;
@@ -367,7 +362,7 @@ function handleStartRound(webSocketConnection) {
 
   // TODO: validate request is coming from host
 
-  gameInstance.gameState.byRound.push(createNewRound());
+  gameInstance.gameState.byRound.push(createNewRound()); //creates world event in NewRound
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
     sendMessage(webSocketConnection, {

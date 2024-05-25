@@ -119,21 +119,22 @@ function getRandomValue() {
 
 /**
  * Determines which of two cards wins a round
- * @param { Types.Card } card1 card to compare
- * @param { Types.Card } card2 card to compare
- * @param { String } worldEvent current worldEvent for the round
- * @returns { Types.Card } winning card of card1 and card2
+ * @param { Types.GameInstance } gameInstance 
+ * @returns { Types.UUID } winning user UUID1 and UUID2
  */
 
-/* TEMP NAME SHOULD JUST BE getWinningCard */
-export function getWinningCardWorldEvent(card1, card2, worldEvent) {
+export function getRoundWinnerUUID(gameInstance) {
+  const currentRoundState = getCurrentRoundState(gameInstance);
+  const worldEvent = currentRoundState.worldEvent;
+  const [[uuid1, card1], [uuid2, card2]] = Object.entries(
+    currentRoundState.selectedCard,
+  );
 
   switch (worldEvent) {
-
     case WORLD_EVENTS.LOWER_WINS:
-      return card1.number < card2.number ? card1 : card2;
+      return card1.number < card2.number ? uuid1 : uuid2;
     case WORLD_EVENTS.RANDOM_VALUE:
-      return getRandomValue() * getMultiplierWorldEvent(card1, card2) > getRandomValue() ? card1 : card2;
+      return getRandomValue() * getMultiplierWorldEvent(card1, card2) > getRandomValue() ? uuid1 : uuid2;
     case WORLD_EVENTS.SUITE_REVERSED:
     case WORLD_EVENTS.SUITE_BOOST_WANDS:
     case WORLD_EVENTS.SUITE_BOOST_CUPS:
@@ -143,22 +144,9 @@ export function getWinningCardWorldEvent(card1, card2, worldEvent) {
     case WORLD_EVENTS.NONE:
     /*fallthrough because other world events influence the multiplier method not winning card*/
     default:
-      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) > card2.number? card1: card2;
+      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) > card2.number? uuid1: uuid2;
   }
-} /* getWinningCard */
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 /**
  * Determines the multiplier for a given matchup between two cards
@@ -186,19 +174,6 @@ function getMultiplier(card1, card2) {
   }
 } /* getMultiplier */
 
-/**
- * Determines which of two cards wins a round
- * @param { Types.Card } card1 card to compare
- * @param { Types.Card } card2 card to compare
- * @param { String } worldEvent world event object
- * @returns { Types.Card } winning card of card1 and card2
- */
-export function getWinningCard(card1, card2) {
-
-  return card1.number * getMultiplier(card1, card2) > card2.number
-    ? card1
-    : card2;
-} /* getWinningCard */
 
 /**
  * Creates and returns a new round state
@@ -208,6 +183,7 @@ export function createNewRound() {
   return {
     selectedCard: {},
     roundWinner: null,
+    // world_event: getRandomWorldEvent()
   };
 } /* createNewRound */
 
