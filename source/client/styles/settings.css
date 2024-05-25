@@ -103,6 +103,11 @@
     width: 20rem;
 }
 
+#select-profile-picture-wrapper img {
+    width: 5rem;
+    height: 5rem;
+}
+
 #information-card-list {
     padding: 2rem;
     height: 28rem;
@@ -159,7 +164,6 @@
     align-items: center;
     gap: 2rem;
 }
-
 
 #card-information-close, #select-profile-picture-close {
     position: absolute;

@@ -41,18 +41,18 @@ function initializeNavigation(buttonWrapperIdToSectionIdMap) {
 } /* initializeNavigation */
 
 /**
- *
+ * Saves volume setting on user input
  * @param volumeEl
  * @param setVolumeCallbackFn
  */
-function initializeVolumeInput(volumeEl, setVolumeCallbackFn) {
+function saveVolume(volumeEl, setVolumeCallbackFn) {
   volumeEl.addEventListener('change', () => {
     setVolumeCallbackFn(volumeEl.value / 100);
   });
-} /* initializeVolumeInput */
+} /* saveVolume */
 
 /**
- *
+ * Populate the list of cards
  */
 function initalizeCards() {
   const cardListEl = document.querySelector('#information-card-list');
@@ -72,10 +72,10 @@ function initalizeCards() {
       return newCardEl;
     }),
   );
-}
+} /* initalizeCards */
 
 /**
- *
+ * Save username adjustment
  */
 function saveSettings() {
   const usernameInputEl = document.querySelector('#profile_settings_username');
@@ -88,7 +88,7 @@ function saveSettings() {
 } /* saveSettings */
 
 /**
- *
+ * Reset username to original username before current edit
  */
 function resetSettings() {
   const usernameInputEl = document.querySelector('#profile_settings_username');
@@ -99,15 +99,15 @@ function resetSettings() {
 } /* resetSettings */
 
 /**
- *
+ * Get volume input stored in settings
  */
-function saveVolume() {
+function initializeVolumeInput() {
   const musicSettingsEl = document.querySelector('#music_volume_slider');
   const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
 
   musicSettingsEl.value = getMusicVolumeLevel() * 100;
   sfxSettingsEl.value = getSFXVolumeLevel() * 100;
-} /* saveVolume */
+} /* initializeVolumeInput */
 
 /**
  * Initializes event listeners for navigation
@@ -152,14 +152,14 @@ function initializeSettings() {
 
   resetSettings();
   saveSettings();
-  saveVolume();
+  initializeVolumeInput();
   initializeNavigation({
     '#audio_menu_button_wrapper': '#volume_settings',
     '#profile_menu_button_wrapper': '#profile_settings',
     '#info_menu_button_wrapper': '#information_settings',
   });
-  initializeVolumeInput(musicSettingsEl, setMusicVolumeLevel);
-  initializeVolumeInput(sfxSettingsEl, setSFXVolumeLevel);
+  saveVolume(musicSettingsEl, setMusicVolumeLevel);
+  saveVolume(sfxSettingsEl, setSFXVolumeLevel);
   initalizeCards();
 
   saveSettingsButtonEl.addEventListener('click', saveSettings);
