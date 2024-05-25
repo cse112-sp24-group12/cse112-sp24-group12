@@ -108,6 +108,22 @@ export function getWinningCard(card1, card2) {
 } /* getWinningCard */
 
 /**
+ * Returns profile of user who has a higher score
+ * @param { Types.GameInstance } gameInstance target game instance
+ * @returns { Types.ServerToClientProfile } profile of game winner
+ */
+export function getGameWinnerProfile(gameInstance) {
+  const [[pOneUUID, { score: pOneScore }], [pTwoUUID, { score: pTwoScore }]] =
+    Object.entries(gameInstance.gameState.byPlayer);
+
+  const winnerUUID = pOneScore > pTwoScore ? pOneUUID : pTwoUUID;
+
+  return gameInstance.webSocketConnections.find(
+    (webSocketConnection) => webSocketConnection.profile.uuid === winnerUUID,
+  ).profile;
+} /* getGameWinner */
+
+/**
  * Creates and returns a new round state
  * @returns { Types.RoundState } blank round state
  */
@@ -154,7 +170,10 @@ export function cleanGameState(playerUUID, gameState) {
     if (!currentRound.roundWinner && currentRound.selectedCard[UUID])
       currentRound.selectedCard[UUID] = 'played';
 
-    copiedState.byPlayer[UUID].remainingCards = [];
+    const playerState = copiedState.byPlayer[UUID];
+    playerState.remainingCards = Array.from({
+      length: playerState.remainingCards.length,
+    });
   });
 
   return copiedState;

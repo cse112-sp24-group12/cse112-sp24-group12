@@ -10,18 +10,18 @@ import * as Types from './types.js';
 /** @type { Types.Card[] } */
 const DEBUG_TEST_CARD_LIST = [
   {
-    suite: 'suite1',
-    number: 5,
+    suite: 'swords',
+    number: 10,
   },
   {
-    suite: 'suite2',
+    suite: 'pentacles',
     number: 4,
   },
 ];
 
 /** @type { Types.Card } */
 const DEBUG_OPPONENT_CARD = {
-  suite: 'suite_opp',
+  suite: 'cups',
   number: 6,
 };
 

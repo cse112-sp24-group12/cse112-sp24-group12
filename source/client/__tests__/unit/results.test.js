@@ -121,7 +121,7 @@ describe('updateMobileCard', function () {
   beforeAll(function () {
     document.body.innerHTML = `
     <div id="card-1" class="card">
-      <img id="image-1" src="assets/images/blank-card.png" alt="Blank Card" height="269" width="220" />
+      <img id="image-1" src="assets/images/blank-card.png" alt="Blank Card" height="269" width="220">
       <div id="text-1" class="text-portion">
         <p id="description-1">Card Description</p>
     </div>

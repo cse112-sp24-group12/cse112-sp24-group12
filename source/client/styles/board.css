@@ -15,7 +15,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   max-width: 40rem;
 }
 
@@ -64,6 +63,10 @@
   min-height: 0;
 }
 
+#opp_played_card {
+  position: relative;
+}
+
 .card-outline { 
   outline: 1px dashed var(--white);
   border-radius: 1rem;
@@ -105,6 +108,11 @@
   justify-content: flex-end;
   height: 12.5rem;
   padding: 1rem;
+  position: relative;
+}
+
+#opponent_cards versus-card {
+  position: absolute;
 }
 
 #user_cards {
@@ -133,9 +141,4 @@
 #score_info {
   display: flex;
   justify-content: space-between;
-}
-
-.trans-wrapper {
-  transition: transform 350ms ease-in-out;
-  transform-origin: top left;
 }

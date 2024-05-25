@@ -15,6 +15,8 @@ import {
   initializePlayers,
   setRemainingCards,
   getRemainingCards,
+  setNumOpponentCards,
+  getNumOpponentCards,
   setGameIsStarted,
   getGameIsStarted,
   setSelfSelectedCard,
@@ -22,7 +24,9 @@ import {
   setRoundWinner,
   createNewRoundState,
   getRoundNumber,
+  getOppHasPlayedRound,
 } from './store.js';
+import { getRandFromArr } from './util.js';
 import * as Types from './types.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
@@ -64,6 +68,7 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
  */
 export function handleGameStart(drawnCardNames) {
   setRemainingCards(drawnCardNames);
+  setNumOpponentCards(drawnCardNames.length);
   setGameIsStarted();
   createCardElements();
   initializeScoreboard();
@@ -100,7 +105,7 @@ function initializeScoreboard() {
 } /* initializeScoreboard */
 
 /**
- *
+ * Populates scoreboard scores with most recent scores from store
  */
 function updateScoreboardScores() {
   const scoreInfoWrapperEl = document.querySelector('#score_info');
@@ -115,21 +120,22 @@ function updateScoreboardScores() {
 } /* updateScoreboardScores */
 
 /**
- *
+ * Populates scoreboard round number with current round from store
  */
 function updateScoreboardRoundNumber() {
   const roundNumberEl = document.querySelector('#round_number');
 
   roundNumberEl.innerText = getRoundNumber();
-} /* */
+} /* updateScoreboardRoundNumber */
 
 /**
  * Adds card images to the DOM at start of game
  */
 function createCardElements() {
-  const cardWrapperEl = document.querySelector('#user_cards');
+  const userCardWrapperEl = document.querySelector('#user_cards');
+  const opponentCardWrapperEl = document.querySelector('#opponent_cards');
 
-  cardWrapperEl.replaceChildren(
+  userCardWrapperEl.replaceChildren(
     ...getRemainingCards().map((remainingCard) => {
       const versusCardEl = document.createElement('versus-card');
 
@@ -138,6 +144,17 @@ function createCardElements() {
       versusCardEl.setAttribute('number', remainingCard.number);
 
       versusCardEl.addEventListener('change', handleCardSelection);
+
+      return versusCardEl;
+    }),
+  );
+
+  opponentCardWrapperEl.replaceChildren(
+    ...Array.from({ length: getNumOpponentCards() }).map(() => {
+      const versusCardEl = document.createElement('versus-card');
+
+      versusCardEl.setAttribute('variant', 'back');
+      versusCardEl.toggleAttribute('disabled', true);
 
       return versusCardEl;
     }),
@@ -190,17 +207,16 @@ export function refreshEntireGame() {
  * Displays fact that opponent user has played a card, without yet revealing what
  * that card is
  */
-export function handleOpponentMove() {
+export async function handleOpponentMove() {
+  const oppDeckSlotEl = document.querySelector('#opponent_cards');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
 
-  const versusCardEl = document.createElement('versus-card');
-
-  versusCardEl.setAttribute('variant', 'back');
-  versusCardEl.toggleAttribute('disabled', true);
-
-  oppCardSlotEl.replaceChildren(versusCardEl);
+  const oppRemainingCardEls = oppDeckSlotEl.querySelectorAll('versus-card');
+  const oppCardEl = getRandFromArr(oppRemainingCardEls);
 
   setOppSelectedCard('played');
+
+  await oppCardEl.translateToContainer(oppCardSlotEl);
 } /* handleOpponentMove */
 
 /**
@@ -208,16 +224,13 @@ export function handleOpponentMove() {
  * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
-export function handleRevealCards(opponentSelectedCard, roundWinner) {
+export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   const oppCardSlotEl = document.querySelector('#opp_played_card');
   const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  let oppVersusCardEl = oppCardSlotEl.querySelector('versus-card');
-  if (!oppVersusCardEl) {
-    oppVersusCardEl = document.createElement('versus-card');
-    oppVersusCardEl.toggleAttribute('disabled', true);
-    oppCardSlotEl.replaceChildren(oppVersusCardEl);
-  }
+  if (!getOppHasPlayedRound()) await handleOpponentMove();
+
+  const oppVersusCardEl = oppCardSlotEl.querySelector('versus-card');
 
   oppVersusCardEl.setAttribute('suite', opponentSelectedCard.suite);
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
@@ -296,49 +309,11 @@ function updateCurrentInstruction(...newChildEls) {
 } /* updateCurrentInstruction */
 
 /**
- * Animates an object sliding into a container; at the end of the animation, seamlessly moves
- * said object into the container in the DOM as well
- * @param { HTMLElement } targetEl element to animate
- * @param { HTMLElement } targetContainerEl container that element should end up in
- */
-function animateSlidingToContainer(targetEl, targetContainerEl) {
-  /* calculate difference between current and desired position */
-  const targetElRect = targetEl.getBoundingClientRect();
-  const targetContainerElRect = targetContainerEl.getBoundingClientRect();
-
-  const diffXPos = targetContainerElRect.left - targetElRect.left;
-  const diffYPos = targetContainerElRect.top - targetElRect.top;
-
-  const scaleXDim = targetContainerElRect.width / targetElRect.width;
-  const scaleYDim = targetContainerElRect.height / targetElRect.height;
-
-  /* wrap element in a new div to avoid transform conflicts */
-  const transWrapperEl = document.createElement('div');
-  transWrapperEl.classList.add('trans-wrapper');
-  targetEl.parentElement.insertBefore(transWrapperEl, targetEl);
-  transWrapperEl.append(targetEl);
-
-  /* translate and swap after completion */
-  requestAnimationFrame(() => {
-    transWrapperEl.style.transform = `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`;
-
-    transWrapperEl.addEventListener(
-      'transitionend',
-      () => {
-        targetContainerEl.replaceChildren(targetEl);
-        transWrapperEl.remove();
-      },
-      { once: true },
-    );
-  });
-} /* animateSlidingToContainer */
-
-/**
  * Relays card selection to server during gameplay, and relocates
  * corresponding card to center screen
  * @param { MouseEvent } e click event passed by event listener
  */
-function handleCardSelection(e) {
+async function handleCardSelection(e) {
   const selectedVersusCardEl = e.currentTarget;
   const selectedCardInputEl = selectedVersusCardEl.querySelector('input');
   const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
@@ -351,9 +326,9 @@ function handleCardSelection(e) {
 
   selectedVersusCardEl.toggleAttribute('disabled', true);
 
-  animateSlidingToContainer(selectedVersusCardEl, selfPlayedCardSlotEl);
-
   updateCurrentInstruction(OPPONENT_MOVE_MESSAGE);
+
+  await selectedVersusCardEl.translateToContainer(selfPlayedCardSlotEl);
 } /* handleCardSelection */
 
 /**

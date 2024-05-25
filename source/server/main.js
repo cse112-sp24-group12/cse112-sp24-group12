@@ -13,6 +13,7 @@ import {
   createNewRound,
   generateUniqueCards,
   cleanGameState,
+  getGameWinnerProfile,
 } from './util.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
 import * as Types from './types.js';
@@ -314,12 +315,10 @@ function handleUpdateProfile(webSocketConnection, profile) {
  * @param { Types.GameInstance } gameInstance game instance to end
  */
 function endGame(gameInstance) {
-  const gameWinner = gameInstance.webSocketConnections[0].profile;
-
   gameInstance.webSocketConnections.forEach((conn) => {
     sendMessage(conn, {
       action: S2C_ACTIONS.GAME_END,
-      gameWinner,
+      gameWinner: getGameWinnerProfile(gameInstance),
     });
   });
 
