@@ -30,6 +30,13 @@ export const SUITES = {
   PENTACLES: 'pentacles',
 };
 
+export const MULTIPLER = {
+  GREATER: 2,
+  LESS: 0.5,
+  NEUTRAL: 1,
+  BOOST: 0.5,
+};
+
 export const WORLD_EVENTS = {
   LOWER_WINS: 'lower_wins',
   SUITE_REVERSED: 'suite_reversed',
@@ -39,6 +46,7 @@ export const WORLD_EVENTS = {
   SUITE_BOOST_PENTACLES: 'suite_boost_pentacles',
   RANDOM_VALUE: 'random_value',
   RANDOM_SUITE: 'random_suite',
+  NONE: 'none',
 };
 
 /**

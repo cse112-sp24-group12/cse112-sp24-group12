@@ -1,5 +1,6 @@
 import { SUITES } from './types.js';
 import { WORLD_EVENTS } from './types.js';
+import { MULTIPLER } from './types.js'; 
 import * as Types from './types.js';
 
 /**
@@ -69,6 +70,95 @@ export function getCurrentRoundState(gameInstance) {
     gameInstance.gameState.byRound.length - 1
   ];
 } /* getCurrentRoundState */
+
+function getRandomSuite(){
+  let suites = [SUITES.WANDS, SUITES.CUPS, SUITES.SWORDS, SUITES.PENTACLES];
+
+  return suites[Math.floor(Math.random() * suites.length)];
+}
+
+/**
+ * Determines the multiplier for a given matchup between two cards
+ * (Positive multiplier implies that card1 has a suite-based advantage over card2)
+ * @param { Types.Card } card1 card to compare, target of multiplier
+ * @param { Types.Card } card2 card to compare
+ * @param {String} worldEvent current worldEvent for the round
+ * @returns { Types.Card } matchup multiplier for card1 with reference to card2
+ */
+function getMultiplierWorldEvent(card1, card2, worldEvent) {
+
+  let multiplier = MULTIPLER.NEUTRAL;
+  let suite1 = worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card1.suite;
+  let suite2 = worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card2.suite;
+
+
+  
+  switch (suite1) {
+    case SUITES.WANDS:
+      if (suite2 === SUITES.CUPS) multiplier = worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS ? MULTIPLER.GREATER + MULTIPLER.BOOST : MULTIPLER.GREATER;
+      else if (suite2 == SUITES.SWORDS) multiplier = worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS ? MULTIPLER.LESS + MULTIPLER.BOOST : MULTIPLER.LESS;
+    case SUITES.CUPS:
+      if (suite2 === SUITES.SWORDS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS ? MULTIPLER.GREATER + MULTIPLER.BOOST : MULTIPLER.GREATER;
+      else if (suite2 == SUITES.WANDS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS ? MULTIPLER.LESS + MULTIPLER.BOOST : MULTIPLER.LESS;
+    case SUITES.SWORDS:
+      if (suite2 === SUITES.WANDS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS ? MULTIPLER.GREATER + MULTIPLER.BOOST : MULTIPLER.GREATER;
+      else if (suite2 == SUITES.CUPS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS ? MULTIPLER.LESS + MULTIPLER.BOOST : MULTIPLER.LESS;
+    case SUITES.PENTACLES:
+      multiplier = worldEvent === WORLD_EVENTS.SUITE_BOOST_PENTACLES ? MULTIPLER.NEUTRAL + MULTIPLER.BOOST : MULTIPLER.NEUTRAL;
+    default:
+
+  }
+
+  return worldEvent === WORLD_EVENTS.SUITE_REVERSED ? 1/multiplier : multiplier;
+
+} /* getMultiplier */
+
+function getRandomValue() {
+  return Math.floor(Math.random() * 14) + 1;
+}
+
+/**
+ * Determines which of two cards wins a round
+ * @param { Types.Card } card1 card to compare
+ * @param { Types.Card } card2 card to compare
+ * @param { String } worldEvent current worldEvent for the round
+ * @returns { Types.Card } winning card of card1 and card2
+ */
+
+/* TEMP NAME SHOULD JUST BE getWinningCard */
+export function getWinningCardWorldEvent(card1, card2, worldEvent) {
+
+  switch (worldEvent) {
+
+    case WORLD_EVENTS.LOWER_WINS:
+      return card1.number < card2.number ? card1 : card2;
+    case WORLD_EVENTS.RANDOM_VALUE:
+      return getRandomValue() * getMultiplierWorldEvent(card1, card2) > getRandomValue() ? card1 : card2;
+    case WORLD_EVENTS.SUITE_REVERSED:
+    case WORLD_EVENTS.SUITE_BOOST_WANDS:
+    case WORLD_EVENTS.SUITE_BOOST_CUPS:
+    case WORLD_EVENTS.SUITE_BOOST_SWORDS:
+    case WORLD_EVENTS.SUITE_BOOST_PENTACLES:
+    case WORLD_EVENTS.RANDOM_SUITE:
+    case WORLD_EVENTS.NONE:
+    /*fallthrough because other world events influence the multiplier method not winning card*/
+    default:
+      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) > card2.number? card1: card2;
+  }
+} /* getWinningCard */
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Determines the multiplier for a given matchup between two cards
