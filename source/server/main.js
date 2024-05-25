@@ -20,10 +20,30 @@ import * as Types from './types.js';
 
 const CARD_LIST = JSON.parse(readFileSync('./card_list.json'));
 
-const NUM_ROUNDS = 5;
-
 const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
+
+const NUM_ROUNDS = 5;
+
+/**
+ * Time until an instance is deleted after a user disconnects and fails to reconnect
+ * (in milliseconds)
+ * @type { number }
+ */
+const DISCONNECTED_TIMEOUT_MS = 180_000; // 3 minutes
+
+/**
+ * Time between game end and instance deletion (in milliseconds)
+ * @type { number }
+ */
+const GAME_END_TIMEOUT_MS = 5_000;
+
+/**
+ * Time between when a player permanently leaves a game and the game instance is deleted
+ * (in milliseconds)
+ * @type { number }
+ */
+const PLAYER_LEFT_TIMEOUT_MS = 1_500;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -91,15 +111,57 @@ function handleStartGame(webSocketConnection) {
  */
 function leaveInstance(webSocketConnection) {
   const gameInstance =
-    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+    gameInstancesByPlayerUUID?.[webSocketConnection?.profile?.uuid];
+
+  if (!gameInstance) return;
 
   gameInstance.webSocketConnections = gameInstance.webSocketConnections.filter(
     (conn) => conn != webSocketConnection,
   );
   delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  // TODO: add logic for destruction of past game instances after some condition (e.g., 0 players left + timeout)
+  if (gameInstance.gameState.isStarted)
+    setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
 } /* leaveInstance */
+
+/**
+ * Completely closes out and deletes a game instance, alerting any member
+ * players
+ * @param { Types.GameInstance } gameInstance game instance to close
+ */
+function closeInstance(gameInstance) {
+  delete gameInstancesByGameCode[gameInstance.gameCode];
+  gameInstance.webSocketConnections.forEach((webSocketConnection) => {
+    sendMessage(webSocketConnection, {
+      action: S2C_ACTIONS.INSTANCE_CLOSED,
+    });
+    delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+  });
+} /* closeInstance */
+
+/**
+ * Starts the timer to close out a game instance, to be used when a player
+ * loses connections
+ * @param { Types.GameInstance } gameInstance game instance to close
+ */
+function startDisconnectedInstanceCloseTimeout(gameInstance) {
+  if (!gameInstance || gameInstance.closeInstanceTimeoutID) return;
+
+  gameInstance.closeInstanceTimeoutID = setTimeout(
+    () => closeInstance(gameInstance),
+    DISCONNECTED_TIMEOUT_MS,
+  );
+} /* startDisconnectedInstanceCloseTimeout */
+
+/**
+ * Cancels any existing timesout that would close a game instance due to players
+ * losing connection
+ * @param { Types.GameInstance } gameInstance game instance to protect from closing
+ */
+function cancelDisconnectedInstanceCloseTimeout(gameInstance) {
+  clearTimeout(gameInstance.closeInstanceTimeoutID);
+  gameInstance.closeInstanceTimeoutID = null;
+} /* cancelDisconnectedInstanceCloseTimeout */
 
 /**
  * For a given connection, joins the game instance corresponding to the gameCode
@@ -111,7 +173,7 @@ function handleJoinInstance(webSocketConnection, gameCode) {
     gameInstancesByPlayerUUID?.[webSocketConnection?.profile?.uuid];
   const reqGameInstance = gameInstancesByGameCode[gameCode];
 
-  if (curGameInstance.gameState.isStarted) {
+  if (curGameInstance?.gameState?.isStarted) {
     console.log('Cannot implicitly leave an in-progress game');
     return;
   }
@@ -194,6 +256,9 @@ function alertUpdateInstance(gameInstance) {
  * @param { Types.WSConnection } webSocketConnection connection to attach to the game instance
  */
 function createInstance(webSocketConnection) {
+  leaveInstance(webSocketConnection);
+
+  /** @type { Types.GameInstance } */
   const gameInstance = {
     gameCode: generateGameCode(), // TODO: ensure game code is unique
     webSocketConnections: [webSocketConnection],
@@ -202,6 +267,7 @@ function createInstance(webSocketConnection) {
       byRound: [],
       isStarted: false,
     },
+    closeInstanceTimeoutID: null,
   };
 
   gameInstancesByGameCode[gameInstance.gameCode] = gameInstance;
@@ -255,6 +321,8 @@ function endGame(gameInstance) {
       gameWinner: getGameWinnerProfile(gameInstance),
     });
   });
+
+  setTimeout(() => closeInstance(gameInstance), GAME_END_TIMEOUT_MS);
 } /* endGame */
 
 /**
@@ -364,7 +432,7 @@ function handleStartRound(webSocketConnection) {
     return;
   }
 
-  // TODO: validate request is coming from host
+  // TODO: validate request is coming from host?
 
   gameInstance.gameState.byRound.push(createNewRound());
 
@@ -423,10 +491,17 @@ function attemptRejoin(webSocketConnection, playerUUID) {
   reqGameInstance.webSocketConnections[
     reqGameInstance.webSocketConnections.indexOf(reqReplacedConnection)
   ] = webSocketConnection;
+
   sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.UPDATE_UUID,
     playerUUID: playerUUID,
   });
+
+  if (
+    reqGameInstance.webSocketConnections.filter((conn) => conn.connected)
+      .length == 2
+  )
+    cancelDisconnectedInstanceCloseTimeout(reqGameInstance);
 
   alertUpdateInstance(reqGameInstance);
   sendMessage(webSocketConnection, {
@@ -436,6 +511,7 @@ function attemptRejoin(webSocketConnection, playerUUID) {
       reqGameInstance.gameState,
     ),
   });
+
   return true;
 } /* attemptRejoin */
 
@@ -520,6 +596,11 @@ function handleRequest(webSocketRequest) {
     console.log(
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
     );
+
+    const gameInstance =
+      gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
+    if (gameInstance?.gameState?.isStarted)
+      startDisconnectedInstanceCloseTimeout(gameInstance);
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);

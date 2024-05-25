@@ -13,6 +13,9 @@
 
   --background-color: #341C3A;
 
+  --modal-background-color: #fff2d5;
+  --modal-backdrop-background-color: #0000004e;
+
   --border-radius: 1.225rem;
   --default-scale: scale(1.05);
   --default-transform-transition: transform 150ms ease-in-out;
@@ -77,6 +80,40 @@ h3 {
   font-size: 1em;
 }
 
+dialog {
+  margin: auto;
+  border-radius: var(--border-radius);
+  border: 3px solid var(--yellow);
+  padding: 1rem;
+  overflow: visible;
+  background-color: var(--modal-background-color);
+}
+
+dialog::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: -10rem;
+  width: 13rem;
+  aspect-ratio: 1 / 1;
+  background-image: url(../assets/images/oracle.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: scaleX(-1);
+  filter: drop-shadow(0px 0px 2px var(--black-low-opacity));
+}
+
+dialog form[method="dialog"] {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 2rem;
+}
+
+::backdrop {
+  background-color: var(--modal-backdrop-background-color);
+}
+
 button {
   cursor: pointer;
 }
@@ -93,7 +130,8 @@ input[type="number"] {
 
 .primary-button,
 .secondary-button,
-.tertiary-button {
+.tertiary-button,
+.destructive-button {
   font-family: "Mystery Quest", cursive, serif;
   border: none;
   text-decoration: none;
@@ -108,19 +146,23 @@ input[type="number"] {
 
 .primary-button:hover,
 .secondary-button:hover,
-.tertiary-button:hover {
+.tertiary-button:hover,
+.destructive-button:hover {
   transform: var(--default-scale);
 }
 
-.primary-button {
-  color: #3E2605;
+.primary-button,
+.secondary-button,
+.destructive-button {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.primary-button::before {
+.primary-button::before,
+.secondary-button::before,
+.destructive-button::before {
   content: '';
   position: absolute;
   z-index: -2;
@@ -128,12 +170,11 @@ input[type="number"] {
   display: block;
   width: 100%;
   height: 100%;
-  box-shadow: 4px 4px 15px 0px rgba(111, 84, 0, 0.54);
-  border: 0.1px solid #E6A121;
-  background: radial-gradient(60.71% 50% at 50% 50%, #D27D08 71.13%, rgba(255, 203, 60, 0.85) 100%);
 }
 
-.primary-button::after {
+.primary-button::after,
+.secondary-button::after,
+.destructive-button::after {
   content: '';
   position: absolute;
   z-index: -1;
@@ -141,41 +182,51 @@ input[type="number"] {
   display: block;
   width: calc(100% - 1rem);
   height: calc(100% - 1rem);
+}
+
+.primary-button {
+  color: #3E2605;
+}
+
+.primary-button::before {
+  box-shadow: 0px 0px 5px 3px rgba(111, 84, 0, 0.16);
+  border: 0.1px solid #E6A121;
+  background: radial-gradient(60.71% 50% at 50% 50%, #D27D08 71.13%, rgba(255, 203, 60, 0.85) 100%);
+}
+
+.primary-button::after {
   border: 1.5px solid rgba(242, 213, 107, 0.59);
   background: linear-gradient(95deg, #DA8207 -0.22%, #DD9318 10.66%, #FFCB3C 26.65%, #FFCB3C 78.95%, #E39C1E 93%, #FBC63A 97.24%);
 }
 
 .secondary-button {
   color: #3E2605;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .secondary-button::before {
-  content: '';
-  position: absolute;
-  z-index: -2;
-  border-radius: var(--border-radius);
-  display: block;
-  width: 100%;
-  height: 100%;
-  box-shadow: 4px 4px 15px 0px rgba(108, 108, 108, 0.54);
+  box-shadow: 0px 0px 5px 3px rgba(108, 108, 108, 0.16);
   border: 0.1px solid #838383;
   background: radial-gradient(60.71% 50% at 50% 50%, #E1E1E1 71.13%, rgba(157, 157, 157, 0.85) 100%);
 }
 
 .secondary-button::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  border-radius: var(--border-radius);
-  display: block;
-  width: calc(100% - 1rem);
-  height: calc(100% - 1rem);
   border: 1.5px solid rgba(174, 174, 174, 0.59);
   background: linear-gradient(95deg, #717171 -0.22%, #9E9898 10.66%, #D6D6D6 26.65%, #D6D6D6 78.95%, #9E9E9E 93%, #9A9A9A 97.24%);
+}
+
+.destructive-button {
+  color: var(--white);
+}
+
+.destructive-button::before {
+  box-shadow: 0px 0px 5px 3px rgba(111, 0, 0, 0.16);
+  border: 0.1px solid #e64f21;
+  background: radial-gradient(60.71% 50% at 50% 50%, #d20808 71.13%, rgba(255, 86, 60, 0.85) 100%);
+}
+
+.destructive-button::after {
+  border: 1.5px solid rgba(242, 132, 107, 0.59);
+  background: linear-gradient(95deg, #da1207 -0.22%, #dd4318 10.66%, #ff3c3c 26.65%, #ff423c 78.95%, #e32e1e 93%, #fb673a 97.24%);
 }
 
 .tertiary-button {
@@ -207,6 +258,7 @@ input[type="number"] {
   justify-content: space-between;
   position: absolute;
   width: 100%;
+  padding: 1rem;
 }
 
 .icon-button {
@@ -227,11 +279,9 @@ input[type="number"] {
 #short_settings_icon_list {
   list-style-type: none;
   display: flex;
-  padding: 1rem;
 }
 
 #home_button {
-  margin: 1rem;
   background-image: url(../assets/images/icons/house.webp)
 }
 

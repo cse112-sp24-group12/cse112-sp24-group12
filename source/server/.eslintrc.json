@@ -21,5 +21,8 @@
         "definedTags": ["jest-environment"]
       }
     ]
+  },
+  "globals": {
+    "NodeJS": true
   }
 }

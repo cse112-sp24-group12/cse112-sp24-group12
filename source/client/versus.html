@@ -16,8 +16,12 @@
   <script src="scripts/versus/index.js" type="module"></script>
 </head>
 <body>
+  <!-- HEADER -->
   <header class="icon-header">
-    <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+    <div>
+      <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+      <button id="leave_game_button" class="destructive-button hidden">Leave game</button>
+    </div>
     <ul id="short_settings_icon_list">
       <li>
         <button aria-label="Mute" title="Mute" id="mute_button" class="icon-button"></button>
@@ -123,6 +127,22 @@
       <p>Connecting...</p>
     </section>
   </footer>
+
+  <!-- MODALS -->
+  <dialog id="instance_closed_modal">
+    <p>The game you are in has ended.</p>
+    <form method="dialog">
+      <button class="primary-button">Return to lobby</button>
+    </form>
+  </dialog>
+
+  <dialog id="confirm_leave_modal">
+    <p>Are you sure you want to leave the game? This action is irreversible.</p>
+    <form method="dialog">
+      <button class="secondary-button">Stay in game</button>
+      <button type="button" id="confirm_leave_button" class="destructive-button">Leave game</button>
+    </form>
+  </dialog>
 
   <!-- TEMPLATES -->
   <template id="card-template">
