@@ -259,6 +259,7 @@ input[type="number"] {
   position: absolute;
   width: 100%;
   padding: 1rem;
+  z-index: 20;
 }
 
 .icon-button {
