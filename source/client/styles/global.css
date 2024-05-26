@@ -56,6 +56,13 @@ body {
   background-color: var(--background-color);
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem;
+}
+
 canvas.star-bg {
   position: absolute;
   top: 0;
@@ -251,15 +258,6 @@ input[type="number"] {
 .purple-card {
   background-color: var(--purple-low-opacity);
   border: 2px solid var(--purple);
-}
-
-.icon-header {
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  width: 100%;
-  padding: 1rem;
-  z-index: 20;
 }
 
 .icon-button {

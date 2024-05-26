@@ -9,6 +9,11 @@ main {
   overflow: hidden;
 }
 
+header {
+  position: absolute;
+  z-index: 20;
+}
+
 #connection_status {
   position: absolute;
   left: 0;
