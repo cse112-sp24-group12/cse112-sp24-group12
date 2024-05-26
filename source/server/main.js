@@ -15,6 +15,7 @@ import {
   cleanGameState,
   getGameWinnerProfile,
 } from './util.js';
+import { log, initializeLoggingOverviews } from './logging.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
 import * as Types from './types.js';
 
@@ -56,7 +57,9 @@ const webSocketServer = new server({
   autoAcceptConnections: false,
 });
 
-console.log('Server online');
+log('Server online', { severity: 'log' });
+
+initializeLoggingOverviews(gameInstancesByGameCode, gameInstancesByPlayerUUID);
 
 /**
  * For a given connection, sends stringified version of object for re-parsing on other side
@@ -64,7 +67,11 @@ console.log('Server online');
  * @param { Types.ServerToClientMessage } message well-formed message object to send
  */
 function sendMessage(webSocketConnection, message) {
-  webSocketConnection.sendUTF(JSON.stringify(message));
+  const stringifiedMessage = JSON.stringify(message);
+
+  log(`Outbound message: "${stringifiedMessage}"`, { severity: 'raw' });
+
+  webSocketConnection.sendUTF(stringifiedMessage);
 } /* sendMessage */
 
 /**
@@ -77,7 +84,11 @@ function handleStartGame(webSocketConnection) {
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   if (gameInstance.gameState.isStarted) {
-    console.log('Game already started');
+    log('Game start request rejected: game already started', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
@@ -102,7 +113,7 @@ function handleStartGame(webSocketConnection) {
     });
   });
 
-  console.log(`Game ${gameInstance.gameCode} started`);
+  log('Game started', { webSocketConnection, gameInstance, severity: 'log' });
 } /* handleStartGame */
 
 /**
@@ -120,15 +131,21 @@ function leaveInstance(webSocketConnection) {
   );
   delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  if (gameInstance.gameState.isStarted) {
-    setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
-    gameInstance.webSocketConnections.forEach((conn) => {
-      sendMessage(conn, {
-        action: S2C_ACTIONS.SYSTEM_MESSAGE,
-        messageContents: `${webSocketConnection.profile.username} left`,
-      });
+  log('Player left instance', {
+    webSocketConnection,
+    gameInstance,
+    severity: 'log',
+  });
+
+  gameInstance.webSocketConnections.forEach((conn) => {
+    sendMessage(conn, {
+      action: S2C_ACTIONS.SYSTEM_MESSAGE,
+      messageContents: `${webSocketConnection.profile.username} left`,
     });
-  }
+  });
+
+  if (gameInstance.gameState.isStarted)
+    setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
 } /* leaveInstance */
 
 /**
@@ -144,6 +161,11 @@ function closeInstance(gameInstance) {
     });
     delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
   });
+
+  log('Instance closed', {
+    gameInstance,
+    severity: 'log',
+  });
 } /* closeInstance */
 
 /**
@@ -158,6 +180,11 @@ function startDisconnectedInstanceCloseTimeout(gameInstance) {
     () => closeInstance(gameInstance),
     DISCONNECTED_TIMEOUT_MS,
   );
+
+  log('Initialized disconnection timeout', {
+    gameInstance,
+    severity: 'log',
+  });
 } /* startDisconnectedInstanceCloseTimeout */
 
 /**
@@ -168,6 +195,11 @@ function startDisconnectedInstanceCloseTimeout(gameInstance) {
 function cancelDisconnectedInstanceCloseTimeout(gameInstance) {
   clearTimeout(gameInstance.closeInstanceTimeoutID);
   gameInstance.closeInstanceTimeoutID = null;
+
+  log('Cancelled disconnection timeout', {
+    gameInstance,
+    severity: 'log',
+  });
 } /* cancelDisconnectedInstanceCloseTimeout */
 
 /**
@@ -181,27 +213,46 @@ function handleJoinInstance(webSocketConnection, gameCode) {
   const reqGameInstance = gameInstancesByGameCode[gameCode];
 
   if (curGameInstance?.gameState?.isStarted) {
-    console.log('Cannot implicitly leave an in-progress game');
+    log('Join instance rejected: cannot implicitly leave an in-progress game', {
+      webSocketConnection,
+      gameInstance: curGameInstance,
+      severity: 'error',
+    });
     return;
   }
 
   if (!reqGameInstance) {
-    console.log(`Invalid game code: ${gameCode}`);
+    log(`Join instance rejected: invalid game code "${gameCode}"`, {
+      webSocketConnection,
+      gameInstance: curGameInstance,
+      severity: 'warn',
+    });
     return;
   }
 
   if (reqGameInstance.gameState.isStarted) {
-    console.log(`Game ${gameCode} rejected connection: game started`);
+    log(`Join instance rejected: game ${gameCode} already started`, {
+      webSocketConnection,
+      gameInstance: curGameInstance,
+      severity: 'warn',
+    });
     return;
   }
 
   if (reqGameInstance.webSocketConnections.includes(webSocketConnection)) {
-    console.log(`Game ${gameCode} rejected connection: already exists`);
+    log(
+      `Join instance rejected: connection to game ${gameCode} already exists`,
+      { webSocketConnection, gameInstance: curGameInstance, severity: 'warn' },
+    );
     return;
   }
 
   if (reqGameInstance.webSocketConnections.length >= 2) {
-    console.log(`Game ${gameCode} rejected connection: game instance full`);
+    log(`Join instance rejected: game ${gameCode} already full`, {
+      webSocketConnection,
+      gameInstance: curGameInstance,
+      severity: 'warn',
+    });
     return;
   }
 
@@ -209,7 +260,11 @@ function handleJoinInstance(webSocketConnection, gameCode) {
   gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = reqGameInstance;
   reqGameInstance.webSocketConnections.push(webSocketConnection);
 
-  console.log(`Player joined instance with room code ${gameCode}`);
+  log('Player joined instance', {
+    webSocketConnection,
+    gameInstance: reqGameInstance,
+    severity: 'log',
+  });
 
   alertUpdateInstance(reqGameInstance);
 } /* handleJoinInstance */
@@ -281,6 +336,12 @@ function createInstance(webSocketConnection) {
   gameInstancesByPlayerUUID[webSocketConnection.profile.uuid] = gameInstance;
 
   alertUpdateInstance(gameInstance);
+
+  log('Created instance', {
+    webSocketConnection,
+    gameInstance,
+    severity: 'log',
+  });
 } /* createInstance */
 
 /**
@@ -300,7 +361,11 @@ function handleUpdateProfile(webSocketConnection, profile) {
     typeof profile.username !== 'string' ||
     typeof profile.profileImageName !== 'string'
   ) {
-    console.log('Invalid profile uploaded');
+    log('Invalid profile uploaded', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
@@ -315,6 +380,12 @@ function handleUpdateProfile(webSocketConnection, profile) {
       profile: webSocketConnection.profile,
     });
   });
+
+  log('Player updated profile', {
+    webSocketConnection,
+    gameInstance,
+    severity: 'log',
+  });
 } /* handleUpdateProfile */
 
 /**
@@ -322,11 +393,18 @@ function handleUpdateProfile(webSocketConnection, profile) {
  * @param { Types.GameInstance } gameInstance game instance to end
  */
 function endGame(gameInstance) {
+  const gameWinner = getGameWinnerProfile(gameInstance);
+
   gameInstance.webSocketConnections.forEach((conn) => {
     sendMessage(conn, {
       action: S2C_ACTIONS.GAME_END,
-      gameWinner: getGameWinnerProfile(gameInstance),
+      gameWinner,
     });
+  });
+
+  log(`Game ended with winner ${gameWinner.uuid}`, {
+    gameInstance,
+    severity: 'log',
   });
 
   setTimeout(() => closeInstance(gameInstance), GAME_END_TIMEOUT_MS);
@@ -363,6 +441,11 @@ function endRound(gameInstance) {
     });
   });
 
+  log(`Round ended with winner ${roundWinner.uuid}`, {
+    gameInstance,
+    severity: 'log',
+  });
+
   if (gameInstance.gameState.byRound.length === NUM_ROUNDS)
     endGame(gameInstance);
 } /* endRound */
@@ -379,7 +462,11 @@ function handleSelectCard(webSocketConnection, selectedCard) {
   const playerGameState = gameInstance.gameState.byPlayer[playerUUID];
 
   if (!gameInstance.gameState.isStarted) {
-    console.log('Game not yet started');
+    log('Card selection rejected: game not yet started', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
@@ -388,12 +475,20 @@ function handleSelectCard(webSocketConnection, selectedCard) {
   // TODO: more robust handling here; return some error to client on failure
 
   if (currentRoundState.selectedCard[playerUUID]) {
-    console.log('Card already selected this round');
+    log('Card selection rejected: card already selected this round', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
   if (!isCardValid(selectedCard)) {
-    console.log('Invalid card format');
+    log('Card selection rejected: invalid card format', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
@@ -402,7 +497,11 @@ function handleSelectCard(webSocketConnection, selectedCard) {
       areCardsEqual(card, selectedCard),
     )
   ) {
-    console.log('Card not among remaining options');
+    log('Card selection rejected: card not among remaining options', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
@@ -410,6 +509,12 @@ function handleSelectCard(webSocketConnection, selectedCard) {
     (card) => !areCardsEqual(card, selectedCard),
   );
   currentRoundState.selectedCard[playerUUID] = selectedCard;
+
+  log(`Card selected`, {
+    webSocketConnection,
+    gameInstance,
+    severity: 'log',
+  });
 
   if (Object.keys(currentRoundState.selectedCard).length === 2) {
     endRound(gameInstance);
@@ -430,18 +535,29 @@ function handleStartRound(webSocketConnection) {
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   if (!gameInstance?.gameState?.isStarted) {
-    console.log('Game not yet started');
+    log('Round start rejected: game not yet started', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
   if (!getCurrentRoundState(gameInstance).roundWinner) {
-    console.log('Current round not yet complete');
+    log('Round start rejected: current round not complete', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'error',
+    });
     return;
   }
 
-  // TODO: validate request is coming from host?
-
   gameInstance.gameState.byRound.push(createNewRound());
+
+  log('Round started', {
+    gameInstance,
+    severity: 'log',
+  });
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
     sendMessage(webSocketConnection, {
@@ -460,6 +576,13 @@ function handleChatMessage(webSocketConnection, messageContents) {
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   // TODO: validate chat message contents
+
+  log(`Chat message: "${messageContents}"`, {
+    webSocketConnection,
+    gameInstance,
+    severity: 'log',
+  });
+
   gameInstance.webSocketConnections.forEach((conn) => {
     sendMessage(conn, {
       action: S2C_ACTIONS.CHAT_MESSAGE,
@@ -518,6 +641,12 @@ function attemptRejoin(webSocketConnection, playerUUID) {
     ),
   });
 
+  log('Successfully rejoined instance', {
+    webSocketConnection,
+    gameInstance: reqGameInstance,
+    severity: 'log',
+  });
+
   return true;
 } /* attemptRejoin */
 
@@ -529,7 +658,14 @@ function attemptRejoin(webSocketConnection, playerUUID) {
  */
 function handleInitialization(webSocketConnection, playerUUID) {
   if (gameInstancesByPlayerUUID?.[playerUUID]?.isStarted) {
-    console.log('Cannot implicitly leave an in-progress game');
+    log(
+      'Initialization rejected: cannot implicitly leave an in-progress game',
+      {
+        webSocketConnection,
+        gameInstance: gameInstancesByPlayerUUID[playerUUID],
+        severity: 'error',
+      },
+    );
     return;
   }
 
@@ -553,20 +689,22 @@ function handleInitialization(webSocketConnection, playerUUID) {
  * @param { Types.WSRequest } webSocketRequest inbound WebSocket request object
  */
 function handleRequest(webSocketRequest) {
-  console.log(`Request received at "${webSocketRequest.remoteAddress}"`);
+  log(`WebSocket request received at "${webSocketRequest.remoteAddress}"`, {
+    severity: 'connection',
+  });
 
   const webSocketConnection = acceptRequest(webSocketRequest);
 
-  console.log(`WebSocket connected at "${webSocketConnection.remoteAddress}"`);
+  log(`WebSocket connected at "${webSocketConnection.remoteAddress}"`, {
+    severity: 'connection',
+  });
 
   /**
    * Handles message event for a given WebSocket connection
    * @param { { type: 'utf8'|'binary', utf8Data: string } } data message object received
    */
   function handleMessage(data) {
-    console.log(
-      `Message received at "${webSocketConnection.remoteAddress}": "${data.utf8Data}"`,
-    );
+    log(`Inbound message: "${data.utf8Data}"`, { severity: 'raw' });
 
     try {
       const messageObj = JSON.parse(data.utf8Data);
@@ -594,13 +732,15 @@ function handleRequest(webSocketRequest) {
           handleChatMessage(webSocketConnection, messageObj.messageContents);
           break;
         default:
-          console.log(`Unrecognized action: ${messageObj.action}`);
+          log(`Unrecognized action: ${messageObj.action}`, {
+            severity: 'warn',
+          });
       }
     } catch (e) {
-      console.log(
-        `Error handling message at "${webSocketConnection.remoteAddress}"`,
-        e,
-      );
+      log(e.stack, {
+        webSocketConnection,
+        severity: 'error',
+      });
     }
   } /* handleMessage */
 
@@ -610,21 +750,23 @@ function handleRequest(webSocketRequest) {
    * @param { string } desc textual description corresponding to close reason
    */
   function handleClose(code, desc) {
-    console.log(
+    log(
       `WebSocket disconnected at "${webSocketConnection.remoteAddress}" with code "${code}" and desc "${desc}"`,
+      { severity: 'connection' },
     );
 
     const gameInstance =
       gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-    if (gameInstance?.gameState?.isStarted) {
-      startDisconnectedInstanceCloseTimeout(gameInstance);
-      gameInstance.webSocketConnections.forEach((conn) => {
-        sendMessage(conn, {
-          action: S2C_ACTIONS.SYSTEM_MESSAGE,
-          messageContents: `${webSocketConnection.profile.username} disconnected`,
-        });
+
+    gameInstance?.webSocketConnections?.forEach((conn) => {
+      sendMessage(conn, {
+        action: S2C_ACTIONS.SYSTEM_MESSAGE,
+        messageContents: `${webSocketConnection.profile.username} disconnected`,
       });
-    }
+    });
+
+    if (gameInstance?.gameState?.isStarted)
+      startDisconnectedInstanceCloseTimeout(gameInstance);
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);

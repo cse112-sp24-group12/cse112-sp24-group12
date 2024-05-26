@@ -25,7 +25,9 @@ import {
   createNewRoundState,
   getRoundNumber,
   getOppHasPlayedRound,
+  clearGameState,
 } from './store.js';
+import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
 import * as Types from './types.js';
 
@@ -285,6 +287,8 @@ export function handleGameEnd(gameWinner) {
  */
 function returnToLobby() {
   toggleToLobbyView();
+  clearGameState();
+  clearChat();
   sendInitializationRequest();
 } /* returnToLobby */
 
