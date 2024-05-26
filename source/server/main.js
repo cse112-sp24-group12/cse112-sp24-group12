@@ -120,8 +120,16 @@ function leaveInstance(webSocketConnection) {
   );
   delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  if (gameInstance.gameState.isStarted)
+  if (gameInstance.gameState.isStarted) {
     setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
+    const leaveMessage = webSocketConnection.profile.username + ' has left the game.';
+    gameInstance.webSocketConnections.forEach((conn) => {
+      sendMessage(conn, {
+        action: S2C_ACTIONS.SYSTEM_MESSAGE,
+        messageContents: leaveMessage,
+      });
+    });
+  }
 } /* leaveInstance */
 
 /**
@@ -447,25 +455,17 @@ function handleStartRound(webSocketConnection) {
  * Validates and relays chat message from client
  * @param { Types.WSConnection } webSocketConnection connection sending chat message
  * @param { string } messageContents text content of message being received
- * @param { boolean } systemMessage whether the message should be sent as a system message
  */
-function handleChatMessage(webSocketConnection, messageContents, systemMessage = false) {
+function handleChatMessage(webSocketConnection, messageContents) {
   const gameInstance =
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   // TODO: validate chat message contents
-  let profile = structuredClone(webSocketConnection.profile);
-
-  if (systemMessage) {
-    profile.uuid = 'system';
-    profile.username = 'System';
-  }
-
   gameInstance.webSocketConnections.forEach((conn) => {
     sendMessage(conn, {
       action: S2C_ACTIONS.CHAT_MESSAGE,
       messageContents,
-      profile: profile,
+      profile: webSocketConnection.profile,
     });
   });
 } /* handleChatMessage */
@@ -535,12 +535,16 @@ function handleInitialization(webSocketConnection, playerUUID) {
   }
 
   const attemptRejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
-  if (!attemptRejoinStatus) {
-    createInstance(webSocketConnection);
+  if (attemptRejoinStatus) {
+    const rejoinMessage = webSocketConnection.profile.username + ' has rejoined the game.';
+    gameInstancesByPlayerUUID?.[playerUUID]?.webSocketConnections.forEach((conn) => {
+      sendMessage(conn, {
+        action: S2C_ACTIONS.SYSTEM_MESSAGE,
+        messageContents: rejoinMessage,
+      });
+    });
   } else {
-    const rejoinMessage = webSocketConnection.profile.username + ' rejoined the game.';
-
-    handleChatMessage(webSocketConnection, rejoinMessage, true);
+    createInstance(webSocketConnection);
   }
 } /* handleInitialization */
 
@@ -612,8 +616,16 @@ function handleRequest(webSocketRequest) {
 
     const gameInstance =
       gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-    if (gameInstance?.gameState?.isStarted)
+    if (gameInstance?.gameState?.isStarted) {
       startDisconnectedInstanceCloseTimeout(gameInstance);
+      const disconnectMessage = webSocketConnection.profile.username + ' has disconnected from the game.';
+      gameInstance.webSocketConnections.forEach((conn) => {
+        sendMessage(conn, {
+          action: S2C_ACTIONS.SYSTEM_MESSAGE,
+          messageContents: disconnectMessage,
+        });
+      });
+    }
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);

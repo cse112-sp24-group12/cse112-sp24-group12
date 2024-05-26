@@ -47,7 +47,7 @@ function handleMessage(message) {
     handleInstanceClosed,
     refreshEntireGame,
   } = socketState.gameCallbackFns;
-  const { printMessage } = socketState.chatCallbackFns;
+  const { printMessage, printSystemMessage } = socketState.chatCallbackFns;
 
   try {
     switch (messageObj.action) {
@@ -77,6 +77,9 @@ function handleMessage(message) {
         break;
       case S2C_ACTIONS.CHAT_MESSAGE:
         printMessage(messageObj.messageContents, messageObj.profile);
+        break;
+      case S2C_ACTIONS.SYSTEM_MESSAGE:
+        printSystemMessage(messageObj.messageContents);
         break;
       case S2C_ACTIONS.UPDATE_PROFILE:
         updateProfile(messageObj.profile);
