@@ -69,15 +69,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 2rem;
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
 }
 
 h3 {
-  font-size: 1em;
+  font-size: 1rem;
 }
 
 dialog {
@@ -256,15 +256,14 @@ input[type="number"] {
 .icon-header {
   display: flex;
   justify-content: space-between;
-  position: absolute;
   width: 100%;
-  padding: 1rem;
+  padding: 2rem;
   z-index: 20;
 }
 
 .icon-button {
   display: inline-block;
-  width: 4rem;
+  width: 5rem;
   aspect-ratio: 1 / 1;
   background-size: contain;
   background-repeat: no-repeat;

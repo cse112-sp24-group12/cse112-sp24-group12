@@ -3,29 +3,35 @@
   display: grid;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(2, auto);
-  padding: 6rem 1rem 1rem;
+  padding: 0 3rem 3rem 3rem;
 }
 
 #lobby_game_codes_wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 3rem;
+  align-self: center;
 }
 
 .lobby-code-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 1rem;
 }
 
 .lobby-code-wrapper label {
   font-family: "Berkshire Swash";
-  font-size: 1.25rem;
+  font-size: 2rem;
 }
 
 .lobby-code-input-wrapper {
   display: flex;
+}
+
+.lobby-code-input-wrapper input {
+  font-size: 2rem;
+  font-family: "Mystery Quest";
 }
 
 #self_game_code {
@@ -41,7 +47,7 @@
 }
 
 .lobby-code-input-wrapper button {
-  width: 3rem;
+  width: 6rem;
   background-color: var(--yellow);
   transition: var(--default-transform-transition);
   border: none;
@@ -63,7 +69,7 @@
 
 #copy_game_code_button {
   border-radius: var(--border-radius) 0 0 var(--border-radius);
-  margin-right: 0.5rem;
+  margin-right: 1rem;
 }
 
 #copy_game_code_button::before {
@@ -72,11 +78,21 @@
 
 #join_game_button {
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
-  margin-left: 0.5rem;
+  margin-left: 1rem;
 }
 
 #join_game_button:before {
   background-image: url(./../assets/images/icons/arrow_icon.svg);
+}
+
+#oracle {
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+  transform: scaleX(-1);
+  right: 25rem;
+  z-index: 1;
+  pointer-events: none;
 }
 
 #lobby_button_wrapper {
@@ -84,7 +100,13 @@
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 3rem;
+}
+
+#lobby_button_wrapper > button {
+  width: 25rem;
+  height: 9.5rem;
+  font-size: 3rem;
 }
 
 #start_game_button,
@@ -94,6 +116,12 @@
   height: 5.75rem;
 }
 
+#lobby_profile_list_wrapper {
+  align-self: center;
+  justify-self: end;
+  width: 80%;
+}
+
 #lobby_profile_list {
   list-style-type: none;
   overflow: hidden;
@@ -101,7 +129,48 @@
 }
 
 #lobby_profile_list li {
+  position: relative;
   background-color: var(--light-gray);
   color: var(--black);
+  font-size: 2rem;
   padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#lobby_profile_list li::before {
+  content: '';
+  background-color: var(--purple);
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 20rem;
+}
+
+#lobby_profile_list li:first-of-type::after {
+  content: 'YOU';
+  display: inline-block;
+  font-weight: bold;
+  position: absolute;
+  right: 0;
+  padding-right: 1rem;
+}
+
+/* TODO: only display door on non-host */
+/* #lobby_profile_list li:last-of-type::after {
+  content: '';
+  display: inline-block;
+  width: 3rem;
+  height: 4rem;
+  background-image: url("../assets/images/icons/doors.webp");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  right: 0;
+  padding-right: 1rem;
+} */
+
+#lobby_profile_list li:first-of-type {
+  background: var(--yellow);
 }

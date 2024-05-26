@@ -35,33 +35,19 @@ main {
   border: none;
   color: var(--white);
   font-family: "Berkshire Swash";
-  font-size: 1.25rem;
+  font-size: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 #open_rules_button img {
-  width: 5rem;
+  width: 8rem;
   transition: var(--default-transform-transition);
 }
 
 #open_rules_button:hover img {
   transform: var(--default-scale);
-}
-
-#wizard {
-  position: absolute;
-  width: 20rem;
-  height: 20rem;
-  transform: scaleX(-1);
-  right: 24rem;
-  pointer-events: none;
-}
-
-#lobby_button_wrapper button {
-  width: 25rem;
-  height: 9.5rem;
 }
 
 versus-card {
