@@ -116,11 +116,9 @@ function animateNextFrame(stars, canvasContext) {
   /* move camera location with the user's mouse (dampened) */
   const { xPosPercentFromCenter, yPosPercentFromCenter } = mouseState;
   const cameraX =
-    window.innerWidth *
-    (0.5 - xPosPercentFromCenter * MOUSE_EFFECT_COEFF);
+    window.innerWidth * (0.5 - xPosPercentFromCenter * MOUSE_EFFECT_COEFF);
   const cameraY =
-    window.innerHeight *
-    (0.5 - yPosPercentFromCenter * MOUSE_EFFECT_COEFF);
+    window.innerHeight * (0.5 - yPosPercentFromCenter * MOUSE_EFFECT_COEFF);
 
   /* paint */
   canvasContext.clearRect(
