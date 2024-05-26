@@ -21,6 +21,7 @@ export const S2C_ACTIONS = {
   CHAT_MESSAGE: 'chat_message',
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
+  INSTANCE_CLOSED: 'instance_closed',
 };
 
 export const SUITES = {
@@ -139,6 +140,9 @@ export const SUITES = {
  *  {
  *    action: S2C_ACTIONS.FORCE_REFRESH,
  *    gameState: GameState
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.INSTANCE_CLOSED
  *  }
  * } ServerToClientMessage
  */
@@ -173,6 +177,7 @@ export const SUITES = {
  * @typedef { {
  *  gameCode: number,
  *  webSocketConnections: WSConnection[],
- *  gameState: GameState
+ *  gameState: GameState,
+ *  closeInstanceTimeoutID: NodeJS.Timeout|null
  * } } GameInstance
  */

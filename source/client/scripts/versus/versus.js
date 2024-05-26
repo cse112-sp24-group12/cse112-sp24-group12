@@ -6,6 +6,7 @@ import {
   startGame,
   startRound,
   attachGameCallbackFns,
+  sendInitializationRequest,
 } from './socket.js';
 import {
   updateProfile,
@@ -66,20 +67,13 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
  * @param { Types.Card[] } drawnCardNames cards "drawn" by the user, passed from server
  */
 export function handleGameStart(drawnCardNames) {
-  const lobbyWrapperEl = document.querySelector('#lobby_menu');
-  const gameBoardWrapperEl = document.querySelector('#game_board');
-
-  lobbyWrapperEl.classList.add('hidden');
-  gameBoardWrapperEl.classList.remove('hidden');
-
   setRemainingCards(drawnCardNames);
   setNumOpponentCards(drawnCardNames.length);
   setGameIsStarted();
-
   createCardElements();
   initializeScoreboard();
-
   handleStartRound();
+  toggleToGameboardView();
 } /* handleGameStart */
 
 /**
@@ -168,20 +162,45 @@ function createCardElements() {
 } /* createCardElements */
 
 /**
+ *
+ */
+function toggleToGameboardView() {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
+  const leaveGameButtonEl = document.querySelector('#leave_game_button');
+  const homeButtonEl = document.querySelector('#home_button');
+
+  lobbyWrapperEl.classList.add('hidden');
+  homeButtonEl.classList.add('hidden');
+  gameBoardWrapperEl.classList.remove('hidden');
+  leaveGameButtonEl.classList.remove('hidden');
+} /* toggleToGameboardView */
+
+/**
+ *
+ */
+function toggleToLobbyView() {
+  const lobbyWrapperEl = document.querySelector('#lobby_menu');
+  const gameBoardWrapperEl = document.querySelector('#game_board');
+  const leaveGameButtonEl = document.querySelector('#leave_game_button');
+  const homeButtonEl = document.querySelector('#home_button');
+
+  gameBoardWrapperEl.classList.add('hidden');
+  leaveGameButtonEl.classList.add('hidden');
+  lobbyWrapperEl.classList.remove('hidden');
+  homeButtonEl.classList.remove('hidden');
+} /* toggleToLobbyView */
+
+/**
  * Rebuilds entire game board; can be used to resolve errors and in the case of
  * re-joining instances
  */
 export function refreshEntireGame() {
   if (!getGameIsStarted()) return;
 
-  const lobbyWrapperEl = document.querySelector('#lobby_menu');
-  const gameBoardWrapperEl = document.querySelector('#game_board');
-
-  lobbyWrapperEl.classList.add('hidden');
-  gameBoardWrapperEl.classList.remove('hidden');
-
   initializeScoreboard();
   createCardElements();
+  toggleToGameboardView();
 } /* refreshEntireGame */
 
 /**
@@ -262,6 +281,24 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
+ *
+ */
+function returnToLobby() {
+  toggleToLobbyView();
+  sendInitializationRequest();
+} /* returnToLobby */
+
+/**
+ *
+ */
+export function handleInstanceClosed() {
+  const instClosedModalEl = document.querySelector('#instance_closed_modal');
+
+  instClosedModalEl.addEventListener('close', returnToLobby);
+  instClosedModalEl.showModal();
+} /* handleInstanceClosed */
+
+/**
  * Inserts new content into the instruction box, overriding any existing content
  * @param { ...(string|Node) } newChildEls new elements or strings to insert
  */
@@ -309,6 +346,25 @@ function sendJoinInstance() {
 } /* sendJoinInstance */
 
 /**
+ *
+ */
+function handleLeaveGame() {
+  const confirmLeaveModalEl = document.querySelector('#confirm_leave_modal');
+  const confirmLeaveButtonEl = document.querySelector('#confirm_leave_button');
+
+  confirmLeaveButtonEl.addEventListener(
+    'click',
+    () => {
+      confirmLeaveModalEl.close();
+      returnToLobby();
+    },
+    { once: true },
+  );
+
+  confirmLeaveModalEl.showModal();
+} /* handleLeaveGame */
+
+/**
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
  * and activates event listeners
  */
@@ -317,6 +373,7 @@ export function initializeVersus() {
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
   const startRoundButtonEl = document.querySelector('#start_round_button');
+  const leaveGameButton = document.querySelector('#leave_game_button');
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -325,6 +382,7 @@ export function initializeVersus() {
     handleRevealCards,
     handleStartRound,
     handleGameEnd,
+    handleInstanceClosed,
     refreshEntireGame,
   });
 
@@ -334,4 +392,5 @@ export function initializeVersus() {
   });
   startGameButtonEl.addEventListener('click', startGame);
   startRoundButtonEl.addEventListener('click', startRound);
+  leaveGameButton.addEventListener('click', handleLeaveGame);
 } /* initializeVersus */
