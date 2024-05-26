@@ -7,7 +7,8 @@ header {
   align-items: center;
   justify-content: center;
   animation: fly 4.5s linear;
-  z-index: 10; /* ensure object is on top */
+  z-index: 20; /* ensure object is on top */
+  pointer-events: none;
 }
 
 .oracle .message {

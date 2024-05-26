@@ -50,6 +50,20 @@ main {
   transform: var(--default-scale);
 }
 
+#wizard {
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+  transform: scaleX(-1);
+  right: 24rem;
+  pointer-events: none;
+}
+
+#lobby_button_wrapper button {
+  width: 25rem;
+  height: 9.5rem;
+}
+
 versus-card {
   display: block;
   height: 100%;
