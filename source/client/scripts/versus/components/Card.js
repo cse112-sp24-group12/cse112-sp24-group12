@@ -101,28 +101,34 @@ export default class Card extends HTMLElement {
     const transWrapperElRect = transWrapperEl.getBoundingClientRect();
     const containerElRect = containerEl.getBoundingClientRect();
 
-    const diffXPos = containerElRect.left - transWrapperElRect.left;
-    const diffYPos = containerElRect.top - transWrapperElRect.top;
+    const diffXPos = transWrapperElRect.left - containerElRect.left;
+    const diffYPos = transWrapperElRect.top - containerElRect.top;
 
-    const scaleXDim = containerElRect.width / transWrapperElRect.width;
-    const scaleYDim = containerElRect.height / transWrapperElRect.height;
+    const scaleXDim = transWrapperElRect.width / containerElRect.width;
+    const scaleYDim = transWrapperElRect.height / containerElRect.height;
 
     /* translate and swap after completion */
     return new Promise((resolve) => {
+      containerEl.replaceChildren(this);
+
       transWrapperEl.style.setProperty(
         'transform',
         `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
+      );
+      requestAnimationFrame(() => {
+      transWrapperEl.classList.add('transition-active');
+      transWrapperEl.style.setProperty('transform',
+        'translate(0, 0) scale(1, 1)'
       );
 
       transWrapperEl.addEventListener(
         'transitionend',
         () => {
-          transWrapperEl.style.removeProperty('transform');
-          containerEl.replaceChildren(this);
+          transWrapperEl.classList.remove('transition-active');
           resolve();
         },
         { once: true },
-      );
+      );});
     });
   } /* translateToContainer */
 } /* Card */
