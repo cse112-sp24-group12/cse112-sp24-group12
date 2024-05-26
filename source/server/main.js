@@ -143,7 +143,7 @@ function leaveInstance(webSocketConnection) {
       messageContents: `${webSocketConnection.profile.username} left`,
     });
   });
-  
+
   if (gameInstance.gameState.isStarted)
     setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
 } /* leaveInstance */
@@ -757,14 +757,14 @@ function handleRequest(webSocketRequest) {
 
     const gameInstance =
       gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-    
-    gameInstance.webSocketConnections.forEach((conn) => {
+
+    gameInstance?.webSocketConnections?.forEach((conn) => {
       sendMessage(conn, {
         action: S2C_ACTIONS.SYSTEM_MESSAGE,
         messageContents: `${webSocketConnection.profile.username} disconnected`,
       });
     });
-    
+
     if (gameInstance?.gameState?.isStarted)
       startDisconnectedInstanceCloseTimeout(gameInstance);
   } /* handleClose */

@@ -202,5 +202,18 @@ export function getGameIsStarted() {
  * @param { Types.GameState } newGameState game state that takes priority
  */
 export function setGameState(newGameState) {
-  Object.assign(gameState, newGameState);
+  Object.assign(gameState.byPlayer, newGameState.byPlayer);
+  gameState.byRound = newGameState.byRound;
+  gameState.isStarted = newGameState.isStarted;
 } /* setGameState */
+
+/**
+ *
+ */
+export function clearGameState() {
+  Object.assign(gameState, {
+    byPlayer: {},
+    byRound: [],
+    isStarted: false,
+  });
+} /* clearGameState */

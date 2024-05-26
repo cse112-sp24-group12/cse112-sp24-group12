@@ -78,6 +78,16 @@ function handleCommand(command) {
 } /* handleCommand */
 
 /**
+ *
+ */
+export function clearChat() {
+  const chatFeedEl = document.querySelector('#chat_feed');
+
+  chatFeedEl.replaceChildren();
+  printSystemMessage('Type /debug to toggle the debug menu');
+}
+
+/**
  * Initializes behavior of chat box in Versus mode
  */
 export function inititializeChat() {
@@ -96,5 +106,5 @@ export function inititializeChat() {
     if (e.key === 'Enter') handleOutboundMessage();
   });
 
-  printSystemMessage('Type /debug to toggle the debug menu');
+  clearChat();
 } /* inititializeChat */

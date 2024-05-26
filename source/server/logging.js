@@ -69,7 +69,7 @@ function getConnectionFragment(webSocketConnection) {
  * @param { string } logMessage central message to log
  * @param { {
  *  webSocketConnection: Types.WSConnection,
- *  gameInstance: Types.GameInstance
+ *  gameInstance: Types.GameInstance,
  *  severity: 'log'|'warn'|'error'|'connection'|'raw'
  * } } [info] optional variants and additional identifying information
  */
