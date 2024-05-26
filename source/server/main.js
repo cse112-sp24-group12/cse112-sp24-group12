@@ -122,7 +122,8 @@ function leaveInstance(webSocketConnection) {
 
   if (gameInstance.gameState.isStarted) {
     setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
-    const leaveMessage = webSocketConnection.profile.username + ' has left the game.';
+    const leaveMessage =
+      webSocketConnection.profile.username + ' has left the game.';
     gameInstance.webSocketConnections.forEach((conn) => {
       sendMessage(conn, {
         action: S2C_ACTIONS.SYSTEM_MESSAGE,
@@ -536,13 +537,16 @@ function handleInitialization(webSocketConnection, playerUUID) {
 
   const attemptRejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
   if (attemptRejoinStatus) {
-    const rejoinMessage = webSocketConnection.profile.username + ' has rejoined the game.';
-    gameInstancesByPlayerUUID?.[playerUUID]?.webSocketConnections.forEach((conn) => {
-      sendMessage(conn, {
-        action: S2C_ACTIONS.SYSTEM_MESSAGE,
-        messageContents: rejoinMessage,
-      });
-    });
+    const rejoinMessage =
+      webSocketConnection.profile.username + ' has rejoined the game.';
+    gameInstancesByPlayerUUID?.[playerUUID]?.webSocketConnections.forEach(
+      (conn) => {
+        sendMessage(conn, {
+          action: S2C_ACTIONS.SYSTEM_MESSAGE,
+          messageContents: rejoinMessage,
+        });
+      },
+    );
   } else {
     createInstance(webSocketConnection);
   }
@@ -618,7 +622,9 @@ function handleRequest(webSocketRequest) {
       gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
     if (gameInstance?.gameState?.isStarted) {
       startDisconnectedInstanceCloseTimeout(gameInstance);
-      const disconnectMessage = webSocketConnection.profile.username + ' has disconnected from the game.';
+      const disconnectMessage =
+        webSocketConnection.profile.username +
+        ' has disconnected from the game.';
       gameInstance.webSocketConnections.forEach((conn) => {
         sendMessage(conn, {
           action: S2C_ACTIONS.SYSTEM_MESSAGE,
