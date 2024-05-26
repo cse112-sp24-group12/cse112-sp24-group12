@@ -86,6 +86,7 @@ export function inititializeChat() {
 
   attachChatCallbackFns({
     printMessage,
+    printSystemMessage,
   });
 
   updateProfile(SYSTEM_PROFILE);

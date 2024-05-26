@@ -19,6 +19,7 @@ export const S2C_ACTIONS = {
   START_ROUND: 'start_round',
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
+  SYSTEM_MESSAGE: 'system_message',
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
   INSTANCE_CLOSED: 'instance_closed',
@@ -132,6 +133,10 @@ export const SUITES = {
  *    action: S2C_ACTIONS.CHAT_MESSAGE,
  *    messageContents: string,
  *    profile: ServerToClientProfile
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.SYSTEM_MESSAGE,
+ *    messageContents: string
  *  } |
  *  {
  *    action: S2C_ACTIONS.UPDATE_PROFILE,

@@ -120,8 +120,15 @@ function leaveInstance(webSocketConnection) {
   );
   delete gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
-  if (gameInstance.gameState.isStarted)
+  if (gameInstance.gameState.isStarted) {
     setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
+    gameInstance.webSocketConnections.forEach((conn) => {
+      sendMessage(conn, {
+        action: S2C_ACTIONS.SYSTEM_MESSAGE,
+        messageContents: `${webSocketConnection.profile.username} left`,
+      });
+    });
+  }
 } /* leaveInstance */
 
 /**
@@ -453,7 +460,6 @@ function handleChatMessage(webSocketConnection, messageContents) {
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
   // TODO: validate chat message contents
-
   gameInstance.webSocketConnections.forEach((conn) => {
     sendMessage(conn, {
       action: S2C_ACTIONS.CHAT_MESSAGE,
@@ -528,7 +534,18 @@ function handleInitialization(webSocketConnection, playerUUID) {
   }
 
   const attemptRejoinStatus = attemptRejoin(webSocketConnection, playerUUID);
-  if (!attemptRejoinStatus) createInstance(webSocketConnection);
+  if (attemptRejoinStatus) {
+    gameInstancesByPlayerUUID?.[playerUUID]?.webSocketConnections.forEach(
+      (conn) => {
+        sendMessage(conn, {
+          action: S2C_ACTIONS.SYSTEM_MESSAGE,
+          messageContents: `${webSocketConnection.profile.username} reconnected`,
+        });
+      },
+    );
+  } else {
+    createInstance(webSocketConnection);
+  }
 } /* handleInitialization */
 
 /**
@@ -599,8 +616,15 @@ function handleRequest(webSocketRequest) {
 
     const gameInstance =
       gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-    if (gameInstance?.gameState?.isStarted)
+    if (gameInstance?.gameState?.isStarted) {
       startDisconnectedInstanceCloseTimeout(gameInstance);
+      gameInstance.webSocketConnections.forEach((conn) => {
+        sendMessage(conn, {
+          action: S2C_ACTIONS.SYSTEM_MESSAGE,
+          messageContents: `${webSocketConnection.profile.username} disconnected`,
+        });
+      });
+    }
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);
