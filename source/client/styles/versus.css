@@ -68,10 +68,6 @@ versus-card .card-trans-wrapper {
   position: absolute;
 }
 
-versus-card .card-trans-wrapper.transition-active {
-  transition: transform 350ms ease-in-out;
-}
-
 versus-card img {
   height: 100%;
   aspect-ratio: 2 / 3;

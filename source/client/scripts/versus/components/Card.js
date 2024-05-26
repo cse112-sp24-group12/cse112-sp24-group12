@@ -111,24 +111,25 @@ export default class Card extends HTMLElement {
     return new Promise((resolve) => {
       containerEl.replaceChildren(this);
 
-      transWrapperEl.style.setProperty(
-        'transform',
-        `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
-      );
-      requestAnimationFrame(() => {
-      transWrapperEl.classList.add('transition-active');
-      transWrapperEl.style.setProperty('transform',
-        'translate(0, 0) scale(1, 1)'
+      const translationAnimation = transWrapperEl.animate(
+        [
+          {
+            transform: `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
+          },
+          {},
+        ],
+        {
+          duration: 350,
+        },
       );
 
-      transWrapperEl.addEventListener(
-        'transitionend',
+      translationAnimation.addEventListener(
+        'finish',
         () => {
-          transWrapperEl.classList.remove('transition-active');
           resolve();
         },
         { once: true },
-      );});
+      );
     });
   } /* translateToContainer */
 } /* Card */
