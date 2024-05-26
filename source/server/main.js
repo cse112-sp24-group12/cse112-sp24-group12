@@ -455,8 +455,9 @@ function handleStartRound(webSocketConnection) {
  * Validates and relays chat message from client
  * @param { Types.WSConnection } webSocketConnection connection sending chat message
  * @param { string } messageContents text content of message being received
+ * @param { boolean } systemMessage whether the message should be sent as a system message
  */
-function handleChatMessage(webSocketConnection, messageContents) {
+function handleChatMessage(webSocketConnection, messageContents, systemMessage = false) {
   const gameInstance =
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
 
@@ -465,7 +466,7 @@ function handleChatMessage(webSocketConnection, messageContents) {
     sendMessage(conn, {
       action: S2C_ACTIONS.CHAT_MESSAGE,
       messageContents,
-      profile: webSocketConnection.profile,
+      profile: profile,
     });
   });
 } /* handleChatMessage */
