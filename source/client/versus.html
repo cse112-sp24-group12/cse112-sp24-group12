@@ -145,10 +145,13 @@
   <!-- TEMPLATES -->
   <template id="card-template">
     <div class="card-trans-wrapper">
-      <label>
-        <img src="" alt="card front face">
-      </label>
-      <input type="radio" name="selected_card">
+      <div class="card-flip-wrapper">
+        <label>
+          <img class="card-front" src="" alt="card front face">
+          <img class="card-back" src="./assets/images/cardback.png" alt="card back face">
+        </label>
+        <input type="radio" name="selected_card">
+      </div>
     </div>
   </template>
 </body>
