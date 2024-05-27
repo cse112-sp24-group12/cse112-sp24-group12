@@ -146,6 +146,7 @@ function leaveInstance(webSocketConnection) {
 
   if (gameInstance.gameState.isStarted)
     setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
+  else alertUpdateInstance(gameInstance);
 } /* leaveInstance */
 
 /**
