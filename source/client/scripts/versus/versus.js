@@ -21,11 +21,14 @@ import {
   getGameIsStarted,
   setSelfSelectedCard,
   setOppSelectedCard,
-  setRoundWinner,
+  setRoundWinnerUUID,
+  getRoundWinnerUUID,
   createNewRoundState,
   getRoundNumber,
   getOppHasPlayedRound,
   clearGameState,
+  setGameWinnerUUID,
+  getGameWinnerUUID,
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
@@ -205,6 +208,19 @@ export function refreshEntireGame() {
 
   initializeScoreboard();
   createCardElements();
+  
+  // if (/* cards have been played this round */) {
+  //   /* display cards */
+  // }
+
+  const gameWinnerUUID = getGameWinnerUUID();
+  const roundWinnerUUID = getRoundWinnerUUID();
+  if (gameWinnerUUID) {
+    displayWinner(gameWinnerUUID, 'game');
+  } else if (roundWinnerUUID) {
+    displayWinner(roundWinnerUUID, 'round');
+  }
+
   toggleToGameboardView();
 } /* refreshEntireGame */
 
@@ -225,6 +241,17 @@ export async function handleOpponentMove() {
 } /* handleOpponentMove */
 
 /**
+ * 
+ * @param { Types.UUID } roundWinnerUUID 
+ * @param { 'round'|'game'} variant 
+ */
+function displayWinner(roundWinnerUUID, variant) {
+  const versusUsernameEl = document.createElement('versus-username');
+  versusUsernameEl.setAttribute('uuid', roundWinnerUUID);
+  updateCurrentInstruction(versusUsernameEl, ` won the ${ variant }!`);
+} /* displayRoundWinner */
+
+/**
  * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
  * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
@@ -241,14 +268,11 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
   oppVersusCardEl.setAttribute('variant', 'front');
 
-  const versusUsernameEl = document.createElement('versus-username');
-  versusUsernameEl.setAttribute('uuid', roundWinner.uuid);
-  updateCurrentInstruction(versusUsernameEl, ' won the round!');
-
   startRoundButtonEl.classList.remove('hidden');
 
   setOppSelectedCard(opponentSelectedCard);
-  setRoundWinner(roundWinner.uuid);
+  setRoundWinnerUUID(roundWinner.uuid);
+  displayWinner(roundWinner.uuid, 'round');
   updateScoreboardScores();
 } /* handleRevealCards */
 
@@ -280,9 +304,8 @@ export function handleGameEnd(gameWinner) {
 
   startRoundButtonEl.classList.add('hidden');
 
-  const versusUsernameEl = document.createElement('versus-username');
-  versusUsernameEl.setAttribute('uuid', gameWinner.uuid);
-  updateCurrentInstruction(versusUsernameEl, ' won the game!');
+  setGameWinnerUUID(gameWinner.uuid);
+  displayWinner(gameWinner.uuid, 'game');
 } /* handleGameEnd */
 
 /**

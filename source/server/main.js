@@ -13,7 +13,7 @@ import {
   createNewRound,
   generateUniqueCards,
   cleanGameState,
-  getGameWinnerProfile,
+  calculateGameWinnerProfile,
 } from './util.js';
 import { log, initializeLoggingOverviews } from './logging.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
@@ -338,6 +338,7 @@ function createInstance(webSocketConnection) {
       byPlayer: {},
       byRound: [],
       isStarted: false,
+      gameWinner: null,
     },
     closeInstanceTimeoutID: null,
   };
@@ -403,7 +404,8 @@ function handleUpdateProfile(webSocketConnection, profile) {
  * @param { Types.GameInstance } gameInstance game instance to end
  */
 function endGame(gameInstance) {
-  const gameWinner = getGameWinnerProfile(gameInstance);
+  const gameWinner = calculateGameWinnerProfile(gameInstance);
+  gameInstance.gameState.gameWinner = gameWinner.uuid;
 
   gameInstance.webSocketConnections.forEach((conn) => {
     sendMessage(conn, {
@@ -456,7 +458,7 @@ function endRound(gameInstance) {
     severity: 'log',
   });
 
-  if (gameInstance.gameState.byRound.length === NUM_ROUNDS)
+  if (gameInstance.gameState.byRound.length >= NUM_ROUNDS)
     endGame(gameInstance);
 } /* endRound */
 
@@ -561,6 +563,15 @@ function handleStartRound(webSocketConnection) {
     });
     return;
   }
+
+  if (gameInstance.gameState.byRound.length >= NUM_ROUNDS) {
+    log('Round start rejected: already reached max rounds', {
+      webSocketConnection, 
+      gameInstance,
+      severity: 'error',
+    });
+    return;
+  } 
 
   gameInstance.gameState.byRound.push(createNewRound());
 

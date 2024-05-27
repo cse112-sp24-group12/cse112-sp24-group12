@@ -48,6 +48,7 @@ describe('getGameWinnerProfile unit testing', () => {
       },
       byRound: [],
       isStarted: true,
+      gameWinner: null,
     };
 
     /** @type { Types.GameInstance } */

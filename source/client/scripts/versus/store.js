@@ -13,16 +13,25 @@ const gameState = {
   byPlayer: {},
   byRound: [],
   isStarted: false,
+  gameWinner: null,
 };
 
 /**
  * Sets the winner of the current/most recent round
  * @param { Types.UUID } playerUUID unique identifier of round winner
  */
-export function setRoundWinner(playerUUID) {
+export function setRoundWinnerUUID(playerUUID) {
   getCurrentRoundState(gameState).roundWinner = playerUUID;
   gameState.byPlayer[playerUUID].score += 1;
 } /* setRoundWinner */
+
+/**
+ * 
+ * @returns { Types.UUID }
+ */
+export function getRoundWinnerUUID() {
+  return getCurrentRoundState(gameState).roundWinner;
+} /* getRoundWinnerUUID */
 
 /**
  * Adds blank new round to the current game state
@@ -197,6 +206,22 @@ export function getGameIsStarted() {
 } /* getGameIsStarted */
 
 /**
+ * 
+ * @param { Types.UUID } gameWinnerUUID
+ */
+export function setGameWinnerUUID(gameWinnerUUID) {
+  gameState.gameWinner = gameWinnerUUID;
+} /* setGameWinner */
+
+/**
+ * 
+ * @returns { Types.UUID }
+ */
+export function getGameWinnerUUID() {
+  return gameState.gameWinner;
+} /* getGameWinner */
+
+/**
  * Attempts to update game state by forcing a new game state object
  * on top of the existing game state
  * @param { Types.GameState } newGameState game state that takes priority
@@ -213,5 +238,6 @@ export function clearGameState() {
     byPlayer: {},
     byRound: [],
     isStarted: false,
+    gameWinner: null,
   });
 } /* clearGameState */

@@ -112,7 +112,7 @@ export function getWinningCard(card1, card2) {
  * @param { Types.GameInstance } gameInstance target game instance
  * @returns { Types.ServerToClientProfile } profile of game winner
  */
-export function getGameWinnerProfile(gameInstance) {
+export function calculateGameWinnerProfile(gameInstance) {
   const [[pOneUUID, { score: pOneScore }], [pTwoUUID, { score: pTwoScore }]] =
     Object.entries(gameInstance.gameState.byPlayer);
 
