@@ -633,19 +633,22 @@ function attemptRejoin(webSocketConnection, playerUUID) {
     cancelDisconnectedInstanceCloseTimeout(reqGameInstance);
 
   alertUpdateInstance(reqGameInstance);
-  sendMessage(webSocketConnection, {
-    action: S2C_ACTIONS.FORCE_REFRESH,
-    gameState: cleanGameState(
-      webSocketConnection.profile.uuid,
-      reqGameInstance.gameState,
-    ),
-  });
 
   log('Successfully rejoined instance', {
     webSocketConnection,
     gameInstance: reqGameInstance,
     severity: 'log',
   });
+
+  if (reqGameInstance.gameState.isStarted) {
+    sendMessage(webSocketConnection, {
+      action: S2C_ACTIONS.FORCE_REFRESH,
+      gameState: cleanGameState(
+        webSocketConnection.profile.uuid,
+        reqGameInstance.gameState,
+      ),
+    });
+  }
 
   return true;
 } /* attemptRejoin */
