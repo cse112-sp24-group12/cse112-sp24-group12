@@ -39,6 +39,7 @@
 - Find appropriate music [5 points]
 - Add music to background + settings [3 points]
 - Game-end fortune/unique winning message
+- Make copy code button functional on Versus lobby page
 - General UI improvements
 
 ### General timeline
