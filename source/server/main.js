@@ -92,6 +92,15 @@ function handleStartGame(webSocketConnection) {
     return;
   }
 
+  if (gameInstance.webSocketConnections.length !== 2) {
+    log('Game start request rejected: requires two online players', {
+      webSocketConnection,
+      gameInstance,
+      severity: 'warn',
+    });
+    return;
+  }
+
   // TODO: validate request is coming from host of the game
 
   const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);

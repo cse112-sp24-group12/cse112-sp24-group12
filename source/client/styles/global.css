@@ -121,7 +121,7 @@ dialog form[method="dialog"] {
   background-color: var(--modal-backdrop-background-color);
 }
 
-button {
+button:enabled {
   cursor: pointer;
 }
 
@@ -148,14 +148,21 @@ input[type="number"] {
   border-radius: var(--border-radius);
   padding: 0.75rem 1.75rem;
   display: inline-block;
-  transition: var(--default-transform-transition); 
+  transition: var(--default-transform-transition), opacity 350ms ease-in-out;
 }
 
-.primary-button:hover,
-.secondary-button:hover,
-.tertiary-button:hover,
-.destructive-button:hover {
+.primary-button:enabled:hover,
+.secondary-button:enabled:hover,
+.tertiary-button:enabled:hover,
+.destructive-button:enabled:hover {
   transform: var(--default-scale);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.tertiary-button:disabled,
+.destructive-button:disabled {
+  opacity: 0.4;
 }
 
 .primary-button,

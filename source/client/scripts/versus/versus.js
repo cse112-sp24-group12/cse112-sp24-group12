@@ -44,6 +44,7 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 export function handleUpdateInstance({ gameCode, profileList } = {}) {
   const selfGameCodeReadOnlyInputEl = document.querySelector('#self_game_code');
   const lobbyProfileListEl = document.querySelector('#lobby_profile_list');
+  const startGameButtonEl = document.querySelector('#start_game_button');
 
   selfGameCodeReadOnlyInputEl.value = gameCode;
 
@@ -62,6 +63,8 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
   );
 
   initializePlayers(profileList.map((profile) => profile.uuid));
+
+  startGameButtonEl.disabled = profileList.length !== 2;
 } /* handleUpdateInstance */
 
 /**
