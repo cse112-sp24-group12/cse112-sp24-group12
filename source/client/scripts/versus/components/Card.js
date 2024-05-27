@@ -101,24 +101,31 @@ export default class Card extends HTMLElement {
     const transWrapperElRect = transWrapperEl.getBoundingClientRect();
     const containerElRect = containerEl.getBoundingClientRect();
 
-    const diffXPos = containerElRect.left - transWrapperElRect.left;
-    const diffYPos = containerElRect.top - transWrapperElRect.top;
+    const diffXPos = transWrapperElRect.left - containerElRect.left;
+    const diffYPos = transWrapperElRect.top - containerElRect.top;
 
-    const scaleXDim = containerElRect.width / transWrapperElRect.width;
-    const scaleYDim = containerElRect.height / transWrapperElRect.height;
+    const scaleXDim = transWrapperElRect.width / containerElRect.width;
+    const scaleYDim = transWrapperElRect.height / containerElRect.height;
 
     /* translate and swap after completion */
     return new Promise((resolve) => {
-      transWrapperEl.style.setProperty(
-        'transform',
-        `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
+      containerEl.replaceChildren(this);
+
+      const translationAnimation = transWrapperEl.animate(
+        [
+          {
+            transform: `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
+          },
+          {},
+        ],
+        {
+          duration: 350,
+        },
       );
 
-      transWrapperEl.addEventListener(
-        'transitionend',
+      translationAnimation.addEventListener(
+        'finish',
         () => {
-          transWrapperEl.style.removeProperty('transform');
-          containerEl.replaceChildren(this);
           resolve();
         },
         { once: true },

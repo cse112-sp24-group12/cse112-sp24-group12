@@ -67,43 +67,42 @@
 
     <!-- GAMEPLAY -->
     <section id="game_board" class="hidden">
-      <div id="top_board_wrapper">
-        <div id="top_left_wrapper">
-          <div id="opponent_cards"><!-- dynamically populated --></div>
-          <section id="chat_box" aria-label="Chat">
-            <div id="chat_feed" role="feed"><!-- dynamically populated --></div>
-            <div id="chat_input_wrapper">
-              <input type="text" name="chat_input" id="chat_input">
-              <button id="chat_input_button" class="primary-button">Send</button>
-            </div>
-          </section>
-        </div>
-        <div id="top_mid_wrapper">
-          <section id="game_info">
-            <div id="round_info">
-              <p>Round <span id="round_number"><!-- dynamically populated --></span></p>
-              <time id="time_remaining"><!-- dynamically populated --></time>
-            </div>
-            <div id="score_info"><!-- dynamically populated --></div>
-          </section>
-          <section id="played_card_wrapper">
-            <div class="card-outline">
-              <div id="opp_played_card" class="card-slot"><!-- dynamically populated --></div>
-            </div>
-            <div class="card-outline">
-              <div id="self_played_card" class="card-slot"><!-- dynamically populated --></div>
-            </div>
-          </section>
-          <div id="round_control_wrapper">
-            <p id="current_instruction"><!-- dynamically populated --></p>
-            <button id="start_round_button" class="primary-button hidden">Next round</button>
+      <div id="top_left_wrapper">
+        <div id="opponent_cards"><!-- dynamically populated --></div>
+        <section id="chat_box" aria-label="Chat">
+          <div id="chat_feed" role="feed"><!-- dynamically populated --></div>
+          <div id="chat_input_wrapper">
+            <input type="text" name="chat_input" id="chat_input">
+            <button id="chat_input_button" class="primary-button">Send</button>
           </div>
+        </section>
+      </div>
+      <div id="top_mid_wrapper">
+        <section id="game_info">
+          <div id="round_info">
+            <p>Round <span id="round_number"><!-- dynamically populated --></span></p>
+            <time id="time_remaining"><!-- dynamically populated --></time>
+          </div>
+          <div id="score_info"><!-- dynamically populated --></div>
+        </section>
+        <section id="played_card_wrapper">
+          <div class="card-outline">
+            <div id="opp_played_card" class="card-slot"><!-- dynamically populated --></div>
+          </div>
+          <div class="card-outline">
+            <div id="self_played_card" class="card-slot"><!-- dynamically populated --></div>
+          </div>
+        </section>
+        <div id="round_control_wrapper">
+          <p id="current_instruction"><!-- dynamically populated --></p>
+          <button id="start_round_button" class="primary-button hidden">Next round</button>
         </div>
-        <div id="top_right_wrapper">
-          <section class="card purple-card">
-            <h2>Legend</h2>
-          </section>
-        </div>
+      </div> 
+      <div id="top_right_wrapper">
+        <section id="legend_card" class="card purple-card">
+          <h2>Legend</h2>
+          <img src="./assets/images/game_legend.webp" alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+        </section>
       </div>
       <div id="bottom_board_wrapper">
         <section id="user_cards"><!-- dynamically populated --></section>
