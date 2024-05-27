@@ -189,11 +189,14 @@ function toggleToLobbyView() {
   const gameBoardWrapperEl = document.querySelector('#game_board');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
   const homeButtonEl = document.querySelector('#home_button');
+  const outBoundGameCodeInputEl = document.querySelector('#outbound_game_code');
 
   gameBoardWrapperEl.classList.add('hidden');
   leaveGameButtonEl.classList.add('hidden');
   lobbyWrapperEl.classList.remove('hidden');
   homeButtonEl.classList.remove('hidden');
+
+  outBoundGameCodeInputEl.focus();
 } /* toggleToLobbyView */
 
 /**
