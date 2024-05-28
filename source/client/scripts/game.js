@@ -152,9 +152,10 @@ function generateCardsWithListeners(numCards) {
     cardEl.append(cardBackFaceEl, cardFrontFaceEl);
     cardContainerEl.append(cardEl);
 
-    oracle.addEventListener('animationend', () => {
-      cardContainerEl.classList.add("active-container");
+    oracle.addEventListener('animationend', function activate() {
+      cardContainerEl.classList.add('active-container');
       cardContainerEl.addEventListener('click', cardClickHandler);
+      oracle.removeEventListener('animationend', activate);
     });
 
     return cardContainerEl;
