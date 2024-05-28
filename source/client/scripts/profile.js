@@ -76,12 +76,12 @@ export function setProfileImage(profileImageName, { customUrl } = {}) {
   if (!LOCAL_PROFILE_IMAGE_STANDARD_URLS[profileImageName]) {
     return false;
   }
-
+  
   window.localStorage.setItem(
     LOCAL_PROFILE_IMAGE_NAME_LOCATION,
     profileImageName,
   );
-
+  
   return true;
 } /* setProfileImageUrl */
 

@@ -79,10 +79,10 @@ function initalizeCards() {
  */
 function saveSettings() {
   const usernameInputEl = document.querySelector('#profile_settings_username');
-  // const avatarImageEl = document.querySelector('#profile_settings_avatar');
+  const selectedAvatarImg = document.querySelector("input[type='radio']:checked");
 
   setUsername(usernameInputEl.value);
-  setProfileImage();
+  setProfileImage(selectedAvatarImg.value);
 
   resetSettings();
 } /* saveSettings */
@@ -116,24 +116,26 @@ function initializeSettings() {
   const musicSettingsEl = document.querySelector('#music_volume_slider');
   const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
   const saveSettingsButtonEl = document.querySelector('#save_settings_button');
-  const resetSettingsButtonEl = document.querySelector(
-    '#reset_settings_button',
-  );
+  const resetSettingsButtonEl = document.querySelector('#reset_settings_button');
   // TODO: Implement avatar selection
+  
 
   const changeAvatarButton = document.querySelector('#change_image_button');
   changeAvatarButton.addEventListener('click', () => {
-    document
-      .querySelector('#select-profile-picture-wrapper')
-      .classList.add('active');
+    document.querySelector('#select-profile-picture-wrapper').classList.add('active');
   });
+
+
   const closeAvatarButton = document.querySelector(
     '#select-profile-picture-close',
   );
+  // on close avatar selection button, it will change the displayed picture and close the . 
   closeAvatarButton.addEventListener('click', () => {
-    document
-      .querySelector('#select-profile-picture-wrapper')
-      .classList.remove('active');
+    // make the selecter disappear on close
+    document.querySelector('#select-profile-picture-wrapper').classList.remove('active');
+    // get the url of the selected radio image and display it.
+    let selectedAvatarImg = document.querySelector("input[type='radio']:checked").getAttribute("data-url");
+    document.querySelector('#profile_settings_avatar').src = selectedAvatarImg;
   });
 
   // TODO: Card information onclick
@@ -151,7 +153,7 @@ function initializeSettings() {
   // TODO: Refactor code
 
   resetSettings();
-  saveSettings();
+  //saveSettings(); this breaks the avatar refresh. 
   initializeVolumeInput();
   initializeNavigation({
     '#audio_menu_button_wrapper': '#volume_settings',

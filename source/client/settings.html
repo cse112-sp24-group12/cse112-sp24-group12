@@ -56,20 +56,23 @@
                 <div id="select-profile-picture" class="card white-card">
                   <button id="select-profile-picture-close">X</button>
                   <h2>Choose a profile picture</h2>
-                  <label><input type="radio" name="avatar-radio" value="./source/client/assets/images/characters/panda.png">
+                  <input id="panda_avatar" type="radio" name="avatar-radio" data-url="./assets/images/characters/panda.png" value="panda">
+                  <label for="panda_avatar" >
                     <img
                     src="./assets/images/characters/panda.png"
                     value= "./assets/images/characters/panda.png"
                     alt="Panda"
                     >
                   </label>
-                  <label><input type="radio" name="avatar-radio" value="./source/client/assets/images/characters/dragon.png" checked>
+                  <input id="dragon_avatar" type="radio" name="avatar-radio" data-url="./assets/images/characters/dragon.png" value="dragon" checked>
+                  <label for="dragon_avatar">
                     <img
                     src="./assets/images/characters/dragon.png"
                     value= "./assets/images/characters/dragon.png"
                     alt="Dragon"
                     >
                   </label>
+
                 </div>
               </div>
             </div>
