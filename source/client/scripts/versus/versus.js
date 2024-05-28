@@ -208,7 +208,7 @@ export function refreshEntireGame() {
 
   initializeScoreboard();
   createCardElements();
-  
+
   // if (/* cards have been played this round */) {
   //   /* display cards */
   // }
@@ -241,14 +241,14 @@ export async function handleOpponentMove() {
 } /* handleOpponentMove */
 
 /**
- * 
- * @param { Types.UUID } roundWinnerUUID 
- * @param { 'round'|'game'} variant 
+ *
+ * @param { Types.UUID } roundWinnerUUID
+ * @param { 'round'|'game'} variant
  */
 function displayWinner(roundWinnerUUID, variant) {
   const versusUsernameEl = document.createElement('versus-username');
   versusUsernameEl.setAttribute('uuid', roundWinnerUUID);
-  updateCurrentInstruction(versusUsernameEl, ` won the ${ variant }!`);
+  updateCurrentInstruction(versusUsernameEl, ` won the ${variant}!`);
 } /* displayRoundWinner */
 
 /**

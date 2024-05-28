@@ -566,12 +566,12 @@ function handleStartRound(webSocketConnection) {
 
   if (gameInstance.gameState.byRound.length >= NUM_ROUNDS) {
     log('Round start rejected: already reached max rounds', {
-      webSocketConnection, 
+      webSocketConnection,
       gameInstance,
       severity: 'error',
     });
     return;
-  } 
+  }
 
   gameInstance.gameState.byRound.push(createNewRound());
 

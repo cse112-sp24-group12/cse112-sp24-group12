@@ -26,7 +26,7 @@ export function setRoundWinnerUUID(playerUUID) {
 } /* setRoundWinner */
 
 /**
- * 
+ *
  * @returns { Types.UUID }
  */
 export function getRoundWinnerUUID() {
@@ -206,7 +206,7 @@ export function getGameIsStarted() {
 } /* getGameIsStarted */
 
 /**
- * 
+ *
  * @param { Types.UUID } gameWinnerUUID
  */
 export function setGameWinnerUUID(gameWinnerUUID) {
@@ -214,7 +214,7 @@ export function setGameWinnerUUID(gameWinnerUUID) {
 } /* setGameWinner */
 
 /**
- * 
+ *
  * @returns { Types.UUID }
  */
 export function getGameWinnerUUID() {
