@@ -22,6 +22,7 @@ async function defaultInitialization() {
     headless: 'true',
   });
   page = await browser.newPage();
+  await page.waitForSelector('.active-container');
   await page.goto(GAME_PAGE_PATH, { waitUntil: 'networkidle2' });
 }
 
@@ -49,36 +50,26 @@ describe('E2E button/link testing', () => {
 
   it('Check clicking one div btn outputs status', async () => {
     const card = await page.$('#card-1');
-    await page
-      .$('.oracle')
-      .promise()
-      .done(async function () {
-        await card.click();
-        const status = await page.$eval('#card-container-1', (el) =>
-          el.classList.contains('flipped'),
-        );
-        expect(status).toBe(true);
-      });
+    await card.click();
+    const status = await page.$eval('#card-container-1', (el) =>
+      el.classList.contains('flipped'),
+    );
+    expect(status).toBe(true);
   }, 5000);
 
   it('Check that after clicking 4 cards, cannot click another', async () => {
     const card = await page.$$('.tarot-card');
-    await page
-      .$('.oracle')
-      .promise()
-      .done(async function () {
-        //click 4 cards
-        for (let i = 0; i < 4; i++) {
-          await card[i].click();
-        }
-        //click the 5th card, should remain unclicked
-        const fifthCard = await page.$('#card-5');
-        await fifthCard.click();
-        const status = await page.$eval('#card-container-5', (el) =>
-          el.classList.contains('flipped'),
-        );
-        expect(status).toBe(false);
-      });
+    //click 4 cards
+    for (let i = 0; i < 4; i++) {
+      await card[i].click();
+    }
+    //click the 5th card, should remain unclicked
+    const fifthCard = await page.$('#card-5');
+    await fifthCard.click();
+    const status = await page.$eval('#card-container-5', (el) =>
+      el.classList.contains('flipped'),
+    );
+    expect(status).toBe(false);
   }, 5000);
 
   it('After clicking a card, check text content of message displayed to user', async () => {
@@ -97,53 +88,38 @@ describe('Testing local storage contents is as expected', () => {
 
   it('Check local storage contents for luck being transfered to results page', async () => {
     const card = await page.$$('.tarot-card');
-    await page
-      .$('.oracle')
-      .promise()
-      .done(async function () {
-        //click 4 cards
-        for (let i = 0; i < 4; i++) {
-          await card[i].click();
-        }
-        await page.waitForNavigation();
-        const localStorage = await page.evaluate(() =>
-          localStorage.getItem('luck'),
-        );
-        expect(typeof parseInt(localStorage) === 'number').toBe(true);
-      });
+    //click 4 cards
+    for (let i = 0; i < 4; i++) {
+      await card[i].click();
+    }
+    await page.waitForNavigation();
+    const localStorage = await page.evaluate(() =>
+      localStorage.getItem('luck'),
+    );
+    expect(typeof parseInt(localStorage) === 'number').toBe(true);
   }, 10000);
 
   it('Check local storage contents of chosen cards being transfered to results page', async () => {
     const card = await page.$$('.tarot-card');
-    await page
-      .$('.oracle')
-      .promise()
-      .done(async function () {
-        //click 4 cards
-        for (let i = 0; i < 4; i++) {
-          await card[i].click();
-        }
-        await page.waitForNavigation();
-        const localStorage = await page.evaluate(() =>
-          localStorage.getItem('chosenCards'),
-        );
-        expect(typeof JSON.parse(localStorage) === 'object').toBe(true);
-      });
+    //click 4 cards
+    for (let i = 0; i < 4; i++) {
+      await card[i].click();
+    }
+    await page.waitForNavigation();
+    const localStorage = await page.evaluate(() =>
+      localStorage.getItem('chosenCards'),
+    );
+    expect(typeof JSON.parse(localStorage) === 'object').toBe(true);
   }, 10000);
 
   it('Check window location after clicking 4 cards is as expected', async () => {
     const card = await page.$$('.tarot-card');
-    await page
-      .$('.oracle')
-      .promise()
-      .done(async function () {
-        //click 4 cards
-        for (let i = 0; i < 4; i++) {
-          await card[i].click();
-        }
-        await page.waitForNavigation();
-        const url = await page.evaluate(() => document.location.href);
-        expect(fileURLToPath(url)).toEqual(fileURLToPath(RESULTS_PAGE_PATH));
-      });
+    //click 4 cards
+    for (let i = 0; i < 4; i++) {
+      await card[i].click();
+    }
+    await page.waitForNavigation();
+    const url = await page.evaluate(() => document.location.href);
+    expect(fileURLToPath(url)).toEqual(fileURLToPath(RESULTS_PAGE_PATH));
   }, 10000);
 });
