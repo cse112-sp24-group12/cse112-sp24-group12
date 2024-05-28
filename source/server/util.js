@@ -148,31 +148,12 @@ export function getRoundWinnerUUID(gameInstance) {
   }
 }
 
-/**
- * Determines the multiplier for a given matchup between two cards
- * (Positive multiplier implies that card1 has a suite-based advantage over card2)
- * @param { Types.Card } card1 card to compare, target of multiplier
- * @param { Types.Card } card2 card to compare
- * @returns { Types.Card } matchup multiplier for card1 with reference to card2
- */
-function getMultiplier(card1, card2) {
-  switch (card1.suite) {
-    case SUITES.WANDS:
-      if (card2.suite === SUITES.CUPS) return 2;
-      else if (card2.suite == SUITES.SWORDS) return 0.5;
-      return 1;
-    case SUITES.CUPS:
-      if (card2.suite === SUITES.SWORDS) return 2;
-      else if (card2.suite == SUITES.WANDS) return 0.5;
-      return 1;
-    case SUITES.SWORDS:
-      if (card2.suite === SUITES.WANDS) return 2;
-      else if (card2.suite == SUITES.CUPS) return 0.5;
-      return 1;
-    default:
-      return 1;
-  }
-} /* getMultiplier */
+function getRandomWorldEvent(){
+  let worldEvents = [WORLD_EVENTS.LOWER_WINS, WORLD_EVENTS.RANDOM_VALUE, WORLD_EVENTS.SUITE_REVERSED, WORLD_EVENTS.SUITE_BOOST_WANDS, WORLD_EVENTS.SUITE_BOOST_CUPS, WORLD_EVENTS.SUITE_BOOST_SWORDS, WORLD_EVENTS.SUITE_BOOST_PENTACLES, WORLD_EVENTS.RANDOM_SUITE];
+
+  return worldEvents[Math.floor(Math.random() * worldEvents.length)];
+
+}
 
 
 /**
@@ -183,7 +164,7 @@ export function createNewRound() {
   return {
     selectedCard: {},
     roundWinner: null,
-    // world_event: getRandomWorldEvent()
+    world_event: getRandomWorldEvent()
   };
 } /* createNewRound */
 
