@@ -165,6 +165,7 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  * @typedef { {
  *  byPlayer: Record<UUID, PlayerGameState>,
  *  byRound: RoundState[],
- *  isStarted: boolean
+ *  isStarted: boolean,
+ *  gameWinner: UUID
  * } } GameState
  */

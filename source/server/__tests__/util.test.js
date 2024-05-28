@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { generateGameCode, getGameWinnerProfile } from '../util.js';
+import { generateGameCode, calculateGameWinnerProfile } from '../util.js';
 import * as Types from '../types.js';
 
 describe('generateGameCode unit testing', () => {
@@ -15,7 +15,7 @@ describe('generateGameCode unit testing', () => {
   });
 });
 
-describe('getGameWinnerProfile unit testing', () => {
+describe('calculateGameWinnerProfile unit testing', () => {
   it('should return the profile of the player with the highest score', () => {
     const oneUUID = 'test-one-uuid';
     const twoUUID = 'test-two-uuid';
@@ -48,6 +48,7 @@ describe('getGameWinnerProfile unit testing', () => {
       },
       byRound: [],
       isStarted: true,
+      gameWinner: null,
     };
 
     /** @type { Types.GameInstance } */
@@ -64,10 +65,10 @@ describe('getGameWinnerProfile unit testing', () => {
       gameState,
     };
 
-    expect(getGameWinnerProfile(gameInstance)).toBe(twoProfile);
+    expect(calculateGameWinnerProfile(gameInstance)).toBe(twoProfile);
 
     gameState.byPlayer[oneUUID].score = 15;
 
-    expect(getGameWinnerProfile(gameInstance)).toBe(oneProfile);
+    expect(calculateGameWinnerProfile(gameInstance)).toBe(oneProfile);
   });
 });
