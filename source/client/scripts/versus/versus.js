@@ -150,6 +150,9 @@ function createCardElements() {
 
       versusCardEl.addEventListener('change', handleCardSelection);
 
+      // Add a class to the card to trigger the animation
+      versusCardEl.classList.add('versus-card');
+
       return versusCardEl;
     }),
   );

@@ -131,6 +131,19 @@
   height: 100%;
 }
 
+@keyframes slide-out {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.versus-card {
+  animation: slide-out 1s ease-out;
+}
+
 #game_info {
   background-color: var(--yellow);
   color: var(--black);
