@@ -133,6 +133,7 @@ function cardClickHandler(event) {
  * @returns { HTMLDivElement[] } array of card container elements
  */
 function generateCardsWithListeners(numCards) {
+  const oracle = document.querySelector(".oracle");
   return Array.from({ length: numCards }).map((_, i) => {
     const cardContainerEl = document.createElement('div');
     const cardEl = document.createElement('div');
@@ -151,7 +152,10 @@ function generateCardsWithListeners(numCards) {
     cardEl.append(cardBackFaceEl, cardFrontFaceEl);
     cardContainerEl.append(cardEl);
 
-    cardContainerEl.addEventListener('click', cardClickHandler);
+    oracle.addEventListener('animationend', () => {
+      cardContainerEl.classList.add("active-container");
+      cardContainerEl.addEventListener('click', cardClickHandler);
+    });
 
     return cardContainerEl;
   });
