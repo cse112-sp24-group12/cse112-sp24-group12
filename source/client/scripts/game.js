@@ -133,7 +133,7 @@ function cardClickHandler(event) {
  * @returns { HTMLDivElement[] } array of card container elements
  */
 function generateCardsWithListeners(numCards) {
-  const oracle = document.querySelector(".oracle");
+  const oracle = document.querySelector('.oracle');
   return Array.from({ length: numCards }).map((_, i) => {
     const cardContainerEl = document.createElement('div');
     const cardEl = document.createElement('div');
