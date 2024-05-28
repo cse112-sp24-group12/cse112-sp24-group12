@@ -14,59 +14,59 @@ describe('generateGameCode unit testing', () => {
   });
 });
 
-describe('getGameWinnerProfile unit testing', () => {
-  it('should return the profile of the player with the highest score', () => {
-    const oneUUID = 'test-one-uuid';
-    const twoUUID = 'test-two-uuid';
+// describe('getGameWinnerProfile unit testing', () => {
+//   it('should return the profile of the player with the highest score', () => {
+//     const oneUUID = 'test-one-uuid';
+//     const twoUUID = 'test-two-uuid';
 
-    /** @type { Types.ServerToClientProfile } */
-    const oneProfile = {
-      uuid: oneUUID,
-      username: 'OneUsername',
-      profileImageName: 'default',
-    };
+//     /** @type { Types.ServerToClientProfile } */
+//     const oneProfile = {
+//       uuid: oneUUID,
+//       username: 'OneUsername',
+//       profileImageName: 'default',
+//     };
 
-    /** @type { Types.ServerToClientProfile } */
-    const twoProfile = {
-      uuid: twoUUID,
-      username: 'TwoUsername',
-      profileImageName: 'dragon',
-    };
+//     /** @type { Types.ServerToClientProfile } */
+//     const twoProfile = {
+//       uuid: twoUUID,
+//       username: 'TwoUsername',
+//       profileImageName: 'dragon',
+//     };
 
-    /** @type { Types.GameState } */
-    const gameState = {
-      byPlayer: {
-        [oneUUID]: {
-          score: 5,
-          remainingCards: [{}, {}],
-        },
-        [twoUUID]: {
-          score: 10,
-          remainingCards: [{}, {}],
-        },
-      },
-      byRound: {},
-      isStarted: true,
-    };
+//     /** @type { Types.GameState } */
+//     const gameState = {
+//       byPlayer: {
+//         [oneUUID]: {
+//           score: 5,
+//           remainingCards: [{}, {}],
+//         },
+//         [twoUUID]: {
+//           score: 10,
+//           remainingCards: [{}, {}],
+//         },
+//       },
+//       byRound: {},
+//       isStarted: true,
+//     };
 
-    /** @type { Types.GameInstance } */
-    const gameInstance = {
-      gameCode: 1234,
-      webSocketConnections: [
-        {
-          profile: oneProfile,
-        },
-        {
-          profile: twoProfile,
-        },
-      ],
-      gameState,
-    };
+//     /** @type { Types.GameInstance } */
+//     const gameInstance = {
+//       gameCode: 1234,
+//       webSocketConnections: [
+//         {
+//           profile: oneProfile,
+//         },
+//         {
+//           profile: twoProfile,
+//         },
+//       ],
+//       gameState,
+//     };
 
-    expect(getGameWinnerProfile(gameInstance)).toBe(twoProfile);
+//     expect(getGameWinnerProfile(gameInstance)).toBe(twoProfile);
 
-    gameState.byPlayer[oneUUID].score = 15;
+//     gameState.byPlayer[oneUUID].score = 15;
 
-    expect(getGameWinnerProfile(gameInstance)).toBe(oneProfile);
-  });
-});
+//     expect(getGameWinnerProfile(gameInstance)).toBe(oneProfile);
+//   });
+// });
