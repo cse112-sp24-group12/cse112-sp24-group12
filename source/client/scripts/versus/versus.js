@@ -32,6 +32,7 @@ import {
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
+import { getPlayerUUID } from './../profile.js'
 import * as Types from './types.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
@@ -262,21 +263,20 @@ async function roundWinnerAnimation(roundWinnerUUID) {
   return new Promise((resolve) => {
     if (roundWinnerUUID === playerUUID) {
       console.log('Player is winner');
-      selfPlayedVersusCardEl.classList.add('winner-card');
+      selfPlayedVersusCardEl.classList.add('winner-card-user');
       oppVersusCardEl.classList.add('loser-card');
     } else {
       console.log('Opponent is winner');
       selfPlayedVersusCardEl.classList.add('loser-card');
-      oppVersusCardEl.classList.add('winner-card');
+      oppVersusCardEl.classList.add('winner-card-opp');
     }
 
-    // Resolve the promise after the longest animation duration (1s in this case)
     setTimeout(() => {
       console.log('Animation completed');
-      selfPlayedVersusCardEl.classList.remove('winner-card', 'loser-card');
-      oppVersusCardEl.classList.remove('winner-card', 'loser-card');
+      selfPlayedVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
+      oppVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
       resolve();
-    }, 1000);
+    }, 20000);
   });
 
   // if (roundWinnerUUID === playerUUID) {
@@ -313,7 +313,6 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   setRoundWinnerUUID(roundWinner.uuid);
   displayWinner(roundWinner.uuid, 'round');
 
-  //await oppVersusCardEl.translateToContainer(oppCardSlotEl);
   await roundWinnerAnimation(roundWinner.uuid);
 
   updateScoreboardScores();

@@ -83,28 +83,66 @@ versus-card label {
   color: var(--black);
 }
 
-.winner-card {
-  animation: winnerAnimation 5s ease-in-out forwards;
+.winner-card-opp {
+  animation: winnerAnimationOpp 1.5s linear;
+  z-index: 20;
 }
 
-@keyframes winnerAnimation{
+@keyframes winnerAnimationOpp{
   0%{
     transform: scale(1) translate(0,0);
+    opacity: 1;
+  }
+  20%{
+    transform: scale(1.2) translate(6.5vw, 5vh);
+    opacity: 1;
+  }
+  70%{
+    transform: scale(1.2) translate(6.5vw, 5vh);
+    opacity: 1;
   }
   100%{
-    transform: scale(1.3) translate(-10vw, 10vw);
+    transform: scale(0.7) translate(50vw, 5vh);
+    opacity: 0;
+  }
+}
+
+.winner-card-user {
+  animation: winnerAnimationUser 1.5s linear;
+  z-index: 20;
+}
+
+@keyframes winnerAnimationUser{
+  0%{
+    transform: scale(1) translate(0,0);
+    opacity: 1;
+  }
+  20%{
+    transform: scale(1.2) translate(-6.5vw, 5vh);
+    opacity: 1;
+  }
+  70%{
+    transform: scale(1.2) translate(-6.5vw, 5vh);
+    opacity: 1;
+  }
+  100%{
+    transform: scale(0.7) translate(50vw, 5vh);
+    opacity: 0;
   }
 }
 
 .loser-card {
-  animation: loserAnimation 5s ease-in-out forwards;
+  animation: loserAnimation 1.5s linear;
 }
 
 @keyframes loserAnimation{
   0% {
     opacity: 1;
   }
+  20% {
+    opacity: 0.1;
+  }
   100% {
-    opacity: 0.5;
+    opacity: 0.1;
   }
 }
