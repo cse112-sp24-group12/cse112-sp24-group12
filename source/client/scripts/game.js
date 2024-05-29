@@ -79,18 +79,33 @@ export function getUniqueCard() {
 } /* getUniqueCard */
 
 /**
+ * Reverses the oracle entry animation when the game has ended
+ */
+function reverseOracleAnimation() {
+  const oracle = document.querySelector('.oracle');
+  oracle.style.animationDirection = 'reverse';
+  oracle.style.animationFillMode = 'forwards';
+  oracle.classList.remove('oracle');
+  oracle.offsetHeight;
+  oracle.classList.add('oracle');
+}
+
+/**
  * When game is over (i.e., all four cards chosen), saves data
  * and redirects users to results screen
  */
 function endGame() {
-  window.setTimeout(() => {
+  displayMessage("Let's see what future the cards have in store for you...");
+  reverseOracleAnimation();
+  const oracle = document.querySelector('.oracle');
+  oracle.addEventListener('animationend', () => {
     localStorage.setItem(
       'chosenCards',
       JSON.stringify(gameState.chosenCards.map((card) => card.name)),
     );
     localStorage.setItem('luck', gameState.luck);
     window.location.href = './results.html';
-  }, MESSAGE_DISPLAY_LENGTH_MS);
+  });
 } /* endGame */
 
 /**
@@ -170,9 +185,10 @@ function displayMessage(message) {
   window.clearTimeout(gameState.messageResetTimeout);
   gameState.messageResetTimeout = window.setTimeout(() => {
     const numCardsLeft = MAX_CHOSEN_CARDS - gameState.chosenCards.length;
-    oracleMsgEl.innerText = `Draw ${numCardsLeft} more card${
-      numCardsLeft === 1 ? '' : 's'
-    }!`;
+    if (numCardsLeft == 0) {
+      return;
+    }
+    oracleMsgEl.innerText = `Draw ${numCardsLeft} more card${numCardsLeft === 1 ? '' : 's'}!`;
   }, MESSAGE_DISPLAY_LENGTH_MS);
 } /* displayMessage */
 
