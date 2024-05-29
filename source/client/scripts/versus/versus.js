@@ -254,6 +254,42 @@ function displayWinner(roundWinnerUUID, variant) {
   updateCurrentInstruction(versusUsernameEl, ` won the ${variant}!`);
 } /* displayRoundWinner */
 
+async function roundWinnerAnimation(roundWinnerUUID) {
+  const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
+  const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
+  const playerUUID = getPlayerUUID();
+
+  return new Promise((resolve) => {
+    if (roundWinnerUUID === playerUUID) {
+      console.log('Player is winner');
+      selfPlayedVersusCardEl.classList.add('winner-card');
+      oppVersusCardEl.classList.add('loser-card');
+    } else {
+      console.log('Opponent is winner');
+      selfPlayedVersusCardEl.classList.add('loser-card');
+      oppVersusCardEl.classList.add('winner-card');
+    }
+
+    // Resolve the promise after the longest animation duration (1s in this case)
+    setTimeout(() => {
+      console.log('Animation completed');
+      selfPlayedVersusCardEl.classList.remove('winner-card', 'loser-card');
+      oppVersusCardEl.classList.remove('winner-card', 'loser-card');
+      resolve();
+    }, 1000);
+  });
+
+  // if (roundWinnerUUID === playerUUID) {
+  //   selfPlayedVersusCardEl.style.animation = 'winnerAnimation 5s ease-in-out';
+  //   oppVersusCardEl.style.animation = 'loserAnimation 5s ease-in-out';
+  // } else {
+  //   selfPlayedVersusCardEl.style.animation = 'loserAnimation 5s ease-in-out';
+  //   oppVersusCardEl.style.animation = 'winnerAnimation 5s ease-in-out';
+  // }
+
+  // setTimeout(resolve, 1000);
+}
+
 /**
  * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
  * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
@@ -276,6 +312,10 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   setOppSelectedCard(opponentSelectedCard);
   setRoundWinnerUUID(roundWinner.uuid);
   displayWinner(roundWinner.uuid, 'round');
+
+  //await oppVersusCardEl.translateToContainer(oppCardSlotEl);
+  await roundWinnerAnimation(roundWinner.uuid);
+
   updateScoreboardScores();
 } /* handleRevealCards */
 
