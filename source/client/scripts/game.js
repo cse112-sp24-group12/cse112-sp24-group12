@@ -79,18 +79,6 @@ export function getUniqueCard() {
 } /* getUniqueCard */
 
 /**
- * Reverses the oracle entry animation when the game has ended
- */
-function reverseOracleAnimation() {
-  const oracle = document.querySelector('.oracle');
-  oracle.style.animationDirection = 'reverse';
-  oracle.style.animationFillMode = 'forwards';
-  oracle.classList.remove('oracle');
-  oracle.offsetHeight;
-  oracle.classList.add('oracle');
-}
-
-/**
  * When game is over (i.e., all four cards chosen), saves data
  * and redirects users to results screen
  */
@@ -100,12 +88,15 @@ function endGame() {
     JSON.stringify(gameState.chosenCards.map((card) => card.name)),
   );
   localStorage.setItem('luck', gameState.luck);
-  displayMessage("Let's see what future the cards have in store for you...");
-  reverseOracleAnimation();
   const oracle = document.querySelector('.oracle');
   oracle.addEventListener('animationend', () => {
     window.location.href = './results.html';
   });
+  displayMessage("Let's see what future the cards have in store for you...");
+  oracle.classList.remove('forwards-oracle');
+  // Force reflow for animation refresh
+  oracle.offsetHeight;
+  oracle.classList.add('reversed-oracle');
 } /* endGame */
 
 /**
@@ -167,14 +158,21 @@ function generateCardsWithListeners(numCards) {
     cardEl.append(cardBackFaceEl, cardFrontFaceEl);
     cardContainerEl.append(cardEl);
 
-    oracle.addEventListener('animationend', function activate() {
-      cardContainerEl.classList.add('active-container');
-      cardContainerEl.addEventListener('click', cardClickHandler);
-      oracle.removeEventListener('animationend', activate);
-      oracle.addEventListener('animationstart', () => {
-        cardContainerEl.classList.remove('active-container');
-      });
-    });
+    oracle.addEventListener(
+      'animationend',
+      () => {
+        cardContainerEl.classList.add('active-container');
+        cardContainerEl.addEventListener('click', cardClickHandler);
+        oracle.addEventListener(
+          'animationstart',
+          () => {
+            cardContainerEl.classList.remove('active-container');
+          },
+          { once: true },
+        );
+      },
+      { once: true },
+    );
 
     return cardContainerEl;
   });
