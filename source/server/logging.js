@@ -1,6 +1,7 @@
 /** @module logging */
 
 import * as Types from './types.js';
+import { getNumActivePlayers } from './util.js';
 
 const INFO_DUMP_INTERVAL_MS = 60_000;
 const INFO_DUMP_DIVIDER_LENGTH = 30;
@@ -111,6 +112,9 @@ function logOverview(gameInstancesByGameCode, gameInstancesByPlayerUUID) {
   const totalCurrentPlayersCount = Object.keys(
     gameInstancesByPlayerUUID,
   ).length;
+  const activeCurrentPlayersCount = Object.values(
+    gameInstancesByGameCode,
+  ).reduce((sum, gameInstance) => sum + getNumActivePlayers(gameInstance), 0);
 
   console.log(
     `${styleText('-'.repeat(INFO_DUMP_DIVIDER_LENGTH), CYAN_FONT)}
@@ -118,6 +122,7 @@ ${styleText('INFO DUMP', CYAN_BG)}
 Total current games: ${totalCurrentGamesCount}
 Active current games: ${activeCurrentGamesCount}
 Total current players: ${totalCurrentPlayersCount}
+Active current players: ${activeCurrentPlayersCount}
 ${styleText('-'.repeat(INFO_DUMP_DIVIDER_LENGTH), CYAN_FONT)}`,
   );
 } /* logOverview */
