@@ -178,3 +178,15 @@ export function cleanGameState(playerUUID, gameState) {
 
   return copiedState;
 } /* cleanGameState */
+
+/**
+ * For a given game, returns the number of connections (i.e., players)
+ * that are currently live connections
+ * @param { Types.GameInstance } gameInstance queried game instance
+ * @returns { number } number of live connections in the moment
+ */
+export function getNumActivePlayers(gameInstance) {
+  return gameInstance.webSocketConnections.filter(
+    (webSocketConnection) => webSocketConnection.connected,
+  ).length;
+} /* getNumActivePlayers*/

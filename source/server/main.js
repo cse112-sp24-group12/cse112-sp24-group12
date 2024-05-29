@@ -14,6 +14,7 @@ import {
   generateUniqueCards,
   cleanGameState,
   calculateGameWinnerProfile,
+  getNumActivePlayers,
 } from './util.js';
 import { log, initializeLoggingOverviews } from './logging.js';
 import { S2C_ACTIONS, C2S_ACTIONS } from './types.js';
@@ -38,13 +39,6 @@ const DISCONNECTED_TIMEOUT_MS = 180_000; // 3 minutes
  * @type { number }
  */
 const GAME_END_TIMEOUT_MS = 5_000;
-
-/**
- * Time between when a player permanently leaves a game and the game instance is deleted
- * (in milliseconds)
- * @type { number }
- */
-const PLAYER_LEFT_TIMEOUT_MS = 1_500;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -153,8 +147,11 @@ function leaveInstance(webSocketConnection) {
     });
   });
 
-  if (gameInstance.gameState.isStarted)
-    setTimeout(() => closeInstance(gameInstance), PLAYER_LEFT_TIMEOUT_MS);
+  if (
+    gameInstance.gameState.isStarted ||
+    getNumActivePlayers(gameInstance) === 0
+  )
+    closeInstance(gameInstance);
   else alertUpdateInstance(gameInstance);
 } /* leaveInstance */
 
@@ -647,10 +644,7 @@ function attemptRejoin(webSocketConnection, playerUUID) {
     playerUUID: playerUUID,
   });
 
-  if (
-    reqGameInstance.webSocketConnections.filter((conn) => conn.connected)
-      .length == 2
-  )
+  if (getNumActivePlayers(reqGameInstance) === 2)
     cancelDisconnectedInstanceCloseTimeout(reqGameInstance);
 
   alertUpdateInstance(reqGameInstance);
@@ -789,8 +783,10 @@ function handleRequest(webSocketRequest) {
       });
     });
 
-    if (gameInstance?.gameState?.isStarted)
+    if (gameInstance.gameState.isStarted)
       startDisconnectedInstanceCloseTimeout(gameInstance);
+    else if (getNumActivePlayers(gameInstance) === 0)
+      closeInstance(gameInstance);
   } /* handleClose */
 
   webSocketConnection.on('message', handleMessage);

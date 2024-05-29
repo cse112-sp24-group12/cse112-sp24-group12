@@ -245,13 +245,13 @@ export async function handleOpponentMove() {
 } /* handleOpponentMove */
 
 /**
- *
- * @param { Types.UUID } roundWinnerUUID
- * @param { 'round'|'game'} variant
+ * Displays message that a user won the round/game
+ * @param { Types.UUID } winnerUUID winner of round/game
+ * @param { 'round'|'game'} variant decorator on win message
  */
-function displayWinner(roundWinnerUUID, variant) {
+function displayWinner(winnerUUID, variant) {
   const versusUsernameEl = document.createElement('versus-username');
-  versusUsernameEl.setAttribute('uuid', roundWinnerUUID);
+  versusUsernameEl.setAttribute('uuid', winnerUUID);
   updateCurrentInstruction(versusUsernameEl, ` won the ${variant}!`);
 } /* displayRoundWinner */
 

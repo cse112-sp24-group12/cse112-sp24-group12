@@ -151,10 +151,10 @@ input[type="number"] {
   transition: var(--default-transform-transition), opacity 350ms ease-in-out;
 }
 
-.primary-button:enabled:hover,
-.secondary-button:enabled:hover,
-.tertiary-button:enabled:hover,
-.destructive-button:enabled:hover {
+.primary-button:not(:disabled):hover,
+.secondary-button:not(:disabled):hover,
+.tertiary-button:not(:disabled):hover,
+.destructive-button:not(:disabled):hover {
   transform: var(--default-scale);
 }
 
