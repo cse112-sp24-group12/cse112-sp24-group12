@@ -254,6 +254,7 @@ input[type="number"] {
 }
 
 .icon-header {
+  position: absolute;
   display: flex;
   justify-content: space-between;
   width: 100%;
