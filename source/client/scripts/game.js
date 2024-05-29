@@ -95,15 +95,15 @@ function reverseOracleAnimation() {
  * and redirects users to results screen
  */
 function endGame() {
+  localStorage.setItem(
+    'chosenCards',
+    JSON.stringify(gameState.chosenCards.map((card) => card.name)),
+  );
+  localStorage.setItem('luck', gameState.luck);
   displayMessage("Let's see what future the cards have in store for you...");
   reverseOracleAnimation();
   const oracle = document.querySelector('.oracle');
   oracle.addEventListener('animationend', () => {
-    localStorage.setItem(
-      'chosenCards',
-      JSON.stringify(gameState.chosenCards.map((card) => card.name)),
-    );
-    localStorage.setItem('luck', gameState.luck);
     window.location.href = './results.html';
   });
 } /* endGame */
@@ -171,6 +171,9 @@ function generateCardsWithListeners(numCards) {
       cardContainerEl.classList.add('active-container');
       cardContainerEl.addEventListener('click', cardClickHandler);
       oracle.removeEventListener('animationend', activate);
+      oracle.addEventListener('animationstart', () => {
+        cardContainerEl.classList.remove('active-container');
+      });
     });
 
     return cardContainerEl;
