@@ -26,6 +26,7 @@ import {
   createNewRoundState,
   getRoundNumber,
   getOppHasPlayedRound,
+  getSelfHasPlayedRound,
   clearGameState,
   setGameWinnerUUID,
   getGameWinnerUUID,
@@ -151,7 +152,7 @@ function createCardElements() {
       versusCardEl.setAttribute('suite', remainingCard.suite);
       versusCardEl.setAttribute('number', remainingCard.number);
 
-      versusCardEl.addEventListener('change', handleCardSelection);
+      versusCardEl.addEventListener('click', handleCardSelection);
 
       return versusCardEl;
     }),
@@ -352,7 +353,7 @@ async function handleCardSelection(e) {
   const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
 
   const selectedCard = selectedCardInputEl.value;
-  if (!selectedCard) return;
+  if (!selectedCard || getSelfHasPlayedRound()) return;
 
   selectCard(JSON.parse(selectedCard));
   setSelfSelectedCard(selectedCard);

@@ -91,6 +91,15 @@ export function getOppHasPlayedRound() {
 } /* getOppHasPlayedRound */
 
 /**
+ * For the current round, returns whether or not the client user has already
+ * played a card
+ * @returns { boolean } true if client user has played this round; false otherwise
+ */
+export function getSelfHasPlayedRound() {
+  return !!getCurrentRoundState(gameState).selectedCard[getPlayerUUID()];
+} /* getOppHasPlayedRound */
+
+/**
  * Updates profile to store by UUID and emits appropriate event listener
  * for downstream users
  * @param { Types.ServerToClientProfile } profile most-recent profile sent from
