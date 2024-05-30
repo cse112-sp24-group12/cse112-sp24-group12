@@ -255,29 +255,46 @@ function displayWinner(roundWinnerUUID, variant) {
   updateCurrentInstruction(versusUsernameEl, ` won the ${variant}!`);
 } /* displayRoundWinner */
 
-async function roundWinnerAnimation(roundWinnerUUID) {
+async function roundWinnerAnimationCard(roundWinnerUUID) {
   const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
   const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
   const playerUUID = getPlayerUUID();
 
   return new Promise((resolve) => {
     if (roundWinnerUUID === playerUUID) {
-      console.log('Player is winner');
       selfPlayedVersusCardEl.classList.add('winner-card-user');
       oppVersusCardEl.classList.add('loser-card');
     } else {
-      console.log('Opponent is winner');
       selfPlayedVersusCardEl.classList.add('loser-card');
       oppVersusCardEl.classList.add('winner-card-opp');
     }
 
     setTimeout(() => {
-      console.log('Animation completed');
       selfPlayedVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
       oppVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
       resolve();
-    }, 20000);
+    }, 1500);
   });
+}
+
+async function roundWinnerAnimationText(){
+  const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
+  const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
+  const nextRound = document.querySelector('.next-round');
+
+  return new Promise((resolve) => {
+    oppVersusCardEl.style.display = 'none';
+    selfPlayedVersusCardEl.style.display = 'none';
+    nextRound.classList.add('next-round-animation');
+
+    setTimeout(() => {
+      // oppVersusCardEl.style.display = 'block';
+      // selfPlayedVersusCardEl.style.display = 'block';
+      nextRound.classList.remove('next-round-animation');
+      resolve();
+    }, 1500);
+  });
+}
 
   // if (roundWinnerUUID === playerUUID) {
   //   selfPlayedVersusCardEl.style.animation = 'winnerAnimation 5s ease-in-out';
@@ -288,7 +305,6 @@ async function roundWinnerAnimation(roundWinnerUUID) {
   // }
 
   // setTimeout(resolve, 1000);
-}
 
 /**
  * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
@@ -297,7 +313,7 @@ async function roundWinnerAnimation(roundWinnerUUID) {
  */
 export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   const oppCardSlotEl = document.querySelector('#opp_played_card');
-  const startRoundButtonEl = document.querySelector('#start_round_button');
+  //const startRoundButtonEl = document.querySelector('#start_round_button');
 
   if (!getOppHasPlayedRound()) await handleOpponentMove();
 
@@ -307,26 +323,30 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
   oppVersusCardEl.setAttribute('variant', 'front');
 
-  startRoundButtonEl.classList.remove('hidden');
+  //startRoundButtonEl.classList.remove('hidden');
 
   setOppSelectedCard(opponentSelectedCard);
   setRoundWinnerUUID(roundWinner.uuid);
   displayWinner(roundWinner.uuid, 'round');
 
-  await roundWinnerAnimation(roundWinner.uuid);
+  await roundWinnerAnimationCard(roundWinner.uuid);
+  await roundWinnerAnimationText();
 
   updateScoreboardScores();
+
+  handleStartRound();
+  startRound();
 } /* handleRevealCards */
 
 /**
  * Handles reset of UI at the start of each new round
  */
 export function handleStartRound() {
-  const startRoundButtonEl = document.querySelector('#start_round_button');
+  //const startRoundButtonEl = document.querySelector('#start_round_button');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
   const selfCardSlotEl = document.querySelector('#self_played_card');
 
-  startRoundButtonEl.classList.add('hidden');
+  //startRoundButtonEl.classList.add('hidden');
 
   oppCardSlotEl.replaceChildren();
   selfCardSlotEl.replaceChildren();
@@ -342,9 +362,9 @@ export function handleStartRound() {
  * @param { Types.ServerToClientProfile } gameWinner profile data of (user/opponent) who won game
  */
 export function handleGameEnd(gameWinner) {
-  const startRoundButtonEl = document.querySelector('#start_round_button');
+  //const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  startRoundButtonEl.classList.add('hidden');
+  //startRoundButtonEl.classList.add('hidden');
 
   setGameWinnerUUID(gameWinner.uuid);
   displayWinner(gameWinner.uuid, 'game');
@@ -444,7 +464,7 @@ export function initializeVersus() {
   const joinGameButtonEl = document.querySelector('#join_game_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
-  const startRoundButtonEl = document.querySelector('#start_round_button');
+  //const startRoundButtonEl = document.querySelector('#start_round_button');
   const leaveGameButton = document.querySelector('#leave_game_button');
 
   attachGameCallbackFns({
@@ -463,6 +483,6 @@ export function initializeVersus() {
     if (e.key === 'Enter') sendJoinInstance();
   });
   startGameButtonEl.addEventListener('click', startGame);
-  startRoundButtonEl.addEventListener('click', startRound);
+  //startRoundButtonEl.addEventListener('click', startRound);
   leaveGameButton.addEventListener('click', handleLeaveGame);
 } /* initializeVersus */

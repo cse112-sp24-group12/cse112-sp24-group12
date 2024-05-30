@@ -84,8 +84,8 @@ versus-card label {
 }
 
 .winner-card-opp {
-  animation: winnerAnimationOpp 1.5s linear;
-  z-index: 20;
+  animation: winnerAnimationOpp 1s linear;
+  z-index: 10;
 }
 
 @keyframes winnerAnimationOpp{
@@ -97,7 +97,7 @@ versus-card label {
     transform: scale(1.2) translate(6.5vw, 5vh);
     opacity: 1;
   }
-  70%{
+  80%{
     transform: scale(1.2) translate(6.5vw, 5vh);
     opacity: 1;
   }
@@ -108,8 +108,8 @@ versus-card label {
 }
 
 .winner-card-user {
-  animation: winnerAnimationUser 1.5s linear;
-  z-index: 20;
+  animation: winnerAnimationUser 1s linear;
+  z-index: 10;
 }
 
 @keyframes winnerAnimationUser{
@@ -121,7 +121,7 @@ versus-card label {
     transform: scale(1.2) translate(-6.5vw, 5vh);
     opacity: 1;
   }
-  70%{
+  90%{
     transform: scale(1.2) translate(-6.5vw, 5vh);
     opacity: 1;
   }
@@ -132,7 +132,7 @@ versus-card label {
 }
 
 .loser-card {
-  animation: loserAnimation 1.5s linear;
+  animation: loserAnimation 1s linear;
 }
 
 @keyframes loserAnimation{
@@ -146,3 +146,58 @@ versus-card label {
     opacity: 0.1;
   }
 }
+
+.next-round {
+  font-family: "Mystery Quest", cursive, serif;
+  color: var(--yellow);
+  position: absolute;
+  margin-top: 24%;
+  z-index: 20;
+  opacity: 0;
+}
+
+.next-round-animation {
+  animation: nextRoundAnimation 1s linear;
+}
+
+@keyframes nextRoundAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(1.0) translate(0, 0);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(3.0) translate(0, -10vh);
+  }
+  90% {
+    opacity: 1;
+    transform: scale(3.0) translate(0, -10vh);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.0) translate(25vw, -20vh);
+  }
+}
+
+/* @keyframes nextRoundAnimation {
+  0% {
+    opacity: 1;
+    margin-top: 24%;
+    margin-left: 0;
+  }
+  20% {
+    opacity: 1;
+    margin-top: 11%;
+    margin-left: 0;
+  }
+  70% {
+    opacity: 1;
+    margin-top: 11%;
+    margin-left: 0;
+  }
+  100% {
+    opacity: 0;
+    margin-top: 11%;
+    margin-left: 100%;
+  }
+} */
