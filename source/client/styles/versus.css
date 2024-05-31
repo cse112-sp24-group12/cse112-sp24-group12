@@ -42,7 +42,7 @@ main {
 }
 
 #open_rules_button img {
-  width: 8rem;
+  width: 7.5rem;
   transition: var(--default-transform-transition);
 }
 

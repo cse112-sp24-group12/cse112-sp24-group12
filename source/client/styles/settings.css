@@ -1,11 +1,7 @@
-header {
-    padding: 1rem 0 0 1rem;
-}
-
 #settings-container {
     display: flex;
     align-items: flex-start;
-    padding-left: 2rem;
+    padding: 8rem 2rem 2rem 2rem;
     gap: 3rem;
 }
 
