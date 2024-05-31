@@ -104,6 +104,7 @@ versus-card .card-back {
 
 .winner-card-opp {
   animation: winnerAnimationOpp 1s linear;
+  animation-fill-mode: forwards;
   z-index: 10;
 }
 
@@ -128,6 +129,7 @@ versus-card .card-back {
 
 .winner-card-user {
   animation: winnerAnimationUser 1s linear;
+  animation-fill-mode: forwards;
   z-index: 10;
 }
 
@@ -152,6 +154,7 @@ versus-card .card-back {
 
 .loser-card {
   animation: loserAnimation 1s linear;
+  animation-fill-mode: forwards;
 }
 
 @keyframes loserAnimation{

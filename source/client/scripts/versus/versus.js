@@ -271,11 +271,13 @@ async function roundWinnerAnimationCard(roundWinnerUUID) {
       oppVersusCardEl.classList.add('winner-card-opp');
     }
 
-    setTimeout(() => {
-      selfPlayedVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
-      oppVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
-      resolve();
-    }, 1500);
+    selfPlayedVersusCardEl.addEventListener('animationend', () => {
+      setTimeout(() => {
+        selfPlayedVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
+        oppVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
+        resolve();
+      }, 500);
+    });
   });
 }
 
