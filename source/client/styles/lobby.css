@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3rem;
+  gap: 2rem;
   align-self: center;
 }
 
@@ -22,7 +22,7 @@
 
 .lobby-code-wrapper label {
   font-family: "Berkshire Swash";
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .lobby-code-input-wrapper {
@@ -30,7 +30,7 @@
 }
 
 .lobby-code-input-wrapper input {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-family: "Mystery Quest";
 }
 
@@ -87,10 +87,10 @@
 
 #oracle {
   position: absolute;
-  width: 20rem;
-  height: 20rem;
+  width: 17rem;
+  height: 17rem;
   transform: scaleX(-1);
-  right: 25rem;
+  right: 19rem;
   z-index: 1;
   pointer-events: none;
 }
@@ -103,23 +103,17 @@
   gap: 3rem;
 }
 
-#lobby_button_wrapper > button {
-  width: 25rem;
-  height: 9.5rem;
-  font-size: 3rem;
-}
-
 #start_game_button,
 #practice_game_button {
-  font-size: 1.75rem;
-  width: 15rem;
-  height: 5.75rem;
+  width: 18rem;
+  height: 7.2rem;
+  font-size: 3rem;
 }
 
 #lobby_profile_list_wrapper {
   align-self: center;
   justify-self: end;
-  width: 80%;
+  width: 75%;
 }
 
 #lobby_profile_list {
@@ -143,8 +137,8 @@
   content: '';
   background-color: var(--purple);
   display: inline-block;
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 20rem;
 }
 
