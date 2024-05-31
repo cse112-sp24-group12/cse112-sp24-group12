@@ -1,7 +1,7 @@
 body {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 10rem);
+  height: 100vh;
 }
 
 main {
@@ -13,6 +13,8 @@ main {
 }
 
 #main_button_list {
+  position: relative;
+  top: 20%;
   list-style-type: none;
   display: flex;
   gap: 5rem;
