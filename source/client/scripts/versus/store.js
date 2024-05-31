@@ -26,8 +26,8 @@ export function setRoundWinnerUUID(playerUUID) {
 } /* setRoundWinner */
 
 /**
- *
- * @returns { Types.UUID }
+ * Fetches UUID of user that won the current round
+ * @returns { Types.UUID } unique ID corresponding to round winner
  */
 export function getRoundWinnerUUID() {
   return getCurrentRoundState(gameState).roundWinner;
@@ -88,6 +88,15 @@ export function setOppSelectedCard(selectedCard) {
  */
 export function getOppHasPlayedRound() {
   return !!getCurrentRoundState(gameState).selectedCard[getOpponentUUID()];
+} /* getOppHasPlayedRound */
+
+/**
+ * For the current round, returns whether or not the client user has already
+ * played a card
+ * @returns { boolean } true if client user has played this round; false otherwise
+ */
+export function getSelfHasPlayedRound() {
+  return !!getCurrentRoundState(gameState).selectedCard[getPlayerUUID()];
 } /* getOppHasPlayedRound */
 
 /**
@@ -206,16 +215,16 @@ export function getGameIsStarted() {
 } /* getGameIsStarted */
 
 /**
- *
- * @param { Types.UUID } gameWinnerUUID
+ * Sets unique ID of user that won the game
+ * @param { Types.UUID } gameWinnerUUID unique ID of game winner
  */
 export function setGameWinnerUUID(gameWinnerUUID) {
   gameState.gameWinner = gameWinnerUUID;
 } /* setGameWinner */
 
 /**
- *
- * @returns { Types.UUID }
+ * Fetches UUID of user that won the game
+ * @returns { Types.UUID } unique ID of game winner
  */
 export function getGameWinnerUUID() {
   return gameState.gameWinner;

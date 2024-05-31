@@ -26,6 +26,7 @@ import {
   createNewRoundState,
   getRoundNumber,
   getOppHasPlayedRound,
+  getSelfHasPlayedRound,
   clearGameState,
   setGameWinnerUUID,
   getGameWinnerUUID,
@@ -152,7 +153,7 @@ function createCardElements() {
       versusCardEl.setAttribute('suite', remainingCard.suite);
       versusCardEl.setAttribute('number', remainingCard.number);
 
-      versusCardEl.addEventListener('change', handleCardSelection);
+      versusCardEl.addEventListener('click', handleCardSelection);
 
       return versusCardEl;
     }),
@@ -245,13 +246,13 @@ export async function handleOpponentMove() {
 } /* handleOpponentMove */
 
 /**
- *
- * @param { Types.UUID } roundWinnerUUID
- * @param { 'round'|'game'} variant
+ * Displays message that a user won the round/game
+ * @param { Types.UUID } winnerUUID winner of round/game
+ * @param { 'round'|'game'} variant decorator on win message
  */
-function displayWinner(roundWinnerUUID, variant) {
+function displayWinner(winnerUUID, variant) {
   const versusUsernameEl = document.createElement('versus-username');
-  versusUsernameEl.setAttribute('uuid', roundWinnerUUID);
+  versusUsernameEl.setAttribute('uuid', winnerUUID);
   updateCurrentInstruction(versusUsernameEl, ` won the ${variant}!`);
 } /* displayRoundWinner */
 
@@ -411,7 +412,7 @@ async function handleCardSelection(e) {
   const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
 
   const selectedCard = selectedCardInputEl.value;
-  if (!selectedCard) return;
+  if (!selectedCard || getSelfHasPlayedRound()) return;
 
   selectCard(JSON.parse(selectedCard));
   setSelfSelectedCard(selectedCard);
