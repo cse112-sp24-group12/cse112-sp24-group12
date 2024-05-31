@@ -236,12 +236,13 @@ export async function handleOpponentMove() {
   const oppDeckSlotEl = document.querySelector('#opponent_cards');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
 
-  const oppRemainingCardEls = oppDeckSlotEl.querySelectorAll('versus-card');
-  const oppCardEl = getRandFromArr(oppRemainingCardEls);
+  const oppRemainingVersusCardEls =
+    oppDeckSlotEl.querySelectorAll('versus-card');
+  const oppVersusCardEl = getRandFromArr(oppRemainingVersusCardEls);
 
   setOppSelectedCard('played');
 
-  await oppCardEl.translateToContainer(oppCardSlotEl);
+  await oppVersusCardEl.translateToContainer(oppCardSlotEl);
 } /* handleOpponentMove */
 
 /**
@@ -261,16 +262,21 @@ function displayWinner(winnerUUID, variant) {
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
 export async function handleRevealCards(opponentSelectedCard, roundWinner) {
-  const oppCardSlotEl = document.querySelector('#opp_played_card');
+  const selfPlayedVersusCardEl = document.querySelector(
+    '#self_played_card versus-card',
+  );
   const startRoundButtonEl = document.querySelector('#start_round_button');
 
   if (!getOppHasPlayedRound()) await handleOpponentMove();
+  await selfPlayedVersusCardEl.getCardTranslationPromise();
 
-  const oppVersusCardEl = oppCardSlotEl.querySelector('versus-card');
+  const oppVersusCardEl = document.querySelector(
+    '#opp_played_card versus-card',
+  );
 
   oppVersusCardEl.setAttribute('suite', opponentSelectedCard.suite);
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
-  oppVersusCardEl.setAttribute('variant', 'front');
+  await oppVersusCardEl.flipCard('front');
 
   startRoundButtonEl.classList.remove('hidden');
 
