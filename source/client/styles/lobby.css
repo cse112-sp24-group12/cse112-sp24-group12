@@ -105,8 +105,6 @@
   justify-content: flex-end;
   gap: 2rem;
 }
-  gap: 3rem;
-}
 
 #start_game_button,
 #practice_game_button {
