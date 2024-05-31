@@ -3,7 +3,7 @@ import { server } from 'websocket';
 import { readFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 import {
-  generateGameCode,
+  generateUniqueGameCode,
   areUnorderedArrsEqual,
   isCardValid,
   areCardsEqual,
@@ -94,8 +94,6 @@ function handleStartGame(webSocketConnection) {
     });
     return;
   }
-
-  // TODO: validate request is coming from host of the game
 
   const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);
 
@@ -329,7 +327,7 @@ function createInstance(webSocketConnection) {
 
   /** @type { Types.GameInstance } */
   const gameInstance = {
-    gameCode: generateGameCode(), // TODO: ensure game code is unique
+    gameCode: generateUniqueGameCode(Object.keys(gameInstancesByGameCode)),
     webSocketConnections: [webSocketConnection],
     gameState: {
       byPlayer: {},

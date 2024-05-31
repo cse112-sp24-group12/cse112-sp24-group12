@@ -2,12 +2,19 @@ import { SUITES } from './types.js';
 import * as Types from './types.js';
 
 /**
- * Creates and returns random game code for each game instance; currently not necessarily unique
- * @returns { number } newly generated game code
+ * Creates and returns random unique game code for each game instance
+ * @param { Array<number> } currentGameCodes games currently in use (i.e., to avoid)
+ * @returns { number } newly generated unique game code
  */
-export function generateGameCode() {
-  return Math.floor(Math.random() * 9000) + 1000;
-} /* generateGameCode */
+export function generateUniqueGameCode(currentGameCodes) {
+  let gameCode;
+
+  do {
+    gameCode = Math.floor(Math.random() * 9000) + 1000;
+  } while (currentGameCodes.includes(gameCode));
+
+  return gameCode;
+} /* generateUniqueGameCode */
 
 /**
  * Determines if two arrays are equal as sets
