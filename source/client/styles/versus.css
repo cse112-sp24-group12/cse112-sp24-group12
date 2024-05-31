@@ -62,25 +62,44 @@ versus-card {
   position: relative;
 }
 
-versus-card .card-trans-wrapper {
-  height: 100%;
-  transform-origin: top left;
-  position: absolute;
-}
-
 versus-card img {
+  position: absolute;
   height: 100%;
   aspect-ratio: 2 / 3;
-}
-
-versus-card input {
-  appearance: none;
+  backface-visibility: hidden;
 }
 
 versus-card label {
   display: block;
   height: 100%;
   color: var(--black);
+  transform-style: preserve-3d;
+  transition: transform 350ms ease-in-out;
+}
+
+versus-card[variant="back"] label {
+  transform: rotateY(180deg);
+}
+
+versus-card input {
+  appearance: none;
+}
+
+versus-card .card-trans-wrapper {
+  height: 100%;
+  width: 100%;
+  transform-origin: top left;
+  position: absolute;
+}
+
+versus-card .card-flip-wrapper {
+  height: 100%;
+  width: 100%;
+  perspective: 1000px;
+}
+
+versus-card .card-back {
+  transform: rotateY(180deg);
 }
 
 .winner-card-opp {
