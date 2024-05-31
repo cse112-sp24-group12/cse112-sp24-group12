@@ -30,10 +30,8 @@ const mouseState = {
  * @param { MouseEvent } event mouse movement event passed by listener; passive
  */
 function updateMousePosition(event) {
-  const { clientWidth, clientHeight } = document.body;
-
-  mouseState.xPosPercentFromCenter = event.clientX / clientWidth - 0.5;
-  mouseState.yPosPercentFromCenter = event.clientY / clientHeight - 0.5;
+  mouseState.xPosPercentFromCenter = event.clientX / window.innerWidth - 0.5;
+  mouseState.yPosPercentFromCenter = event.clientY / window.innerHeight - 0.5;
 } /* updateMousePosition */
 
 /**
@@ -41,8 +39,8 @@ function updateMousePosition(event) {
  * @param { HTMLCanvasElement } starBgCanvasEl canvas element to resize
  */
 function handleResize(starBgCanvasEl) {
-  starBgCanvasEl.width = document.body.clientWidth;
-  starBgCanvasEl.height = document.body.clientHeight;
+  starBgCanvasEl.width = window.innerWidth;
+  starBgCanvasEl.height = window.innerHeight;
 } /* handleResize */
 
 /**
@@ -87,11 +85,11 @@ function animateSingleStar(star, canvasContext, cameraX, cameraY) {
 
   /* project coordinate in 3D space to 2D space */
   const projX =
-    (star.xPosPercent * document.body.clientWidth - cameraX) *
+    (star.xPosPercent * window.innerWidth - cameraX) *
       (1 / (1 - star.zPosPercent)) +
     cameraX;
   const projY =
-    (star.yPosPercent * document.body.clientHeight - cameraY) *
+    (star.yPosPercent * window.innerHeight - cameraY) *
       (1 / (1 - star.zPosPercent)) +
     cameraY;
 
@@ -118,11 +116,9 @@ function animateNextFrame(stars, canvasContext) {
   /* move camera location with the user's mouse (dampened) */
   const { xPosPercentFromCenter, yPosPercentFromCenter } = mouseState;
   const cameraX =
-    document.body.clientWidth *
-    (0.5 - xPosPercentFromCenter * MOUSE_EFFECT_COEFF);
+    window.innerWidth * (0.5 - xPosPercentFromCenter * MOUSE_EFFECT_COEFF);
   const cameraY =
-    document.body.clientHeight *
-    (0.5 - yPosPercentFromCenter * MOUSE_EFFECT_COEFF);
+    window.innerHeight * (0.5 - yPosPercentFromCenter * MOUSE_EFFECT_COEFF);
 
   /* paint */
   canvasContext.clearRect(

@@ -21,11 +21,17 @@ import {
   getGameIsStarted,
   setSelfSelectedCard,
   setOppSelectedCard,
-  setRoundWinner,
+  setRoundWinnerUUID,
+  getRoundWinnerUUID,
   createNewRoundState,
   getRoundNumber,
   getOppHasPlayedRound,
+  getSelfHasPlayedRound,
+  clearGameState,
+  setGameWinnerUUID,
+  getGameWinnerUUID,
 } from './store.js';
+import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
 import * as Types from './types.js';
 
@@ -42,6 +48,7 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 export function handleUpdateInstance({ gameCode, profileList } = {}) {
   const selfGameCodeReadOnlyInputEl = document.querySelector('#self_game_code');
   const lobbyProfileListEl = document.querySelector('#lobby_profile_list');
+  const startGameButtonEl = document.querySelector('#start_game_button');
 
   selfGameCodeReadOnlyInputEl.value = gameCode;
 
@@ -60,6 +67,8 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
   );
 
   initializePlayers(profileList.map((profile) => profile.uuid));
+
+  startGameButtonEl.disabled = profileList.length !== 2;
 } /* handleUpdateInstance */
 
 /**
@@ -143,7 +152,7 @@ function createCardElements() {
       versusCardEl.setAttribute('suite', remainingCard.suite);
       versusCardEl.setAttribute('number', remainingCard.number);
 
-      versusCardEl.addEventListener('change', handleCardSelection);
+      versusCardEl.addEventListener('click', handleCardSelection);
 
       return versusCardEl;
     }),
@@ -184,11 +193,14 @@ function toggleToLobbyView() {
   const gameBoardWrapperEl = document.querySelector('#game_board');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
   const homeButtonEl = document.querySelector('#home_button');
+  const outBoundGameCodeInputEl = document.querySelector('#outbound_game_code');
 
   gameBoardWrapperEl.classList.add('hidden');
   leaveGameButtonEl.classList.add('hidden');
   lobbyWrapperEl.classList.remove('hidden');
   homeButtonEl.classList.remove('hidden');
+
+  outBoundGameCodeInputEl.focus();
 } /* toggleToLobbyView */
 
 /**
@@ -200,6 +212,19 @@ export function refreshEntireGame() {
 
   initializeScoreboard();
   createCardElements();
+
+  // if (/* cards have been played this round */) {
+  //   /* display cards */
+  // }
+
+  const gameWinnerUUID = getGameWinnerUUID();
+  const roundWinnerUUID = getRoundWinnerUUID();
+  if (gameWinnerUUID) {
+    displayWinner(gameWinnerUUID, 'game');
+  } else if (roundWinnerUUID) {
+    displayWinner(roundWinnerUUID, 'round');
+  }
+
   toggleToGameboardView();
 } /* refreshEntireGame */
 
@@ -220,6 +245,17 @@ export async function handleOpponentMove() {
 } /* handleOpponentMove */
 
 /**
+ * Displays message that a user won the round/game
+ * @param { Types.UUID } winnerUUID winner of round/game
+ * @param { 'round'|'game'} variant decorator on win message
+ */
+function displayWinner(winnerUUID, variant) {
+  const versusUsernameEl = document.createElement('versus-username');
+  versusUsernameEl.setAttribute('uuid', winnerUUID);
+  updateCurrentInstruction(versusUsernameEl, ` won the ${variant}!`);
+} /* displayRoundWinner */
+
+/**
  * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
  * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
@@ -236,14 +272,11 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
   oppVersusCardEl.setAttribute('variant', 'front');
 
-  const versusUsernameEl = document.createElement('versus-username');
-  versusUsernameEl.setAttribute('uuid', roundWinner.uuid);
-  updateCurrentInstruction(versusUsernameEl, ' won the round!');
-
   startRoundButtonEl.classList.remove('hidden');
 
   setOppSelectedCard(opponentSelectedCard);
-  setRoundWinner(roundWinner.uuid);
+  setRoundWinnerUUID(roundWinner.uuid);
+  displayWinner(roundWinner.uuid, 'round');
   updateScoreboardScores();
 } /* handleRevealCards */
 
@@ -275,9 +308,8 @@ export function handleGameEnd(gameWinner) {
 
   startRoundButtonEl.classList.add('hidden');
 
-  const versusUsernameEl = document.createElement('versus-username');
-  versusUsernameEl.setAttribute('uuid', gameWinner.uuid);
-  updateCurrentInstruction(versusUsernameEl, ' won the game!');
+  setGameWinnerUUID(gameWinner.uuid);
+  displayWinner(gameWinner.uuid, 'game');
 } /* handleGameEnd */
 
 /**
@@ -285,6 +317,8 @@ export function handleGameEnd(gameWinner) {
  */
 function returnToLobby() {
   toggleToLobbyView();
+  clearGameState();
+  clearChat();
   sendInitializationRequest();
 } /* returnToLobby */
 
@@ -319,7 +353,7 @@ async function handleCardSelection(e) {
   const selfPlayedCardSlotEl = document.querySelector('#self_played_card');
 
   const selectedCard = selectedCardInputEl.value;
-  if (!selectedCard) return;
+  if (!selectedCard || getSelfHasPlayedRound()) return;
 
   selectCard(JSON.parse(selectedCard));
   setSelfSelectedCard(selectedCard);

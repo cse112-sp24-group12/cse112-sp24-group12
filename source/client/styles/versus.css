@@ -9,6 +9,11 @@ main {
   overflow: hidden;
 }
 
+header {
+  position: absolute;
+  z-index: 20;
+}
+
 #connection_status {
   position: absolute;
   left: 0;
@@ -53,12 +58,14 @@ main {
 versus-card {
   display: block;
   height: 100%;
+  aspect-ratio: 2 / 3;
+  position: relative;
 }
 
 versus-card .card-trans-wrapper {
   height: 100%;
-  transition: transform 350ms ease-in-out;
   transform-origin: top left;
+  position: absolute;
 }
 
 versus-card img {
