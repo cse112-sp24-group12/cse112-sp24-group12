@@ -211,7 +211,8 @@ export async function handleOpponentMove() {
   const oppDeckSlotEl = document.querySelector('#opponent_cards');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
 
-  const oppRemainingVersusCardEls = oppDeckSlotEl.querySelectorAll('versus-card');
+  const oppRemainingVersusCardEls =
+    oppDeckSlotEl.querySelectorAll('versus-card');
   const oppVersusCardEl = getRandFromArr(oppRemainingVersusCardEls);
 
   setOppSelectedCard('played');
@@ -225,13 +226,17 @@ export async function handleOpponentMove() {
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
 export async function handleRevealCards(opponentSelectedCard, roundWinner) {
-  const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
+  const selfPlayedVersusCardEl = document.querySelector(
+    '#self_played_card versus-card',
+  );
   const startRoundButtonEl = document.querySelector('#start_round_button');
 
   if (!getOppHasPlayedRound()) await handleOpponentMove();
   await selfPlayedVersusCardEl.getCardTranslationPromise();
 
-  const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
+  const oppVersusCardEl = document.querySelector(
+    '#opp_played_card versus-card',
+  );
 
   oppVersusCardEl.setAttribute('suite', opponentSelectedCard.suite);
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);

@@ -46,11 +46,17 @@ export default class Card extends HTMLElement {
       const cardInputEl = this.querySelector('input');
       cardInputEl.disabled = true;
     }
-    
+
     const suite = this.getAttribute('suite');
     const number = this.getAttribute('number');
 
-    if (this.getAttribute('variant') !== 'front' || !suite || !number || !this._initialized) return;
+    if (
+      this.getAttribute('variant') !== 'front' ||
+      !suite ||
+      !number ||
+      !this._initialized
+    )
+      return;
 
     const cardInputEl = this.querySelector('input');
     const cardLabelEl = this.querySelector('label');
