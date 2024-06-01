@@ -257,15 +257,22 @@ function displayWinner(winnerUUID, variant) {
   updateCurrentInstruction(versusUsernameEl, ` won the ${variant}!`);
 } /* displayRoundWinner */
 
+/**
+ * Animation that shows which card won for each show
+ * @param { Types.UUID } roundWinnerUUID unique identifier of round winner
+ * @returns { Promise<void> } promise that resolves when animation is complete
+ */
 async function roundWinnerAnimationCard(roundWinnerUUID) {
   const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
   const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
   const playerUUID = getPlayerUUID();
 
   return new Promise((resolve) => {
+    // player wins the round
     if (roundWinnerUUID === playerUUID) {
       selfPlayedVersusCardEl.classList.add('winner-card-user');
       oppVersusCardEl.classList.add('loser-card');
+    // opponent wins the round
     } else {
       selfPlayedVersusCardEl.classList.add('loser-card');
       oppVersusCardEl.classList.add('winner-card-opp');
@@ -279,17 +286,23 @@ async function roundWinnerAnimationCard(roundWinnerUUID) {
       }, 500);
     });
   });
-}
+} /* roundWinnerAnimationCard */
 
+/**
+ * Animation that shows either "YOU WON" or "YOU LOST" depending on the outcome for each round
+ * @param { Types.UUID } roundWinnerUUID unique identifier of round winner
+ * @returns { Promise<void> } promise that resolves when animation is complete
+ */
 async function roundWinnerAnimationText(roundWinnerUUID){
   const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
   const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
   const roundWinnerTextEl = document.querySelector('#round_end_text');
   const nextRound = document.querySelector('.next-round');
 
-  const isUserLoser = roundWinnerUUID === getPlayerUUID()
-  roundWinnerTextEl.replaceChildren('YOU ', isUserLoser ? 'LOST' : 'WON', '!');
-  roundWinnerTextEl.classList.toggle('loser-text', isUserLoser);
+  // changes the text depending on who won the round
+  const isUserWinner = roundWinnerUUID === getPlayerUUID()
+  roundWinnerTextEl.replaceChildren('YOU ', isUserWinner ? 'WON' : 'LOST', '!');
+  roundWinnerTextEl.classList.toggle('loser-text', !isUserWinner);
 
   return new Promise((resolve) => {
     oppVersusCardEl.style.display = 'none';
@@ -297,23 +310,11 @@ async function roundWinnerAnimationText(roundWinnerUUID){
     nextRound.classList.add('next-round-animation');
 
     setTimeout(() => {
-      // oppVersusCardEl.style.display = 'block';
-      // selfPlayedVersusCardEl.style.display = 'block';
       nextRound.classList.remove('next-round-animation');
       resolve();
     }, 1500);
   });
-}
-
-  // if (roundWinnerUUID === playerUUID) {
-  //   selfPlayedVersusCardEl.style.animation = 'winnerAnimation 5s ease-in-out';
-  //   oppVersusCardEl.style.animation = 'loserAnimation 5s ease-in-out';
-  // } else {
-  //   selfPlayedVersusCardEl.style.animation = 'loserAnimation 5s ease-in-out';
-  //   oppVersusCardEl.style.animation = 'winnerAnimation 5s ease-in-out';
-  // }
-
-  // setTimeout(resolve, 1000);
+} /* roundWinnerAnimationText */
 
 /**
  * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
@@ -324,8 +325,8 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   const selfPlayedVersusCardEl = document.querySelector(
     '#self_played_card versus-card',
   );
-  // const startRoundButtonEl = document.querySelector('#start_round_button');
 
+  // wait until the opponent plays a card
   if (!getOppHasPlayedRound()) await handleOpponentMove();
   await selfPlayedVersusCardEl.getCardTranslationPromise();
 
@@ -337,17 +338,16 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
   await oppVersusCardEl.flipCard('front');
 
-  //startRoundButtonEl.classList.remove('hidden');
-
   setOppSelectedCard(opponentSelectedCard);
   setRoundWinnerUUID(roundWinner.uuid);
-  // displayWinner(roundWinner.uuid, 'round');
 
+  // plays the round winner animation
   await roundWinnerAnimationCard(roundWinner.uuid);
   await roundWinnerAnimationText(roundWinner.uuid);
 
   updateScoreboardScores();
 
+  // starts the next round
   handleStartRound();
   startRound();
 } /* handleRevealCards */
@@ -356,11 +356,8 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
  * Handles reset of UI at the start of each new round
  */
 export function handleStartRound() {
-  //const startRoundButtonEl = document.querySelector('#start_round_button');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
   const selfCardSlotEl = document.querySelector('#self_played_card');
-
-  //startRoundButtonEl.classList.add('hidden');
 
   oppCardSlotEl.replaceChildren();
   selfCardSlotEl.replaceChildren();
@@ -376,10 +373,6 @@ export function handleStartRound() {
  * @param { Types.ServerToClientProfile } gameWinner profile data of (user/opponent) who won game
  */
 export function handleGameEnd(gameWinner) {
-  //const startRoundButtonEl = document.querySelector('#start_round_button');
-
-  //startRoundButtonEl.classList.add('hidden');
-
   setGameWinnerUUID(gameWinner.uuid);
   displayWinner(gameWinner.uuid, 'game');
 } /* handleGameEnd */
@@ -497,6 +490,5 @@ export function initializeVersus() {
     if (e.key === 'Enter') sendJoinInstance();
   });
   startGameButtonEl.addEventListener('click', startGame);
-  //startRoundButtonEl.addEventListener('click', startRound);
   leaveGameButton.addEventListener('click', handleLeaveGame);
 } /* initializeVersus */

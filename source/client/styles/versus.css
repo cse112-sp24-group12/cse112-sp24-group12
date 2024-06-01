@@ -209,26 +209,3 @@ versus-card .card-back {
     transform: scale(1.0) translate(25vw, -20vh);
   }
 }
-
-/* @keyframes nextRoundAnimation {
-  0% {
-    opacity: 1;
-    margin-top: 24%;
-    margin-left: 0;
-  }
-  20% {
-    opacity: 1;
-    margin-top: 11%;
-    margin-left: 0;
-  }
-  70% {
-    opacity: 1;
-    margin-top: 11%;
-    margin-left: 0;
-  }
-  100% {
-    opacity: 0;
-    margin-top: 11%;
-    margin-left: 100%;
-  }
-} */
