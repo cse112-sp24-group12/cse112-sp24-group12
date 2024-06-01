@@ -281,10 +281,15 @@ async function roundWinnerAnimationCard(roundWinnerUUID) {
   });
 }
 
-async function roundWinnerAnimationText(){
+async function roundWinnerAnimationText(roundWinnerUUID){
   const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
   const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
+  const roundWinnerTextEl = document.querySelector('#round_end_text');
   const nextRound = document.querySelector('.next-round');
+
+  const isUserLoser = roundWinnerUUID === getPlayerUUID()
+  roundWinnerTextEl.replaceChildren('YOU ', isUserLoser ? 'LOST' : 'WON', '!');
+  roundWinnerTextEl.classList.toggle('loser-text', isUserLoser);
 
   return new Promise((resolve) => {
     oppVersusCardEl.style.display = 'none';
@@ -336,10 +341,10 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
 
   setOppSelectedCard(opponentSelectedCard);
   setRoundWinnerUUID(roundWinner.uuid);
-  displayWinner(roundWinner.uuid, 'round');
+  // displayWinner(roundWinner.uuid, 'round');
 
   await roundWinnerAnimationCard(roundWinner.uuid);
-  await roundWinnerAnimationText();
+  await roundWinnerAnimationText(roundWinner.uuid);
 
   updateScoreboardScores();
 

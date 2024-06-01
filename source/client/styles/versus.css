@@ -178,6 +178,15 @@ versus-card .card-back {
   opacity: 0;
 }
 
+.next-round p {
+  text-transform: uppercase;
+  text-align: center;
+}
+
+#round_end_text.loser-text {
+  color: var(--red);
+}
+
 .next-round-animation {
   animation: nextRoundAnimation 1s linear;
 }
