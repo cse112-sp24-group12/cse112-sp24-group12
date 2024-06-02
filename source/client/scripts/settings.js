@@ -66,6 +66,7 @@ function initalizeCards() {
       newCardEl.classList.add('card');
       imgEl.src = card.image;
       imgEl.alt = card.name;
+      imgEl.setAttribute("data-info", card.keywords.join(", "));
 
       newCardEl.appendChild(imgEl);
 
@@ -117,43 +118,69 @@ function initializeSettings() {
   const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
   const saveSettingsButtonEl = document.querySelector('#save_settings_button');
   const resetSettingsButtonEl = document.querySelector('#reset_settings_button');
-  // TODO: Implement avatar selection
+  // Implement avatar selection
   
-
   const changeAvatarButton = document.querySelector('#change_image_button');
   changeAvatarButton.addEventListener('click', () => {
     document.querySelector('#select-profile-picture-wrapper').classList.add('active');
   });
 
-
+  
   const closeAvatarButton = document.querySelector(
     '#select-profile-picture-close',
   );
-  // on close avatar selection button, it will change the displayed picture and close the . 
+  // on close avatar selection button, it will change the displayed picture and close.
   closeAvatarButton.addEventListener('click', () => {
     // make the selecter disappear on close
     document.querySelector('#select-profile-picture-wrapper').classList.remove('active');
     // get the url of the selected radio image and display it.
-    let selectedAvatarImg = document.querySelector("input[type='radio']:checked").getAttribute("data-url");
+    let selectedAvatarImg = document.querySelector("input[type='radio']:checked")
+                              .getAttribute("data-url");
     document.querySelector('#profile_settings_avatar').src = selectedAvatarImg;
   });
+  
+  // if the input radio checked attribute is different from the stored value in the localstorage
+  if( getProfileImageUrl() != document.querySelector("input[name='avatar-radio']:checked")
+                                .getAttribute("data-url")){
+    let radios = document.querySelectorAll("input[name='avatar-radio']");
+    //uncheck it
+    document.querySelector("input[name='avatar-radio']:checked").checked = false;
 
-  // TODO: Card information onclick
-  /*
-  const cardInfoPopup = document.querySelector("card");
-  cardInfoPopup.addEventListener('click', () => {
-    document.querySelector("#card-information-wrapper").classList.add('active');
+    // Loop through the radio buttons to find the matching one
+    radios.forEach(radio => {
+      if (radio.getAttribute("data-url") === getProfileImageUrl()) {
+        radio.checked = true;
+      }
+    });
+  }
+
+  // need to make the cards first, before the onclick
+  initalizeCards();
+
+
+  // Card information onclick
+  const cardImages = document.querySelectorAll("#information-card-list div img");
+  // loop through all the images and make an onclick that takes the alt, and the data, and display
+  cardImages.forEach( img => {
+    img.addEventListener('click', () => {
+      document.querySelector("output[name='card-name-output']").textContent = img.alt;
+      document.querySelector("output[name='card-info-output']").textContent = img.getAttribute("data-info");
+
+      document.querySelector("#card-information-wrapper").classList.add('active');
+    });
   });
 
   const closeInfoButton = document.querySelector("#card-information-close");
   closeInfoButton.addEventListener('click', () => {
     document.querySelector("#card-information-wrapper").classList.remove('active');
+    
   })
-  */
+  
+
   // TODO: Refactor code
 
   resetSettings();
-  //saveSettings(); this breaks the avatar refresh. 
+  //saveSettings(); this breaks the avatar refresh.
   initializeVolumeInput();
   initializeNavigation({
     '#audio_menu_button_wrapper': '#volume_settings',
@@ -162,7 +189,6 @@ function initializeSettings() {
   });
   saveVolume(musicSettingsEl, setMusicVolumeLevel);
   saveVolume(sfxSettingsEl, setSFXVolumeLevel);
-  initalizeCards();
 
   saveSettingsButtonEl.addEventListener('click', saveSettings);
   resetSettingsButtonEl.addEventListener('click', resetSettings);
