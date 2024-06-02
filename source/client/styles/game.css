@@ -7,7 +7,7 @@ header {
   align-items: center;
   justify-content: center;
   animation: fly 4.5s linear;
-  z-index: 10; /* ensure object is on top */
+  z-index: 20; /* ensure object is on top */
 }
 
 .oracle .message {
@@ -94,7 +94,7 @@ header {
   transition: transform 0.3s ease;
 }
 
-.card-container::before {
+.active-container::before {
   content: "";
   position: absolute;
   inset: -180px;
@@ -123,7 +123,7 @@ header {
   transform-style: preserve-3d;
 }
 
-.card-container:hover .tarot-card {
+.active-container:hover .tarot-card {
   transform: rotateX(40deg) rotateY(-40deg) translateZ(40px) scale(1.1);
 }
 
