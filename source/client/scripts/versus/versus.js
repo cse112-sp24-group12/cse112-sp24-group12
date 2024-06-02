@@ -33,7 +33,7 @@ import {
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
-import { getPlayerUUID } from './../profile.js'
+import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
@@ -172,7 +172,7 @@ function createCardElements() {
 } /* createCardElements */
 
 /**
- *
+ * Switch to view of game board
  */
 function toggleToGameboardView() {
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
@@ -187,7 +187,7 @@ function toggleToGameboardView() {
 } /* toggleToGameboardView */
 
 /**
- *
+ * Switch to view of lobby, and focus on game code input element
  */
 function toggleToLobbyView() {
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
@@ -263,25 +263,33 @@ function displayWinner(winnerUUID, variant) {
  * @returns { Promise<void> } promise that resolves when animation is complete
  */
 async function roundWinnerAnimationCard(roundWinnerUUID) {
-  const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
-  const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
-  const playerUUID = getPlayerUUID();
+  const oppVersusCardEl = document.querySelector(
+    '#opp_played_card versus-card',
+  );
+  const selfPlayedVersusCardEl = document.querySelector(
+    '#self_played_card versus-card',
+  );
+
+  if (roundWinnerUUID === getPlayerUUID()) {
+    // user wins round
+    selfPlayedVersusCardEl.classList.add('winner-card-user');
+    oppVersusCardEl.classList.add('loser-card');
+  } else {
+    // opp wins round
+    selfPlayedVersusCardEl.classList.add('loser-card');
+    oppVersusCardEl.classList.add('winner-card-opp');
+  }
 
   return new Promise((resolve) => {
-    // player wins the round
-    if (roundWinnerUUID === playerUUID) {
-      selfPlayedVersusCardEl.classList.add('winner-card-user');
-      oppVersusCardEl.classList.add('loser-card');
-    // opponent wins the round
-    } else {
-      selfPlayedVersusCardEl.classList.add('loser-card');
-      oppVersusCardEl.classList.add('winner-card-opp');
-    }
-
     selfPlayedVersusCardEl.addEventListener('animationend', () => {
       setTimeout(() => {
-        selfPlayedVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
-        oppVersusCardEl.classList.remove('winner-card-opp', 'winner-card-user', 'loser-card');
+        [selfPlayedVersusCardEl, oppVersusCardEl].forEach((el) => {
+          el.classList.remove(
+            'winner-card-opp',
+            'winner-card-user',
+            'loser-card',
+          );
+        });
         resolve();
       }, 500);
     });
@@ -293,26 +301,32 @@ async function roundWinnerAnimationCard(roundWinnerUUID) {
  * @param { Types.UUID } roundWinnerUUID unique identifier of round winner
  * @returns { Promise<void> } promise that resolves when animation is complete
  */
-async function roundWinnerAnimationText(roundWinnerUUID){
-  const oppVersusCardEl = document.querySelector('#opp_played_card versus-card');
-  const selfPlayedVersusCardEl = document.querySelector('#self_played_card versus-card');
+async function roundWinnerAnimationText(roundWinnerUUID) {
+  const oppVersusCardEl = document.querySelector(
+    '#opp_played_card versus-card',
+  );
+  const selfPlayedVersusCardEl = document.querySelector(
+    '#self_played_card versus-card',
+  );
   const roundWinnerTextEl = document.querySelector('#round_end_text');
-  const nextRound = document.querySelector('.next-round');
+  const nextRoundWrapperEl = document.querySelector('.next-round');
 
   // changes the text depending on who won the round
-  const isUserWinner = roundWinnerUUID === getPlayerUUID()
+  const isUserWinner = roundWinnerUUID === getPlayerUUID();
   roundWinnerTextEl.replaceChildren('YOU ', isUserWinner ? 'WON' : 'LOST', '!');
   roundWinnerTextEl.classList.toggle('loser-text', !isUserWinner);
 
-  return new Promise((resolve) => {
-    oppVersusCardEl.style.display = 'none';
-    selfPlayedVersusCardEl.style.display = 'none';
-    nextRound.classList.add('next-round-animation');
+  oppVersusCardEl.classList.add('no-vis');
+  selfPlayedVersusCardEl.classList.add('no-vis');
+  nextRoundWrapperEl.classList.add('next-round-animation');
 
-    setTimeout(() => {
-      nextRound.classList.remove('next-round-animation');
-      resolve();
-    }, 1500);
+  return new Promise((resolve) => {
+    nextRoundWrapperEl.addEventListener('animationend', () => {
+      setTimeout(() => {
+        nextRoundWrapperEl.classList.remove('next-round-animation');
+        resolve();
+      }, 500);
+    });
   });
 } /* roundWinnerAnimationText */
 
@@ -326,7 +340,7 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
     '#self_played_card versus-card',
   );
 
-  // wait until the opponent plays a card
+  // wait until the opponent playing card animation completes
   if (!getOppHasPlayedRound()) await handleOpponentMove();
   await selfPlayedVersusCardEl.getCardTranslationPromise();
 
