@@ -49,6 +49,10 @@
   display: none !important;
 }
 
+.no-vis {
+  visibility: hidden;
+}
+
 body {
   font-display: swap;
   font-family: "Roboto", sans-serif;
