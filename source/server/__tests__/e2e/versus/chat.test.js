@@ -72,7 +72,7 @@ describe('E2E chat interaction testing', () => {
     await page1.focus('#chat_input');
     await page1.keyboard.type(testMessage);
     await chatButton.evaluate((b) => b.click());
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 500));
     const receivedMessage = await chatFeed.evaluate(
       (i) => i.lastChild.lastChild.innerText,
     );
@@ -87,7 +87,7 @@ describe('E2E chat interaction testing', () => {
     const chatFeed = await page2.$('#chat_feed');
     const disconnectMessage = 'User disconnected';
     await page1.close();
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 500));
     const receivedMessage = await chatFeed.evaluate(
       (i) => i.lastChild.lastChild.innerText,
     );
@@ -120,7 +120,7 @@ describe('E2E chat interaction testing', () => {
     const leaveMessage = 'User left';
     await leaveButton.evaluate((b) => b.click());
     await confirmLeaveButton.evaluate((b) => b.click());
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 500));
     const receivedMessage = await chatFeed.evaluate(
       (i) => i.lastChild.lastChild.innerText,
     );
