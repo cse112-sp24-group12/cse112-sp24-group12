@@ -2,25 +2,31 @@
  * @jest-environment node
  */
 
-import { generateUniqueGameCode, calculateGameWinnerProfile, areUnorderedArrsEqual, isCardValid, areCardsEqual, generateUniqueCards } from '../util.js';
+import {
+  generateUniqueGameCode,
+  calculateGameWinnerProfile,
+  areUnorderedArrsEqual,
+  isCardValid,
+  areCardsEqual,
+  generateUniqueCards,
+} from '../util.js';
 import * as Types from '../types.js';
 
 describe('generateUniqueGameCode unit testing', () => {
-  it('should generate a random integer in the range [1000, 9999]', () => {
-    const generatedValue = generateUniqueGameCode([5]);
+  it('should generate a random integer in the range [lo, hi]', () => {
+    const generatedValue = generateUniqueGameCode(600, 700, [605]);
 
-    expect(generatedValue).toBeLessThan(10000);
-    expect(generatedValue).toBeGreaterThan(999);
-    expect(generatedValue.toString()).toHaveLength(4);
+    expect(generatedValue).toBeLessThanOrEqual(700);
+    expect(generatedValue).toBeGreaterThanOrEqual(600);
+    expect(Number.isInteger(generatedValue)).toBe(true);
   });
 
   it('should avoid generating a number currently in the list', () => {
-    const currentGameCodes = Array.from({ length: (9000)}).map((_, i) => i + 1000);
-    currentGameCodes.splice(5000, 1);
+    const generatedValueOne = generateUniqueGameCode(41, 45, [41, 42, 43, 45]);
+    const generatedValueTwo = generateUniqueGameCode(1032, 1035, [1033, 1034, 1035]);
 
-    const generatedValue = generateUniqueGameCode(currentGameCodes);
-
-    expect(generatedValue).toBe(6000);
+    expect(generatedValueOne).toBe(44);
+    expect(generatedValueTwo).toBe(1032);
   });
 });
 
@@ -36,78 +42,108 @@ describe('areUnorderedArrsEqual unit testing', () => {
 
 describe('isCardValid unit testing', () => {
   it('should return true for valid card objects', () => {
-    expect(isCardValid({
-      number: 5,
-      suite: 'test_suite',
-    })).toBe(true);
+    expect(
+      isCardValid({
+        number: 5,
+        suite: 'test_suite',
+      }),
+    ).toBe(true);
   });
 
   it('should return false for objects missing a field', () => {
-    expect(isCardValid({ number: 5})).toBe(false);
-    expect(isCardValid({ suite: 'test'})).toBe(false);
+    expect(isCardValid({ number: 5 })).toBe(false);
+    expect(isCardValid({ suite: 'test' })).toBe(false);
   });
 
   it('should return false for objects with an extra field', () => {
-    expect(isCardValid({
-      number: 5,
-      suite: 'test_suite',
-      extraField: 'test',
-    })).toBe(false);
+    expect(
+      isCardValid({
+        number: 5,
+        suite: 'test_suite',
+        extraField: 'test',
+      }),
+    ).toBe(false);
   });
 
   it('should return false for object with incorrect field types', () => {
-    expect(isCardValid({
-      number: '5',
-      suite: 'test_suite',
-    })).toBe(false);
+    expect(
+      isCardValid({
+        number: '5',
+        suite: 'test_suite',
+      }),
+    ).toBe(false);
 
-    expect(isCardValid({
-      number: 5,
-      suite: 6,
-    })).toBe(false);
+    expect(
+      isCardValid({
+        number: 5,
+        suite: 6,
+      }),
+    ).toBe(false);
 
-    expect(isCardValid({
-      number: '5',
-      suite: 6,
-    })).toBe(false);
+    expect(
+      isCardValid({
+        number: '5',
+        suite: 6,
+      }),
+    ).toBe(false);
   });
 });
 
 describe('areCardsEqual unit testing', () => {
   it('should return true for cards that have the same fields', () => {
-    expect(areCardsEqual({
-      number: 5,
-      suite: 'test_suite',
-    }, {
-      number: 5,
-      suite: 'test_suite',
-    })).toBe(true);
+    expect(
+      areCardsEqual(
+        {
+          number: 5,
+          suite: 'test_suite',
+        },
+        {
+          number: 5,
+          suite: 'test_suite',
+        },
+      ),
+    ).toBe(true);
   });
 
   it('should return false for cards that have differing fields', () => {
-    expect(areCardsEqual({
-      number: 5,
-      suite: 'test_suite',
-    }, {
-      number: 6,
-      suite: 'test_suite',
-    })).toBe(false);
+    expect(
+      areCardsEqual(
+        {
+          number: 5,
+          suite: 'test_suite',
+        },
+        {
+          number: 6,
+          suite: 'test_suite',
+        },
+      ),
+    ).toBe(false);
 
-    expect(areCardsEqual({
-      number: 5,
-      suite: 'test_suite',
-    }, {
-      number: 5,
-      suite: 'other_suite',
-    })).toBe(false);
+    expect(
+      areCardsEqual(
+        {
+          number: 5,
+          suite: 'test_suite',
+        },
+        {
+          number: 5,
+          suite: 'other_suite',
+        },
+      ),
+    ).toBe(false);
 
-    expect(areCardsEqual({
-      number: 6,
-      suite: 'test_suite',
-    }, {
-      number: 5,
-      suite: 'test_suite',
-    })).toBe(false);
+    expect(
+      areCardsEqual(
+        {
+          number: 6,
+          suite: 'test_suite',
+        },
+        {
+          number: 5,
+          suite: 'test_suite',
+        },
+      ),
+    ).toBe(false);
   });
 });
 

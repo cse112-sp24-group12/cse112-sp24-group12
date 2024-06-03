@@ -26,6 +26,8 @@ const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 
 const NUM_ROUNDS = 5;
+const GAME_CODE_LO_RANGE = 1_000;
+const GAME_CODE_HI_RANGE = 9_999;
 
 /**
  * Time until an instance is deleted after a user disconnects and fails to reconnect
@@ -327,7 +329,11 @@ function createInstance(webSocketConnection) {
 
   /** @type { Types.GameInstance } */
   const gameInstance = {
-    gameCode: generateUniqueGameCode(Object.keys(gameInstancesByGameCode)),
+    gameCode: generateUniqueGameCode(
+      GAME_CODE_LO_RANGE,
+      GAME_CODE_HI_RANGE,
+      Object.keys(gameInstancesByGameCode),
+    ),
     webSocketConnections: [webSocketConnection],
     gameState: {
       byPlayer: {},

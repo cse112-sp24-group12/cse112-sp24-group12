@@ -3,14 +3,16 @@ import * as Types from './types.js';
 
 /**
  * Creates and returns random unique game code for each game instance
+ * @param { number } rangeLo lowest allowed game code (inclusive)
+ * @param { number } rangeHi highest allowed game code (inclusive)
  * @param { Array<number> } currentGameCodes games currently in use (i.e., to avoid)
  * @returns { number } newly generated unique game code
  */
-export function generateUniqueGameCode(currentGameCodes) {
+export function generateUniqueGameCode(rangeLo, rangeHi, currentGameCodes) {
   let gameCode;
 
   do {
-    gameCode = Math.floor(Math.random() * 9000) + 1000;
+    gameCode = Math.floor(Math.random() * (rangeHi - rangeLo + 1)) + rangeLo;
   } while (currentGameCodes.includes(gameCode));
 
   return gameCode;
