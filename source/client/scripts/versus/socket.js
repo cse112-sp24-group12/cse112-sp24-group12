@@ -42,7 +42,6 @@ function handleMessage(message) {
     handleGameStart,
     handleOpponentMove,
     handleRevealCards,
-    handleStartRound,
     handleGameEnd,
     handleInstanceClosed,
     refreshEntireGame,
@@ -68,9 +67,6 @@ function handleMessage(message) {
           messageObj.opponentSelectedCard,
           messageObj.roundWinner,
         );
-        break;
-      case S2C_ACTIONS.START_ROUND:
-        handleStartRound();
         break;
       case S2C_ACTIONS.GAME_END:
         handleGameEnd(messageObj.gameWinner);
@@ -139,15 +135,6 @@ export function startGame() {
     action: C2S_ACTIONS.START_GAME,
   });
 } /* startGame */
-
-/**
- * Attempts to start next round of game instance server-side
- */
-export function startRound() {
-  sendMessage({
-    action: C2S_ACTIONS.START_ROUND,
-  });
-} /* startRound */
 
 /**
  * Sends chat message server-side to be redistributed to clients,

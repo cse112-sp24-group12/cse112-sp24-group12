@@ -4,7 +4,6 @@ import {
   selectCard,
   joinInstance,
   startGame,
-  startRound,
   attachGameCallbackFns,
   sendInitializationRequest,
 } from './socket.js';
@@ -38,6 +37,8 @@ import * as Types from './types.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
+
+const NUM_ROUNDS = 5;
 
 /**
  * Updates display of current user lobby, including game code and active players
@@ -362,8 +363,7 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   updateScoreboardScores();
 
   // starts the next round
-  handleStartRound();
-  startRound();
+  if (getRoundNumber() < NUM_ROUNDS) handleStartRound();
 } /* handleRevealCards */
 
 /**
@@ -380,8 +380,6 @@ export function handleStartRound() {
   createNewRoundState();
 
   updateScoreboardRoundNumber();
-
-  // TODO : rounds are incrementing 2+ each time a round starts
 } /* handleStartRound */
 
 /**
