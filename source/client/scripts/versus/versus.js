@@ -39,6 +39,9 @@ import * as Types from './types.js';
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
 
+/** @type { number|undefined } timeoutID for use by copyGameCodeToClipboard() */
+let copyGameCodeTimeoutID;
+
 /**
  * Updates display of current user lobby, including game code and active players
  * @param { {
@@ -69,7 +72,10 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
 
   initializePlayers(profileList.map((profile) => profile.uuid));
 
-  startGameButtonEl.disabled = profileList.length !== 2;
+  if (profileList.length === 2) {
+    startGameButtonEl.disabled = false;
+    startGameButtonEl.focus();
+  }
 } /* handleUpdateInstance */
 
 /**
@@ -482,6 +488,26 @@ function handleLeaveGame() {
 /**
  *
  */
+async function copyGameCodeToClipboard() {
+  const selfGameCodeReadOnlyInputEl = document.querySelector('#self_game_code');
+  const copyGameCodeButtonEl = document.querySelector('#copy_game_code_button');
+
+  navigator.clipboard
+    .writeText(selfGameCodeReadOnlyInputEl.value)
+    .then(() => {
+      clearTimeout(copyGameCodeTimeoutID);
+      copyGameCodeButtonEl.classList.add('copy-successful');
+    })
+    .then(() => {
+      copyGameCodeTimeoutID = setTimeout(() => {
+        copyGameCodeButtonEl.classList.remove('copy-successful');
+      }, 3_000);
+    });
+} /* copyGameCodeToClipboard */
+
+/**
+ *
+ */
 function showRulesModal() {
   const rulesModalEl = document.querySelector('#rules_modal');
 
@@ -493,11 +519,12 @@ function showRulesModal() {
  * and activates event listeners
  */
 export function initializeVersus() {
+  const copyGameCodeButtonEl = document.querySelector('#copy_game_code_button');
   const joinGameButtonEl = document.querySelector('#join_game_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
   //const startRoundButtonEl = document.querySelector('#start_round_button');
-  const leaveGameButton = document.querySelector('#leave_game_button');
+  const leaveGameButtonEl = document.querySelector('#leave_game_button');
   const openRulesButtonEl = document.querySelector('#open_rules_button');
 
   attachGameCallbackFns({
@@ -516,6 +543,7 @@ export function initializeVersus() {
     if (e.key === 'Enter') sendJoinInstance();
   });
   startGameButtonEl.addEventListener('click', startGame);
-  leaveGameButton.addEventListener('click', handleLeaveGame);
+  leaveGameButtonEl.addEventListener('click', handleLeaveGame);
+  copyGameCodeButtonEl.addEventListener('click', copyGameCodeToClipboard);
   openRulesButtonEl.addEventListener('click', showRulesModal);
 } /* initializeVersus */
