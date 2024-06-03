@@ -23,7 +23,11 @@ describe('generateUniqueGameCode unit testing', () => {
 
   it('should avoid generating a number currently in the list', () => {
     const generatedValueOne = generateUniqueGameCode(41, 45, [41, 42, 43, 45]);
-    const generatedValueTwo = generateUniqueGameCode(1032, 1035, [1033, 1034, 1035]);
+    const generatedValueTwo = generateUniqueGameCode(
+      1032,
+      1035,
+      [1033, 1034, 1035],
+    );
 
     expect(generatedValueOne).toBe(44);
     expect(generatedValueTwo).toBe(1032);
