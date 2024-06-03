@@ -386,6 +386,8 @@ export function handleStartRound() {
   createNewRoundState();
 
   updateScoreboardRoundNumber();
+
+  // TODO : rounds are incrementing 2+ each time a round starts
 } /* handleStartRound */
 
 /**
@@ -413,7 +415,7 @@ function returnToLobby() {
 export function handleInstanceClosed() {
   const instClosedModalEl = document.querySelector('#instance_closed_modal');
 
-  instClosedModalEl.addEventListener('close', returnToLobby);
+  instClosedModalEl.addEventListener('close', returnToLobby); // TODO: fix multiple attachment when opening/closing many times
   instClosedModalEl.showModal();
 } /* handleInstanceClosed */
 
@@ -478,7 +480,7 @@ function handleLeaveGame() {
       returnToLobby();
     },
     { once: true },
-  );
+  ); // TODO: fix multiple attachment when opening and closing modal many times
 
   confirmLeaveModalEl.showModal();
 } /* handleLeaveGame */
@@ -504,6 +506,15 @@ async function copyGameCodeToClipboard() {
 } /* copyGameCodeToClipboard */
 
 /**
+ *
+ */
+function showRulesModal() {
+  const rulesModalEl = document.querySelector('#rules_modal');
+
+  rulesModalEl.showModal();
+} /* handleCloseRules */
+
+/**
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
  * and activates event listeners
  */
@@ -514,6 +525,7 @@ export function initializeVersus() {
   const startGameButtonEl = document.querySelector('#start_game_button');
   //const startRoundButtonEl = document.querySelector('#start_round_button');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
+  const openRulesButtonEl = document.querySelector('#open_rules_button');
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -533,4 +545,5 @@ export function initializeVersus() {
   startGameButtonEl.addEventListener('click', startGame);
   leaveGameButtonEl.addEventListener('click', handleLeaveGame);
   copyGameCodeButtonEl.addEventListener('click', copyGameCodeToClipboard);
+  openRulesButtonEl.addEventListener('click', showRulesModal);
 } /* initializeVersus */

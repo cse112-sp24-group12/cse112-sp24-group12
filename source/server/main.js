@@ -3,7 +3,7 @@ import { server } from 'websocket';
 import { readFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 import {
-  generateGameCode,
+  generateUniqueGameCode,
   areUnorderedArrsEqual,
   isCardValid,
   areCardsEqual,
@@ -26,6 +26,8 @@ const PORT = process.env.PORT || 8000;
 const OFFERED_PROTOCOL = 'tarot-versus-protocol';
 
 const NUM_ROUNDS = 5;
+const GAME_CODE_LO_RANGE = 1_000;
+const GAME_CODE_HI_RANGE = 9_999;
 
 /**
  * Time until an instance is deleted after a user disconnects and fails to reconnect
@@ -94,8 +96,6 @@ function handleStartGame(webSocketConnection) {
     });
     return;
   }
-
-  // TODO: validate request is coming from host of the game
 
   const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);
 
@@ -329,7 +329,11 @@ function createInstance(webSocketConnection) {
 
   /** @type { Types.GameInstance } */
   const gameInstance = {
-    gameCode: generateGameCode(), // TODO: ensure game code is unique
+    gameCode: generateUniqueGameCode(
+      GAME_CODE_LO_RANGE,
+      GAME_CODE_HI_RANGE,
+      Object.keys(gameInstancesByGameCode),
+    ),
     webSocketConnections: [webSocketConnection],
     gameState: {
       byPlayer: {},

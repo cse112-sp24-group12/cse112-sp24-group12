@@ -132,17 +132,90 @@
   <!-- MODALS -->
   <dialog id="instance_closed_modal">
     <p>The game you are in has ended.</p>
-    <form method="dialog">
+    <form method="dialog" class="default-dialog-form">
       <button class="primary-button">Return to lobby</button>
     </form>
   </dialog>
 
   <dialog id="confirm_leave_modal">
     <p>Are you sure you want to leave the game? This action is irreversible.</p>
-    <form method="dialog">
+    <form method="dialog" class="default-dialog-form">
       <button class="secondary-button">Stay in game</button>
       <button type="button" id="confirm_leave_button" class="destructive-button">Leave game</button>
     </form>
+  </dialog>
+
+  <dialog id="rules_modal">
+    <div id="rules_modal_header">
+      <h2 id="rules_title">Rules</h2>
+      <form method="dialog">
+        <button class="secondary-button">Close</button>
+      </form>
+    </div>
+    <section id="rules_text_wrapper" aria-labelledby="rules_title">
+      <ul>
+        <li>
+          <h3>Setup</h3>
+          <ul>
+            <li>
+              Each player is initially dealt five cards.
+            </li>
+            <li>
+              Cards belong to one of four suite: Cups, Swords, Wands, or Pentacles. The illustration on the 
+              card as well as the color of the border surrounding the card serve to indicate which suit a
+              card belongs to. Each card also has either a printed numeric value, or a face corresponding to
+              a numeric value (much like a standard deck of playing cards). Namely, a Page exists as the
+              equivalent to the number 11, a Knight to 12, a Queen to 13, and a King to 14. 
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h3>Gameplay</h3>
+          <ul>
+            <li>
+              During each round, each player selects a card. The choice of card remains obscured from the other 
+              player until such time as both players have selected their cards. Then, both cards are revealed, as 
+              well as the winner of the round.
+            </li>
+            <li>
+              After all cards have been exhausted (i.e., after five rounds), gameplay ends. The winner of the game
+              is the player who has won the highest number of rounds.
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h3>World Events</h3>
+          <ul>
+            <li>
+              During the second and fourth rounds, World Events trigger. These World Events change the ways that cards
+              compete against each other. The possible Events are as follows:
+              <ul id="world_event_list">
+                <li>
+                  <h4>Event 1</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 2</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 3</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 4</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 5</h4>
+                  Description description description description description description description description description description
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </section>
   </dialog>
 
   <!-- TEMPLATES -->
