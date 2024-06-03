@@ -186,7 +186,7 @@ export function cleanGameState(playerUUID, gameState) {
  * @returns { number } number of live connections in the moment
  */
 export function getNumActivePlayers(gameInstance) {
-  return gameInstance.webSocketConnections.filter(
+  return gameInstance?.webSocketConnections.filter(
     (webSocketConnection) => webSocketConnection.connected,
   ).length;
 } /* getNumActivePlayers*/
