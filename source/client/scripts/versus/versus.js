@@ -76,6 +76,8 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
   if (profileList.length === 2) {
     startGameButtonEl.disabled = false;
     startGameButtonEl.focus();
+  } else {
+    startGameButtonEl.disabled = true;
   }
 } /* handleUpdateInstance */
 
