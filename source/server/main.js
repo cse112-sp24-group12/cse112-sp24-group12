@@ -710,7 +710,7 @@ function handleInitialization(webSocketConnection, playerUUID) {
  * Handles a new request to the WebSocket server; always tries to accept
  * @param { Types.WSRequest } webSocketRequest inbound WebSocket request object
  */
-function handleRequest(webSocketRequest) {
+export function handleRequest(webSocketRequest) {
   log(`WebSocket request received at "${webSocketRequest.remoteAddress}"`, {
     severity: 'connection',
   });
@@ -787,7 +787,7 @@ function handleRequest(webSocketRequest) {
       });
     });
 
-    if (gameInstance.gameState.isStarted)
+    if (gameInstance?.gameState.isStarted)
       startDisconnectedInstanceCloseTimeout(gameInstance);
     else if (getNumActivePlayers(gameInstance) === 0)
       closeInstance(gameInstance);
