@@ -35,7 +35,7 @@ header {
   align-items: flex-end;
 }
 
-#open_rules_button {
+#rules_wrapper button {
   background: none;
   border: none;
   color: var(--white);
@@ -44,15 +44,63 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-#open_rules_button img {
-  width: 5rem;
+#rules_wrapper button img {
+  height: 7rem;
   transition: var(--default-transform-transition);
 }
 
-#open_rules_button:hover img {
+#rules_wrapper button:hover img {
   transform: var(--default-scale);
+}
+
+#close_rules_button span {
+  position: absolute;
+  color: var(--black);
+  z-index: 50;
+}
+
+#rules_modal_header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+#rules_text_wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin-left: 1rem;
+}
+
+#rules_text_wrapper h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+#rules_text_wrapper > ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+#rules_text_wrapper > ul > li > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#world_event_list {
+  list-style-type: none;
+  margin-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 versus-card {
