@@ -6,8 +6,16 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fly 4.5s linear;
   z-index: 20; /* ensure object is on top */
+}
+
+.forwards-oracle {
+  animation: fly 4.5s linear;
+}
+
+.reversed-oracle {
+  animation: fly 4.5s linear reverse;
+  animation-fill-mode: forwards;
 }
 
 .oracle .message {
