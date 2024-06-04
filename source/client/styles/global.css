@@ -295,8 +295,21 @@ input[type="number"] {
   transition: var(--default-transform-transition);
 }
 
-.icon-button:hover {
+.icon-button:hover,
+.info-button:hover {
   transform: var(--default-scale);
+}
+
+.info-button {
+  display: inline-block;
+  width: 1.5rem;
+  aspect-ratio: 1 / 1;
+  background-size: contain;
+  background-image: url(../assets/images/icons/info_icon.svg);
+  background-repeat: no-repeat;
+  border: none;
+  background-color: transparent;
+  transition: var(--default-transform-transition);
 }
 
 #short_settings_icon_list {
