@@ -40,14 +40,14 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 
 const NUM_ROUNDS = 5;
 
-/** 
+/**
  * TimeoutID for use by copyGameCodeToClipboard()
  * @type { number|undefined }
  */
 let copyGameCodeTimeoutID;
 
-/** 
- * Promise that will resolve when the current card animation process 
+/**
+ * Promise that will resolve when the current card animation process
  * is complete, for use with other out-of-context animation functions
  * @type { Promise<void> }
  */
