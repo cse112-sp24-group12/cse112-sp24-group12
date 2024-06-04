@@ -18,6 +18,8 @@ const DEFAULT_USERNAME = 'User';
 const DEFAULT_MUTE = false;
 const DEFAULT_MUSIC_VOLUME_LEVEL = 0.5;
 const DEFAULT_SFX_VOLUME_LEVEL = 0.5;
+
+/** @type { Record<ProfileImageName, string> } */
 const LOCAL_PROFILE_IMAGE_STANDARD_URLS = {
   default: './assets/images/characters/default.png',
   dragon: './assets/images/characters/dragon.png',
@@ -25,6 +27,8 @@ const LOCAL_PROFILE_IMAGE_STANDARD_URLS = {
 };
 
 export const LOCAL_PROFILE_IMAGE_CUSTOM_FLAG = 'custom_image';
+
+export const UPDATE_VOLUME_LISTENER_NAME = 'volume-update';
 
 /**
  * Fetches list of existing profile image name options; used to populate
@@ -147,6 +151,8 @@ export function setIsMute(isMute) {
 
   window.localStorage.setItem(LOCAL_PROFILE_VOLUME_MUTE_LOCATION, isMute);
 
+  window.dispatchEvent(new Event(UPDATE_VOLUME_LISTENER_NAME));
+
   return true;
 } /* setIsMute */
 
@@ -174,6 +180,8 @@ export function setMusicVolumeLevel(volumeLevel) {
 
   window.localStorage.setItem(LOCAL_PROFILE_MUSIC_LEVEL_LOCATION, volumeLevel);
 
+  window.dispatchEvent(new Event(UPDATE_VOLUME_LISTENER_NAME));
+
   return true;
 } /* setMusicVolumeLevel */
 
@@ -186,6 +194,8 @@ export function setSFXVolumeLevel(volumeLevel) {
   if (isNaN(volumeLevel) || volumeLevel < 0 || volumeLevel > 1) return false;
 
   window.localStorage.setItem(LOCAL_PROFILE_SFX_LEVEL_LOCATION, volumeLevel);
+
+  window.dispatchEvent(new Event(UPDATE_VOLUME_LISTENER_NAME));
 
   return true;
 } /* setSFXVolumeLevel */

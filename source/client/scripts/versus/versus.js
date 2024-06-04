@@ -34,6 +34,11 @@ import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
 import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
+import {
+  SOUND_EFFECTS,
+  playSoundEffect,
+  playBackgroundMusic,
+} from '../sound.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
@@ -546,4 +551,6 @@ export function initializeVersus() {
   leaveGameButtonEl.addEventListener('click', handleLeaveGame);
   copyGameCodeButtonEl.addEventListener('click', copyGameCodeToClipboard);
   openRulesButtonEl.addEventListener('click', showRulesModal);
+
+  playBackgroundMusic();
 } /* initializeVersus */

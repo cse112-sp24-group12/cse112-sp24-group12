@@ -299,7 +299,11 @@ input[type="number"] {
   background-image: url(../assets/images/icons/house.webp)
 }
 
-#mute_button {
+versus-mute-button[data-muted="true"] button {
+  background-image: url(../assets/images/icons/sound_muted.webp);
+}
+
+versus-mute-button[data-muted="false"] button {
   background-image: url(../assets/images/icons/sound.webp);
 }
 
