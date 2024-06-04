@@ -11,8 +11,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 2rem;
-  gap: 2rem;
-  align-self: center;
+  
 }
 
 .lobby-code-wrapper {
@@ -29,12 +28,14 @@
 
 .lobby-code-input-wrapper {
   display: flex;
+  max-height: 4.25rem;
 }
 
 .lobby-code-input-wrapper input {
   font-size: 1.5rem;
   font-size: 1.5rem;
   font-family: "Mystery Quest";
+  text-align: center;
 }
 
 #self_game_code {
@@ -90,10 +91,10 @@
 
 #oracle {
   position: absolute;
-  width: 17rem;
-  height: 17rem;
+  width: 15rem;
+  height: 15rem;
   transform: scaleX(-1);
-  right: 19rem;
+  right: 17.5rem;
   z-index: 1;
   pointer-events: none;
 }
@@ -108,13 +109,14 @@
 
 #start_game_button,
 #practice_game_button {
-  width: 18rem;
-  height: 7.2rem;
+  width: 16rem;
+  height: 6.4rem;
   font-size: 3rem;
 }
 
 #lobby_profile_list_wrapper {
-  align-self: center;
+  position: relative;
+  top: calc(1rem + 30px);
   justify-self: end;
   width: 75%;
 }
@@ -134,40 +136,28 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  max-height: 4.25rem;
 }
 
 #lobby_profile_list li::before {
   content: '';
   background-color: var(--purple);
   display: inline-block;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 20rem;
 }
 
-#lobby_profile_list li:first-of-type::after {
+#lobby_profile_list li:has(.you)::after {
   content: 'YOU';
   display: inline-block;
   font-weight: bold;
   position: absolute;
+  font-size: 2rem;
   right: 0;
   padding-right: 1rem;
 }
 
-/* TODO: only display door on non-host */
-/* #lobby_profile_list li:last-of-type::after {
-  content: '';
-  display: inline-block;
-  width: 3rem;
-  height: 4rem;
-  background-image: url("../assets/images/icons/doors.webp");
-  background-size: contain;
-  background-repeat: no-repeat;
-  position: absolute;
-  right: 0;
-  padding-right: 1rem;
-} */
-
-#lobby_profile_list li:first-of-type {
+#lobby_profile_list li:has(.you) {
   background: var(--yellow);
 }

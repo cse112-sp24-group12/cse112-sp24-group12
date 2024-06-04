@@ -9,12 +9,10 @@ main {
   justify-content: center;
   align-items: center;
   flex: 1;
-  padding-top: 8rem;
+  padding-top: 4rem;
 }
 
 #main_button_list {
-  position: relative;
-  top: 20%;
   list-style-type: none;
   display: flex;
   gap: 5rem;

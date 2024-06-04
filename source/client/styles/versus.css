@@ -47,7 +47,7 @@ header {
 }
 
 #open_rules_button img {
-  width: 7.5rem;
+  width: 7rem;
   transition: var(--default-transform-transition);
 }
 
