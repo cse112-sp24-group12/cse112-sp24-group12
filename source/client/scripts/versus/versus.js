@@ -515,17 +515,27 @@ function showRulesModal() {
 } /* handleCloseRules */
 
 /**
+ *
+ */
+function showGameLobbyInfoModal() {
+  const gameLobbyInfoModalEl = document.querySelector('#game_lobby_info_modal');
+
+  gameLobbyInfoModalEl.showModal();
+} /* showGameLobbyInfoModal */
+
+/**
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
  * and activates event listeners
  */
 export function initializeVersus() {
-  const copyGameCodeButtonEl = document.querySelector('#copy_game_code_button');
   const joinGameButtonEl = document.querySelector('#join_game_button');
-  const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
-  //const startRoundButtonEl = document.querySelector('#start_round_button');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
+  const copyGameCodeButtonEl = document.querySelector('#copy_game_code_button');
+  const gameCodeInfoButtonEl = document.querySelector('#game_code_info_button');
   const openRulesButtonEl = document.querySelector('#open_rules_button');
+  const legendInfoButtonEl = document.querySelector('#legend_info_button');
+  const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -539,11 +549,13 @@ export function initializeVersus() {
   });
 
   joinGameButtonEl.addEventListener('click', sendJoinInstance);
-  outboundGameCodeInputEl.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendJoinInstance();
-  });
   startGameButtonEl.addEventListener('click', startGame);
   leaveGameButtonEl.addEventListener('click', handleLeaveGame);
   copyGameCodeButtonEl.addEventListener('click', copyGameCodeToClipboard);
+  gameCodeInfoButtonEl.addEventListener('click', showGameLobbyInfoModal);
   openRulesButtonEl.addEventListener('click', showRulesModal);
+  legendInfoButtonEl.addEventListener('click', showRulesModal);
+  outboundGameCodeInputEl.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendJoinInstance();
+  });
 } /* initializeVersus */

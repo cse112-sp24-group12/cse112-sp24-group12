@@ -35,6 +35,12 @@
   flex-direction: column;
 }
 
+#legend_card_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 #legend_card img {
   flex: 1;
   min-height: 0;
