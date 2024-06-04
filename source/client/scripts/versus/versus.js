@@ -40,8 +40,18 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 
 const NUM_ROUNDS = 5;
 
-/** @type { number|undefined } timeoutID for use by copyGameCodeToClipboard() */
+/**
+ * TimeoutID for use by copyGameCodeToClipboard()
+ * @type { number|undefined }
+ */
 let copyGameCodeTimeoutID;
+
+/**
+ * Promise that will resolve when the current card animation process
+ * is complete, for use with other out-of-context animation functions
+ * @type { Promise<void> }
+ */
+let currentAnimationPromise;
 
 /**
  * Updates display of current user lobby, including game code and active players
@@ -241,8 +251,11 @@ export function refreshEntireGame() {
 /**
  * Displays fact that opponent user has played a card, without yet revealing what
  * that card is
+ * @param {{ ignoreAwait: boolean }} [options]
  */
-export async function handleOpponentMove() {
+export async function handleOpponentMove({ ignoreAwait } = {}) {
+  if (!ignoreAwait) await currentAnimationPromise;
+
   const oppDeckSlotEl = document.querySelector('#opponent_cards');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
 
@@ -340,17 +353,32 @@ async function roundWinnerAnimationText(roundWinnerUUID) {
 } /* roundWinnerAnimationText */
 
 /**
- * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
+ * Calls animateRevealCards and awaits response, for use by other dependent animations
  * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
 export async function handleRevealCards(opponentSelectedCard, roundWinner) {
+  currentAnimationPromise = animateRevealCards(
+    opponentSelectedCard,
+    roundWinner,
+  );
+
+  await currentAnimationPromise;
+} /* handleRevealCards */
+
+/**
+ * Handles async animation of card reveal promise, for use by handleRevealCards()
+ * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
+ * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
+ */
+async function animateRevealCards(opponentSelectedCard, roundWinner) {
   const selfPlayedVersusCardEl = document.querySelector(
     '#self_played_card versus-card',
   );
 
   // wait until the opponent playing card animation completes
-  if (!getOppHasPlayedRound()) await handleOpponentMove();
+  if (!getOppHasPlayedRound()) await handleOpponentMove({ ignoreAwait: true });
+
   await selfPlayedVersusCardEl.getCardTranslationPromise();
 
   const oppVersusCardEl = document.querySelector(
@@ -372,7 +400,7 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
 
   // starts the next round
   if (getRoundNumber() < NUM_ROUNDS) handleStartRound();
-} /* handleRevealCards */
+} /* animateRevealCards */
 
 /**
  * Handles reset of UI at the start of each new round
