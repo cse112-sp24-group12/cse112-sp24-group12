@@ -83,14 +83,20 @@ export function getUniqueCard() {
  * and redirects users to results screen
  */
 function endGame() {
-  window.setTimeout(() => {
-    localStorage.setItem(
-      'chosenCards',
-      JSON.stringify(gameState.chosenCards.map((card) => card.name)),
-    );
-    localStorage.setItem('luck', gameState.luck);
+  localStorage.setItem(
+    'chosenCards',
+    JSON.stringify(gameState.chosenCards.map((card) => card.name)),
+  );
+  localStorage.setItem('luck', gameState.luck);
+  const oracle = document.querySelector('.oracle');
+  oracle.addEventListener('animationend', () => {
     window.location.href = './results.html';
-  }, MESSAGE_DISPLAY_LENGTH_MS);
+  });
+  displayMessage("Let's see what future the cards have in store for you...");
+  oracle.classList.remove('forwards-oracle');
+  // Force reflow for animation refresh
+  oracle.offsetHeight;
+  oracle.classList.add('reversed-oracle');
 } /* endGame */
 
 /**
@@ -133,6 +139,7 @@ function cardClickHandler(event) {
  * @returns { HTMLDivElement[] } array of card container elements
  */
 function generateCardsWithListeners(numCards) {
+  const oracle = document.querySelector('.oracle');
   return Array.from({ length: numCards }).map((_, i) => {
     const cardContainerEl = document.createElement('div');
     const cardEl = document.createElement('div');
@@ -151,7 +158,21 @@ function generateCardsWithListeners(numCards) {
     cardEl.append(cardBackFaceEl, cardFrontFaceEl);
     cardContainerEl.append(cardEl);
 
-    cardContainerEl.addEventListener('click', cardClickHandler);
+    oracle.addEventListener(
+      'animationend',
+      () => {
+        cardContainerEl.classList.add('active-container');
+        cardContainerEl.addEventListener('click', cardClickHandler);
+        oracle.addEventListener(
+          'animationstart',
+          () => {
+            cardContainerEl.classList.remove('active-container');
+          },
+          { once: true },
+        );
+      },
+      { once: true },
+    );
 
     return cardContainerEl;
   });
@@ -170,9 +191,10 @@ function displayMessage(message) {
   window.clearTimeout(gameState.messageResetTimeout);
   gameState.messageResetTimeout = window.setTimeout(() => {
     const numCardsLeft = MAX_CHOSEN_CARDS - gameState.chosenCards.length;
-    oracleMsgEl.innerText = `Draw ${numCardsLeft} more card${
-      numCardsLeft === 1 ? '' : 's'
-    }!`;
+    if (numCardsLeft == 0) {
+      return;
+    }
+    oracleMsgEl.innerText = `Draw ${numCardsLeft} more card${numCardsLeft === 1 ? '' : 's'}!`;
   }, MESSAGE_DISPLAY_LENGTH_MS);
 } /* displayMessage */
 

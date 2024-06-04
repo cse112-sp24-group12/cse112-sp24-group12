@@ -78,6 +78,11 @@
 
 #copy_game_code_button::before {
   background-image: url(./../assets/images/icons/copy_icon.svg);
+  transition: background-image 150ms ease-in-out;
+}
+
+#copy_game_code_button.copy-successful::before {
+  background-image: url(./../assets/images/icons/check_icon.svg);
 }
 
 #join_game_button {

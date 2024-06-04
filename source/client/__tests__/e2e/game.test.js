@@ -49,6 +49,7 @@ describe('E2E button/link testing', () => {
 
   it('Check clicking one div btn outputs status', async () => {
     const card = await page.$('#card-1');
+    await page.waitForSelector('.active-container');
     await card.click();
     const status = await page.$eval('#card-container-1', (el) =>
       el.classList.contains('flipped'),
@@ -58,6 +59,7 @@ describe('E2E button/link testing', () => {
 
   it('Check that after clicking 4 cards, cannot click another', async () => {
     const card = await page.$$('.tarot-card');
+    await page.waitForSelector('.active-container');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();
@@ -73,6 +75,7 @@ describe('E2E button/link testing', () => {
 
   it('After clicking a card, check text content of message displayed to user', async () => {
     const card = await page.$('#card-1');
+    await page.waitForSelector('.active-container');
     await card.click();
     const textContent = await page.$eval('.oracle .message', (el) => {
       return el.innerText;
@@ -87,6 +90,7 @@ describe('Testing local storage contents is as expected', () => {
 
   it('Check local storage contents for luck being transfered to results page', async () => {
     const card = await page.$$('.tarot-card');
+    await page.waitForSelector('.active-container');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();
@@ -100,6 +104,7 @@ describe('Testing local storage contents is as expected', () => {
 
   it('Check local storage contents of chosen cards being transfered to results page', async () => {
     const card = await page.$$('.tarot-card');
+    await page.waitForSelector('.active-container');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();
@@ -113,6 +118,7 @@ describe('Testing local storage contents is as expected', () => {
 
   it('Check window location after clicking 4 cards is as expected', async () => {
     const card = await page.$$('.tarot-card');
+    await page.waitForSelector('.active-container');
     //click 4 cards
     for (let i = 0; i < 4; i++) {
       await card[i].click();

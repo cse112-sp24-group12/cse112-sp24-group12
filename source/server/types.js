@@ -6,7 +6,6 @@ export const C2S_ACTIONS = {
   JOIN_INSTANCE: 'join_instance',
   START_GAME: 'start_game',
   SELECT_CARD: 'select_card',
-  START_ROUND: 'start_round',
   CHAT_MESSAGE: 'chat_message',
 };
 
@@ -16,7 +15,6 @@ export const S2C_ACTIONS = {
   START_GAME: 'start_game',
   CARD_SELECTED: 'card_selected',
   REVEAL_CARDS: 'reveal_cards',
-  START_ROUND: 'start_round',
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
   SYSTEM_MESSAGE: 'system_message',
@@ -88,9 +86,6 @@ export const SUITES = {
  *    selectedCard: Card
  *  } |
  *  {
- *    action: S2C_ACTIONS.START_ROUND
- *  } |
- *  {
  *    action: C2S_ACTIONS.CHAT_MESSAGE,
  *    messageContents: string
  *  }
@@ -121,9 +116,6 @@ export const SUITES = {
  *    action: S2C_ACTIONS.REVEAL_CARDS,
  *    opponentSelectedCard: Card,
  *    roundWinner: ServerToClientProfile
- *  } |
- *  {
- *    action: S2C_ACTIONS.START_ROUND
  *  } |
  *  {
  *    action: S2C_ACTIONS.GAME_END,
