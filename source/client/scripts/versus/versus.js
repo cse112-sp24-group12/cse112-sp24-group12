@@ -4,7 +4,6 @@ import {
   selectCard,
   joinInstance,
   startGame,
-  startRound,
   attachGameCallbackFns,
   sendInitializationRequest,
 } from './socket.js';
@@ -38,6 +37,8 @@ import * as Types from './types.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
+
+const NUM_ROUNDS = 5;
 
 /** @type { number|undefined } timeoutID for use by copyGameCodeToClipboard() */
 let copyGameCodeTimeoutID;
@@ -75,6 +76,8 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
   if (profileList.length === 2) {
     startGameButtonEl.disabled = false;
     startGameButtonEl.focus();
+  } else {
+    startGameButtonEl.disabled = true;
   }
 } /* handleUpdateInstance */
 
@@ -368,8 +371,7 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   updateScoreboardScores();
 
   // starts the next round
-  handleStartRound();
-  startRound();
+  if (getRoundNumber() < NUM_ROUNDS) handleStartRound();
 } /* handleRevealCards */
 
 /**
@@ -386,8 +388,6 @@ export function handleStartRound() {
   createNewRoundState();
 
   updateScoreboardRoundNumber();
-
-  // TODO : rounds are incrementing 2+ each time a round starts
 } /* handleStartRound */
 
 /**

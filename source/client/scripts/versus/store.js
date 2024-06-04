@@ -9,7 +9,7 @@ import { areCardsEqual, getCurrentRoundState } from './util.js';
 const userProfilesByUUID = {};
 
 /** @type { Types.GameState } */
-const gameState = {
+let gameState = {
   byPlayer: {},
   byRound: [],
   isStarted: false,
@@ -150,6 +150,7 @@ export function initializePlayers(playerUUIDs) {
       {
         score: 0,
         remainingCards: [],
+        ...gameState.byPlayer[UUID],
       },
     ]),
   );
@@ -236,7 +237,7 @@ export function getGameWinnerUUID() {
  * @param { Types.GameState } newGameState game state that takes priority
  */
 export function setGameState(newGameState) {
-  Object.assign(gameState, newGameState);
+  gameState = { ...gameState, ...newGameState };
 } /* setGameState */
 
 /**
