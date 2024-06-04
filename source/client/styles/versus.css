@@ -221,7 +221,7 @@ versus-card .card-back {
   font-family: "Mystery Quest", cursive, serif;
   color: var(--yellow);
   position: absolute;
-  margin-top: 24%;
+  margin-top: 45vh;
   z-index: 20;
   opacity: 0;
 }

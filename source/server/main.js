@@ -40,7 +40,7 @@ const DISCONNECTED_TIMEOUT_MS = 180_000; // 3 minutes
  * Time between game end and instance deletion (in milliseconds)
  * @type { number }
  */
-const GAME_END_TIMEOUT_MS = 5_000;
+const GAME_END_TIMEOUT_MS = 20_000;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -161,6 +161,8 @@ function leaveInstance(webSocketConnection) {
  * @param { Types.GameInstance } gameInstance game instance to close
  */
 function closeInstance(gameInstance) {
+  if (!gameInstancesByGameCode[gameInstance.gameCode]) return; // already deleted
+
   delete gameInstancesByGameCode[gameInstance.gameCode];
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
     sendMessage(webSocketConnection, {
@@ -756,7 +758,8 @@ function handleRequest(webSocketRequest) {
       });
     });
 
-    if (gameInstance?.gameState?.isStarted)
+    if (!gameInstance) return;
+    else if (gameInstance.gameState.isStarted)
       startDisconnectedInstanceCloseTimeout(gameInstance);
     else if (getNumActivePlayers(gameInstance) === 0)
       closeInstance(gameInstance);
