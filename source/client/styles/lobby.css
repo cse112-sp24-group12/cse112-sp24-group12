@@ -11,7 +11,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 2rem;
-  
 }
 
 .lobby-code-wrapper {
@@ -23,7 +22,6 @@
 .lobby-code-wrapper label {
   font-family: "Berkshire Swash";
   font-size: 1.5rem;
-  font-size: 1.5rem;
 }
 
 .lobby-code-input-wrapper {
@@ -32,7 +30,6 @@
 }
 
 .lobby-code-input-wrapper input {
-  font-size: 1.5rem;
   font-size: 1.5rem;
   font-family: "Mystery Quest";
   text-align: center;
