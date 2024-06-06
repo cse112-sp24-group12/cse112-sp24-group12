@@ -21,6 +21,19 @@ export const S2C_ACTIONS = {
   CHAT_MESSAGE: 'chat_message',
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
+  WORLD_EVENT: 'world_event',
+};
+
+export const WORLD_EVENTS = {
+  LOWER_WINS: 'lower_wins',
+  SUITE_REVERSED: 'suite_reversed',
+  SUITE_BOOST_WANDS: 'suite_boost_wands',
+  SUITE_BOOST_CUPS: 'suite_boost_cups',
+  SUITE_BOOST_SWORDS: 'suite_boost_swords',
+  SUITE_BOOST_PENTACLES: 'suite_boost_pentacles',
+  RANDOM_VALUE: 'random_value',
+  RANDOM_SUITE: 'random_suite',
+  NONE: 'none',
 };
 
 export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
@@ -130,6 +143,10 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *  {
  *    action: S2C_ACTIONS.FORCE_REFRESH,
  *    gameState: GameState
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.WORLD_EVENT,
+ *    worldEvent: string
  *  }
  * } ServerToClientMessage
  */

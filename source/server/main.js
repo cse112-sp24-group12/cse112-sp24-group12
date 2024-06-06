@@ -63,8 +63,8 @@ function handleStartGame(webSocketConnection) {
   // TODO: validate request is coming from host of the game
 
   const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);
-
-  gameInstance.gameState.byRound.push(createNewRound());
+  const newRound = createNewRound(gameInstance);
+  gameInstance.gameState.byRound.push(newRound);
   gameInstance.gameState.isStarted = true;
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
@@ -78,6 +78,10 @@ function handleStartGame(webSocketConnection) {
     sendMessage(webSocketConnection, {
       action: S2C_ACTIONS.START_GAME,
       drawnCards,
+    });
+    sendMessage(webSocketConnection, {
+      action: S2C_ACTIONS.WORLD_EVENT,
+      worldEvent: newRound.worldEvent,
     });
   });
 
@@ -361,12 +365,16 @@ function handleStartRound(webSocketConnection) {
   }
 
   // TODO: validate request is coming from host
-
-  gameInstance.gameState.byRound.push(createNewRound()); //creates world event in NewRound
+  const newRound = createNewRound(gameInstance);
+  gameInstance.gameState.byRound.push(newRound); //creates world event in NewRound
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
     sendMessage(webSocketConnection, {
       action: S2C_ACTIONS.START_ROUND,
+    });
+    sendMessage(webSocketConnection, {
+      action: S2C_ACTIONS.WORLD_EVENT,
+      worldEvent: newRound.worldEvent,
     });
   });
 } /* handleStartRound */

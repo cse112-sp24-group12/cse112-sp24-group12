@@ -262,6 +262,15 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
+ * Handles world event action
+ * @param { string } worldEvent world event that was triggered
+ */
+export function handleWorldEvent(worldEvent) {
+  // TODO: Trigger world event ui
+  console.log(worldEvent);
+}
+
+/**
  * Inserts new content into the instruction box, overriding any existing content
  * @param { ...(string|Node) } newChildEls new elements or strings to insert
  */
@@ -325,6 +334,7 @@ export function initializeVersus() {
     handleRevealCards,
     handleStartRound,
     handleGameEnd,
+    handleWorldEvent,
     refreshEntireGame,
   });
 

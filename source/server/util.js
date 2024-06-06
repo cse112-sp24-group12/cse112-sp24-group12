@@ -1,6 +1,6 @@
 import { SUITES } from './types.js';
 import { WORLD_EVENTS } from './types.js';
-import { MULTIPLER } from './types.js'; 
+import { MULTIPLER } from './types.js';
 import * as Types from './types.js';
 
 /**
@@ -91,8 +91,6 @@ function getMultiplierWorldEvent(card1, card2, worldEvent) {
   let suite1 = worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card1.suite;
   let suite2 = worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card2.suite;
 
-
-  
   switch (suite1) {
     case SUITES.WANDS:
       if (suite2 === SUITES.CUPS) multiplier = worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS ? MULTIPLER.GREATER + MULTIPLER.BOOST : MULTIPLER.GREATER;
@@ -119,7 +117,7 @@ function getRandomValue() {
 
 /**
  * Determines which of two cards wins a round
- * @param { Types.GameInstance } gameInstance 
+ * @param { Types.GameInstance } gameInstance
  * @returns { Types.UUID } winning user UUID1 and UUID2
  */
 
@@ -134,25 +132,33 @@ export function getRoundWinnerUUID(gameInstance) {
     case WORLD_EVENTS.LOWER_WINS:
       return card1.number < card2.number ? uuid1 : uuid2;
     case WORLD_EVENTS.RANDOM_VALUE:
-      return getRandomValue() * getMultiplierWorldEvent(card1, card2) > getRandomValue() ? uuid1 : uuid2;
-    case WORLD_EVENTS.SUITE_REVERSED:
-    case WORLD_EVENTS.SUITE_BOOST_WANDS:
-    case WORLD_EVENTS.SUITE_BOOST_CUPS:
-    case WORLD_EVENTS.SUITE_BOOST_SWORDS:
-    case WORLD_EVENTS.SUITE_BOOST_PENTACLES:
-    case WORLD_EVENTS.RANDOM_SUITE:
-    case WORLD_EVENTS.NONE:
+      return getRandomValue() * getMultiplierWorldEvent(card1, card2, worldEvent) > getRandomValue() ? uuid1 : uuid2;
     /*fallthrough because other world events influence the multiplier method not winning card*/
     default:
       return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) > card2.number? uuid1: uuid2;
   }
 }
 
-function getRandomWorldEvent(){
-  let worldEvents = [WORLD_EVENTS.LOWER_WINS, WORLD_EVENTS.RANDOM_VALUE, WORLD_EVENTS.SUITE_REVERSED, WORLD_EVENTS.SUITE_BOOST_WANDS, WORLD_EVENTS.SUITE_BOOST_CUPS, WORLD_EVENTS.SUITE_BOOST_SWORDS, WORLD_EVENTS.SUITE_BOOST_PENTACLES, WORLD_EVENTS.RANDOM_SUITE];
+function getRandomWorldEvent(gameInstance){
+  const currentRound = gameInstance.gameState.byRound.length + 1;
+  let worldEvents = [
+    WORLD_EVENTS.LOWER_WINS,
+    WORLD_EVENTS.RANDOM_VALUE,
+    WORLD_EVENTS.SUITE_REVERSED,
+    WORLD_EVENTS.SUITE_BOOST_WANDS,
+    WORLD_EVENTS.SUITE_BOOST_CUPS,
+    WORLD_EVENTS.SUITE_BOOST_SWORDS,
+    WORLD_EVENTS.SUITE_BOOST_PENTACLES,
+    WORLD_EVENTS.RANDOM_SUITE
+  ];
 
-  return worldEvents[Math.floor(Math.random() * worldEvents.length)];
-
+  if(currentRound == 2 || currentRound == 4){
+    const worldEvent = worldEvents[Math.floor(Math.random() * worldEvents.length)];
+    console.log(worldEvent);
+    return worldEvent;
+  } else {
+    return WORLD_EVENTS.NONE;
+  }
 }
 
 
@@ -160,11 +166,11 @@ function getRandomWorldEvent(){
  * Creates and returns a new round state
  * @returns { Types.RoundState } blank round state
  */
-export function createNewRound() {
+export function createNewRound(gameInstance) {
   return {
     selectedCard: {},
     roundWinner: null,
-    world_event: getRandomWorldEvent()
+    worldEvent: getRandomWorldEvent(gameInstance)
   };
 } /* createNewRound */
 

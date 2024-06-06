@@ -21,6 +21,7 @@ export const S2C_ACTIONS = {
   CHAT_MESSAGE: 'chat_message',
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
+  WORLD_EVENT: 'world_event',
 };
 
 export const SUITES = {
@@ -158,6 +159,10 @@ export const WORLD_EVENTS = {
  *  {
  *    action: S2C_ACTIONS.FORCE_REFRESH,
  *    gameState: GameState
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.WORLD_EVENT,
+ *    worldEvent: string
  *  }
  * } ServerToClientMessage
  */
@@ -177,6 +182,7 @@ export const WORLD_EVENTS = {
  * @typedef { {
  *  selectedCard: Record<UUID, Card>,
  *  roundWinner: UUID
+ *  worldEvent: string
  * } } RoundState
  */
 
