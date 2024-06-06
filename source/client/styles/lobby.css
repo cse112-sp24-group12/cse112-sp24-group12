@@ -35,6 +35,20 @@
   text-align: center;
 }
 
+#game_lobby_info_modal h2 {
+  margin-bottom: 1rem;
+}
+
+#game_lobby_info_modal p {
+  margin-top: 0.5rem;
+}
+
+#self_code_label_wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 #self_game_code {
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
@@ -75,6 +89,11 @@
 
 #copy_game_code_button::before {
   background-image: url(./../assets/images/icons/copy_icon.svg);
+  transition: background-image 150ms ease-in-out;
+}
+
+#copy_game_code_button.copy-successful::before {
+  background-image: url(./../assets/images/icons/check_icon.svg);
 }
 
 #join_game_button {

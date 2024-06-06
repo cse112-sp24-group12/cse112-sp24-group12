@@ -35,7 +35,7 @@ header {
   align-items: flex-end;
 }
 
-#open_rules_button {
+#rules_wrapper button {
   background: none;
   border: none;
   color: var(--white);
@@ -44,15 +44,70 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-#open_rules_button img {
-  width: 7rem;
+#rules_wrapper button img {
+  height: 7rem;
   transition: var(--default-transform-transition);
 }
 
-#open_rules_button:hover img {
+#rules_wrapper button:hover img {
   transform: var(--default-scale);
+}
+
+#close_rules_button span {
+  position: absolute;
+  color: var(--black);
+  z-index: 50;
+}
+
+.game-rules-diagram {
+  width: 15rem;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+}
+
+#rules_modal_header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+#rules_text_wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin-left: 1rem;
+}
+
+#rules_text_wrapper h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+#rules_text_wrapper > ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+#rules_text_wrapper > ul > li > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#world_event_list {
+  list-style-type: none;
+  margin-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 versus-card {
@@ -100,4 +155,112 @@ versus-card .card-flip-wrapper {
 
 versus-card .card-back {
   transform: rotateY(180deg);
+}
+
+.winner-card-opp {
+  animation: winnerAnimationOpp 1s linear;
+  animation-fill-mode: forwards;
+  z-index: 10;
+}
+
+@keyframes winnerAnimationOpp{
+  0%{
+    transform: scale(1) translate(0,0);
+    opacity: 1;
+  }
+  20%{
+    transform: scale(1.2) translate(6.5vw, 5vh);
+    opacity: 1;
+  }
+  80%{
+    transform: scale(1.2) translate(6.5vw, 5vh);
+    opacity: 1;
+  }
+  100%{
+    transform: scale(0.7) translate(50vw, 5vh);
+    opacity: 0;
+  }
+}
+
+.winner-card-user {
+  animation: winnerAnimationUser 1s linear;
+  animation-fill-mode: forwards;
+  z-index: 10;
+}
+
+@keyframes winnerAnimationUser{
+  0%{
+    transform: scale(1) translate(0,0);
+    opacity: 1;
+  }
+  20%{
+    transform: scale(1.2) translate(-6.5vw, 5vh);
+    opacity: 1;
+  }
+  90%{
+    transform: scale(1.2) translate(-6.5vw, 5vh);
+    opacity: 1;
+  }
+  100%{
+    transform: scale(0.7) translate(50vw, 5vh);
+    opacity: 0;
+  }
+}
+
+.loser-card {
+  animation: loserAnimation 1s linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes loserAnimation{
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+.next-round {
+  font-family: "Mystery Quest", cursive, serif;
+  color: var(--yellow);
+  position: absolute;
+  margin-top: 45vh;
+  z-index: 20;
+  opacity: 0;
+}
+
+.next-round p {
+  text-transform: uppercase;
+  text-align: center;
+}
+
+#round_end_text.loser-text {
+  color: var(--red);
+}
+
+.next-round-animation {
+  animation: nextRoundAnimation 1s linear;
+}
+
+@keyframes nextRoundAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(1.0) translate(0, 0);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(3.0) translate(0, -10vh);
+  }
+  90% {
+    opacity: 1;
+    transform: scale(3.0) translate(0, -10vh);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.0) translate(25vw, -20vh);
+  }
 }

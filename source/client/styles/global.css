@@ -49,6 +49,10 @@
   display: none !important;
 }
 
+.no-vis {
+  visibility: hidden;
+}
+
 body {
   font-display: swap;
   font-family: "Roboto", sans-serif;
@@ -87,7 +91,11 @@ h3 {
   font-size: 1rem;
 }
 
-dialog {
+:modal {
+  display: flex;
+  flex-direction: column;
+  max-width: 70vw;
+  max-height: 80vh;
   margin: auto;
   border-radius: var(--border-radius);
   border: 3px solid var(--yellow);
@@ -96,7 +104,7 @@ dialog {
   background-color: var(--modal-background-color);
 }
 
-dialog::before {
+:modal::before {
   content: "";
   display: block;
   position: absolute;
@@ -111,7 +119,7 @@ dialog::before {
   filter: drop-shadow(0px 0px 2px var(--black-low-opacity));
 }
 
-dialog form[method="dialog"] {
+:modal form.default-dialog-form {
   display: flex;
   justify-content: space-evenly;
   margin-top: 2rem;
@@ -287,8 +295,21 @@ input[type="number"] {
   transition: var(--default-transform-transition);
 }
 
-.icon-button:hover {
+.icon-button:hover,
+.info-button:hover {
   transform: var(--default-scale);
+}
+
+.info-button {
+  display: inline-block;
+  width: 1.5rem;
+  aspect-ratio: 1 / 1;
+  background-size: contain;
+  background-image: url(../assets/images/icons/info_icon.svg);
+  background-repeat: no-repeat;
+  border: none;
+  background-color: transparent;
+  transition: var(--default-transform-transition);
 }
 
 #short_settings_icon_list {

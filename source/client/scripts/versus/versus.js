@@ -4,7 +4,6 @@ import {
   selectCard,
   joinInstance,
   startGame,
-  startRound,
   attachGameCallbackFns,
   sendInitializationRequest,
 } from './socket.js';
@@ -33,10 +32,26 @@ import {
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
+import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
+
+const NUM_ROUNDS = 5;
+
+/**
+ * TimeoutID for use by copyGameCodeToClipboard()
+ * @type { number|undefined }
+ */
+let copyGameCodeTimeoutID;
+
+/**
+ * Promise that will resolve when the current card animation process
+ * is complete, for use with other out-of-context animation functions
+ * @type { Promise<void> }
+ */
+let currentAnimationPromise;
 
 /**
  * Updates display of current user lobby, including game code and active players
@@ -68,7 +83,12 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
 
   initializePlayers(profileList.map((profile) => profile.uuid));
 
-  startGameButtonEl.disabled = profileList.length !== 2;
+  if (profileList.length === 2) {
+    startGameButtonEl.disabled = false;
+    startGameButtonEl.focus();
+  } else {
+    startGameButtonEl.disabled = true;
+  }
 } /* handleUpdateInstance */
 
 /**
@@ -171,7 +191,7 @@ function createCardElements() {
 } /* createCardElements */
 
 /**
- *
+ * Switch to view of game board
  */
 function toggleToGameboardView() {
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
@@ -186,7 +206,7 @@ function toggleToGameboardView() {
 } /* toggleToGameboardView */
 
 /**
- *
+ * Switch to view of lobby, and focus on game code input element
  */
 function toggleToLobbyView() {
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
@@ -231,8 +251,11 @@ export function refreshEntireGame() {
 /**
  * Displays fact that opponent user has played a card, without yet revealing what
  * that card is
+ * @param {{ ignoreAwait: boolean }} [options]
  */
-export async function handleOpponentMove() {
+export async function handleOpponentMove({ ignoreAwait } = {}) {
+  if (!ignoreAwait) await currentAnimationPromise;
+
   const oppDeckSlotEl = document.querySelector('#opponent_cards');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
 
@@ -257,17 +280,105 @@ function displayWinner(winnerUUID, variant) {
 } /* displayRoundWinner */
 
 /**
- * Displays end-of-round information, i.e. opponent's card is revealed along with winner of the game
+ * Animation that shows which card won for each show
+ * @param { Types.UUID } roundWinnerUUID unique identifier of round winner
+ * @returns { Promise<void> } promise that resolves when animation is complete
+ */
+async function roundWinnerAnimationCard(roundWinnerUUID) {
+  const oppVersusCardEl = document.querySelector(
+    '#opp_played_card versus-card',
+  );
+  const selfPlayedVersusCardEl = document.querySelector(
+    '#self_played_card versus-card',
+  );
+
+  if (roundWinnerUUID === getPlayerUUID()) {
+    // user wins round
+    selfPlayedVersusCardEl.classList.add('winner-card-user');
+    oppVersusCardEl.classList.add('loser-card');
+  } else {
+    // opp wins round
+    selfPlayedVersusCardEl.classList.add('loser-card');
+    oppVersusCardEl.classList.add('winner-card-opp');
+  }
+
+  return new Promise((resolve) => {
+    selfPlayedVersusCardEl.addEventListener('animationend', () => {
+      setTimeout(() => {
+        [selfPlayedVersusCardEl, oppVersusCardEl].forEach((el) => {
+          el.classList.remove(
+            'winner-card-opp',
+            'winner-card-user',
+            'loser-card',
+          );
+        });
+        resolve();
+      }, 500);
+    });
+  });
+} /* roundWinnerAnimationCard */
+
+/**
+ * Animation that shows either "YOU WON" or "YOU LOST" depending on the outcome for each round
+ * @param { Types.UUID } roundWinnerUUID unique identifier of round winner
+ * @returns { Promise<void> } promise that resolves when animation is complete
+ */
+async function roundWinnerAnimationText(roundWinnerUUID) {
+  const oppVersusCardEl = document.querySelector(
+    '#opp_played_card versus-card',
+  );
+  const selfPlayedVersusCardEl = document.querySelector(
+    '#self_played_card versus-card',
+  );
+  const roundWinnerTextEl = document.querySelector('#round_end_text');
+  const nextRoundWrapperEl = document.querySelector('.next-round');
+
+  // changes the text depending on who won the round
+  const isUserWinner = roundWinnerUUID === getPlayerUUID();
+  roundWinnerTextEl.replaceChildren('YOU ', isUserWinner ? 'WON' : 'LOST', '!');
+  roundWinnerTextEl.classList.toggle('loser-text', !isUserWinner);
+
+  oppVersusCardEl.classList.add('no-vis');
+  selfPlayedVersusCardEl.classList.add('no-vis');
+  nextRoundWrapperEl.classList.add('next-round-animation');
+
+  return new Promise((resolve) => {
+    nextRoundWrapperEl.addEventListener('animationend', () => {
+      setTimeout(() => {
+        nextRoundWrapperEl.classList.remove('next-round-animation');
+        resolve();
+      }, 500);
+    });
+  });
+} /* roundWinnerAnimationText */
+
+/**
+ * Calls animateRevealCards and awaits response, for use by other dependent animations
  * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
  * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
  */
 export async function handleRevealCards(opponentSelectedCard, roundWinner) {
+  currentAnimationPromise = animateRevealCards(
+    opponentSelectedCard,
+    roundWinner,
+  );
+
+  await currentAnimationPromise;
+} /* handleRevealCards */
+
+/**
+ * Handles async animation of card reveal promise, for use by handleRevealCards()
+ * @param { Types.Card } opponentSelectedCard information of card chosen by opponent
+ * @param { Types.ServerToClientProfile } roundWinner profile data of (user/opponent) who won round
+ */
+async function animateRevealCards(opponentSelectedCard, roundWinner) {
   const selfPlayedVersusCardEl = document.querySelector(
     '#self_played_card versus-card',
   );
-  const startRoundButtonEl = document.querySelector('#start_round_button');
 
-  if (!getOppHasPlayedRound()) await handleOpponentMove();
+  // wait until the opponent playing card animation completes
+  if (!getOppHasPlayedRound()) await handleOpponentMove({ ignoreAwait: true });
+
   await selfPlayedVersusCardEl.getCardTranslationPromise();
 
   const oppVersusCardEl = document.querySelector(
@@ -278,23 +389,25 @@ export async function handleRevealCards(opponentSelectedCard, roundWinner) {
   oppVersusCardEl.setAttribute('number', opponentSelectedCard.number);
   await oppVersusCardEl.flipCard('front');
 
-  startRoundButtonEl.classList.remove('hidden');
-
   setOppSelectedCard(opponentSelectedCard);
   setRoundWinnerUUID(roundWinner.uuid);
-  displayWinner(roundWinner.uuid, 'round');
+
+  // plays the round winner animation
+  await roundWinnerAnimationCard(roundWinner.uuid);
+  await roundWinnerAnimationText(roundWinner.uuid);
+
   updateScoreboardScores();
-} /* handleRevealCards */
+
+  // starts the next round
+  if (getRoundNumber() < NUM_ROUNDS) handleStartRound();
+} /* animateRevealCards */
 
 /**
  * Handles reset of UI at the start of each new round
  */
 export function handleStartRound() {
-  const startRoundButtonEl = document.querySelector('#start_round_button');
   const oppCardSlotEl = document.querySelector('#opp_played_card');
   const selfCardSlotEl = document.querySelector('#self_played_card');
-
-  startRoundButtonEl.classList.add('hidden');
 
   oppCardSlotEl.replaceChildren();
   selfCardSlotEl.replaceChildren();
@@ -310,10 +423,6 @@ export function handleStartRound() {
  * @param { Types.ServerToClientProfile } gameWinner profile data of (user/opponent) who won game
  */
 export function handleGameEnd(gameWinner) {
-  const startRoundButtonEl = document.querySelector('#start_round_button');
-
-  startRoundButtonEl.classList.add('hidden');
-
   setGameWinnerUUID(gameWinner.uuid);
   displayWinner(gameWinner.uuid, 'game');
 } /* handleGameEnd */
@@ -334,7 +443,7 @@ function returnToLobby() {
 export function handleInstanceClosed() {
   const instClosedModalEl = document.querySelector('#instance_closed_modal');
 
-  instClosedModalEl.addEventListener('close', returnToLobby);
+  instClosedModalEl.addEventListener('close', returnToLobby); // TODO: fix multiple attachment when opening/closing many times
   instClosedModalEl.showModal();
 } /* handleInstanceClosed */
 
@@ -399,10 +508,48 @@ function handleLeaveGame() {
       returnToLobby();
     },
     { once: true },
-  );
+  ); // TODO: fix multiple attachment when opening and closing modal many times
 
   confirmLeaveModalEl.showModal();
 } /* handleLeaveGame */
+
+/**
+ *
+ */
+async function copyGameCodeToClipboard() {
+  const selfGameCodeReadOnlyInputEl = document.querySelector('#self_game_code');
+  const copyGameCodeButtonEl = document.querySelector('#copy_game_code_button');
+
+  navigator.clipboard
+    .writeText(selfGameCodeReadOnlyInputEl.value)
+    .then(() => {
+      clearTimeout(copyGameCodeTimeoutID);
+      copyGameCodeButtonEl.classList.add('copy-successful');
+    })
+    .then(() => {
+      copyGameCodeTimeoutID = setTimeout(() => {
+        copyGameCodeButtonEl.classList.remove('copy-successful');
+      }, 3_000);
+    });
+} /* copyGameCodeToClipboard */
+
+/**
+ *
+ */
+function showRulesModal() {
+  const rulesModalEl = document.querySelector('#rules_modal');
+
+  rulesModalEl.showModal();
+} /* handleCloseRules */
+
+/**
+ *
+ */
+function showGameLobbyInfoModal() {
+  const gameLobbyInfoModalEl = document.querySelector('#game_lobby_info_modal');
+
+  gameLobbyInfoModalEl.showModal();
+} /* showGameLobbyInfoModal */
 
 /**
  * Initializes Versus game; initializes WebSocket, connects appropriate callbacks,
@@ -410,10 +557,13 @@ function handleLeaveGame() {
  */
 export function initializeVersus() {
   const joinGameButtonEl = document.querySelector('#join_game_button');
-  const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
   const startGameButtonEl = document.querySelector('#start_game_button');
-  const startRoundButtonEl = document.querySelector('#start_round_button');
-  const leaveGameButton = document.querySelector('#leave_game_button');
+  const leaveGameButtonEl = document.querySelector('#leave_game_button');
+  const copyGameCodeButtonEl = document.querySelector('#copy_game_code_button');
+  const gameCodeInfoButtonEl = document.querySelector('#game_code_info_button');
+  const openRulesButtonEl = document.querySelector('#open_rules_button');
+  const legendInfoButtonEl = document.querySelector('#legend_info_button');
+  const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -427,10 +577,13 @@ export function initializeVersus() {
   });
 
   joinGameButtonEl.addEventListener('click', sendJoinInstance);
+  startGameButtonEl.addEventListener('click', startGame);
+  leaveGameButtonEl.addEventListener('click', handleLeaveGame);
+  copyGameCodeButtonEl.addEventListener('click', copyGameCodeToClipboard);
+  gameCodeInfoButtonEl.addEventListener('click', showGameLobbyInfoModal);
+  openRulesButtonEl.addEventListener('click', showRulesModal);
+  legendInfoButtonEl.addEventListener('click', showRulesModal);
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
-  startGameButtonEl.addEventListener('click', startGame);
-  startRoundButtonEl.addEventListener('click', startRound);
-  leaveGameButton.addEventListener('click', handleLeaveGame);
 } /* initializeVersus */
