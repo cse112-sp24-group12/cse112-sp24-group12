@@ -40,7 +40,7 @@ const DISCONNECTED_TIMEOUT_MS = 180_000; // 3 minutes
  * Time between game end and instance deletion (in milliseconds)
  * @type { number }
  */
-const GAME_END_TIMEOUT_MS = 5_000;
+const GAME_END_TIMEOUT_MS = 20_000;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -161,6 +161,8 @@ function leaveInstance(webSocketConnection) {
  * @param { Types.GameInstance } gameInstance game instance to close
  */
 function closeInstance(gameInstance) {
+  if (!gameInstancesByGameCode[gameInstance.gameCode]) return; // already deleted
+
   delete gameInstancesByGameCode[gameInstance.gameCode];
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
     sendMessage(webSocketConnection, {
@@ -461,7 +463,29 @@ function endRound(gameInstance) {
 
   if (gameInstance.gameState.byRound.length >= NUM_ROUNDS)
     endGame(gameInstance);
+  else startNewRound(gameInstance);
 } /* endRound */
+
+/**
+ * Instantiates new round on a game instance
+ * @param { Types.GameInstance } gameInstance game instance to start a new round on
+ */
+function startNewRound(gameInstance) {
+  if (!getCurrentRoundState(gameInstance).roundWinner) {
+    log('Cannot start new round before previous round complete', {
+      gameInstance,
+      severity: 'error',
+    });
+    return;
+  }
+
+  gameInstance.gameState.byRound.push(createNewRound());
+
+  log('Round started', {
+    gameInstance,
+    severity: 'log',
+  });
+} /* startNewRound */
 
 /**
  * Handles logic when a client selects a card during a round, including validation,
@@ -537,56 +561,6 @@ function handleSelectCard(webSocketConnection, selectedCard) {
     });
   }
 } /* handleSelectCard */
-
-/**
- * Handles game-start logic upon signal from host client, including transmission
- * of game-start to each child connection
- * @param { Types.WSConnection } webSocketConnection connection requesting game start
- */
-function handleStartRound(webSocketConnection) {
-  const gameInstance =
-    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-
-  if (!gameInstance?.gameState?.isStarted) {
-    log('Round start rejected: game not yet started', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
-    return;
-  }
-
-  if (!getCurrentRoundState(gameInstance).roundWinner) {
-    log('Round start rejected: current round not complete', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
-    return;
-  }
-
-  if (gameInstance.gameState.byRound.length >= NUM_ROUNDS) {
-    log('Round start rejected: already reached max rounds', {
-      webSocketConnection,
-      gameInstance,
-      severity: 'error',
-    });
-    return;
-  }
-
-  gameInstance.gameState.byRound.push(createNewRound());
-
-  log('Round started', {
-    gameInstance,
-    severity: 'log',
-  });
-
-  gameInstance.webSocketConnections.forEach((webSocketConnection) => {
-    sendMessage(webSocketConnection, {
-      action: S2C_ACTIONS.START_ROUND,
-    });
-  });
-} /* handleStartRound */
 
 /**
  * Validates and relays chat message from client
@@ -747,9 +721,6 @@ export function handleRequest(webSocketRequest) {
         case C2S_ACTIONS.SELECT_CARD:
           handleSelectCard(webSocketConnection, messageObj.selectedCard);
           break;
-        case C2S_ACTIONS.START_ROUND:
-          handleStartRound(webSocketConnection);
-          break;
         case C2S_ACTIONS.CHAT_MESSAGE:
           handleChatMessage(webSocketConnection, messageObj.messageContents);
           break;
@@ -787,7 +758,8 @@ export function handleRequest(webSocketRequest) {
       });
     });
 
-    if (gameInstance?.gameState.isStarted)
+    if (!gameInstance) return;
+    else if (gameInstance.gameState.isStarted)
       startDisconnectedInstanceCloseTimeout(gameInstance);
     else if (getNumActivePlayers(gameInstance) === 0)
       closeInstance(gameInstance);
