@@ -66,7 +66,7 @@ function initalizeCards() {
       newCardEl.classList.add('card');
       imgEl.src = card.image;
       imgEl.alt = card.name;
-      imgEl.setAttribute("data-info", card.keywords.join(", "));
+      imgEl.setAttribute('data-info', card.keywords.join(', '));
 
       newCardEl.appendChild(imgEl);
 
@@ -80,7 +80,9 @@ function initalizeCards() {
  */
 function saveSettings() {
   const usernameInputEl = document.querySelector('#profile_settings_username');
-  const selectedAvatarImg = document.querySelector("input[type='radio']:checked");
+  const selectedAvatarImg = document.querySelector(
+    "input[type='radio']:checked",
+  );
 
   setUsername(usernameInputEl.value);
   setProfileImage(selectedAvatarImg.value);
@@ -117,38 +119,49 @@ function initializeSettings() {
   const musicSettingsEl = document.querySelector('#music_volume_slider');
   const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
   const saveSettingsButtonEl = document.querySelector('#save_settings_button');
-  const resetSettingsButtonEl = document.querySelector('#reset_settings_button');
+  const resetSettingsButtonEl = document.querySelector(
+    '#reset_settings_button',
+  );
   // Implement avatar selection
-  
+
   const changeAvatarButton = document.querySelector('#change_image_button');
   changeAvatarButton.addEventListener('click', () => {
-    document.querySelector('#select-profile-picture-wrapper').classList.add('active');
+    document
+      .querySelector('#select-profile-picture-wrapper')
+      .classList.add('active');
   });
 
-  
   const closeAvatarButton = document.querySelector(
     '#select-profile-picture-close',
   );
   // on close avatar selection button, it will change the displayed picture and close.
   closeAvatarButton.addEventListener('click', () => {
     // make the selecter disappear on close
-    document.querySelector('#select-profile-picture-wrapper').classList.remove('active');
+    document
+      .querySelector('#select-profile-picture-wrapper')
+      .classList.remove('active');
     // get the url of the selected radio image and display it.
-    let selectedAvatarImg = document.querySelector("input[type='radio']:checked")
-                              .getAttribute("data-url");
+    let selectedAvatarImg = document
+      .querySelector("input[type='radio']:checked")
+      .getAttribute('data-url');
     document.querySelector('#profile_settings_avatar').src = selectedAvatarImg;
   });
-  
+
   // if the input radio checked attribute is different from the stored value in the localstorage
-  if( getProfileImageUrl() != document.querySelector("input[name='avatar-radio']:checked")
-                                .getAttribute("data-url")){
+  if (
+    getProfileImageUrl() !=
+    document
+      .querySelector("input[name='avatar-radio']:checked")
+      .getAttribute('data-url')
+  ) {
     let radios = document.querySelectorAll("input[name='avatar-radio']");
     //uncheck it
-    document.querySelector("input[name='avatar-radio']:checked").checked = false;
+    document.querySelector("input[name='avatar-radio']:checked").checked =
+      false;
 
     // Loop through the radio buttons to find the matching one
-    radios.forEach(radio => {
-      if (radio.getAttribute("data-url") === getProfileImageUrl()) {
+    radios.forEach((radio) => {
+      if (radio.getAttribute('data-url') === getProfileImageUrl()) {
         radio.checked = true;
       }
     });
@@ -157,25 +170,30 @@ function initializeSettings() {
   // need to make the cards first, before the onclick
   initalizeCards();
 
-
   // Card information onclick
-  const cardImages = document.querySelectorAll("#information-card-list div img");
+  const cardImages = document.querySelectorAll(
+    '#information-card-list div img',
+  );
   // loop through all the images and make an onclick that takes the alt, and the data, and display
-  cardImages.forEach( img => {
+  cardImages.forEach((img) => {
     img.addEventListener('click', () => {
-      document.querySelector("output[name='card-name-output']").textContent = img.alt;
-      document.querySelector("output[name='card-info-output']").textContent = img.getAttribute("data-info");
+      document.querySelector("output[name='card-name-output']").textContent =
+        img.alt;
+      document.querySelector("output[name='card-info-output']").textContent =
+        img.getAttribute('data-info');
 
-      document.querySelector("#card-information-wrapper").classList.add('active');
+      document
+        .querySelector('#card-information-wrapper')
+        .classList.add('active');
     });
   });
 
-  const closeInfoButton = document.querySelector("#card-information-close");
+  const closeInfoButton = document.querySelector('#card-information-close');
   closeInfoButton.addEventListener('click', () => {
-    document.querySelector("#card-information-wrapper").classList.remove('active');
-    
-  })
-  
+    document
+      .querySelector('#card-information-wrapper')
+      .classList.remove('active');
+  });
 
   // TODO: Refactor code
 
