@@ -97,14 +97,13 @@ button {
 
 /* 'Here is What Your Future Holds' Animation */
 h1 {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   background-image: linear-gradient(
     -225deg,
     #eed6ff 0%,
     #b180d4 29%,
     #9b6fb9 67%,
-    #695bb8 100%
+    #8a439d 100%
   );
   background-size: 200% auto;
   color: #fff;
@@ -124,13 +123,12 @@ img {
   animation: anim-lineup 2s ease-out;
 }
 h2 {
+  font-family: "Mystery Quest", cursive, serif;
   color: rgba(255, 255, 255, 0.901);
-  font-family: cursive;
   animation: anim-lineup 2s ease-out;
 }
 p {
   color: rgba(255, 255, 255, 0.815);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   animation: anim-lineup 2s ease-out;
 }
 @keyframes anim-lineup {
