@@ -4,6 +4,7 @@
 import { createServer } from 'http';
 import { server } from 'websocket';
 import { handleRequest } from '../../../main.js';
+import { getWinningCard } from '../../../util.js';
 import puppeteer from 'puppeteer';
 import { join } from 'path';
 
@@ -164,4 +165,51 @@ describe('E2E chat interaction testing', () => {
     await page2.close();
     await browser2.close();
   }, 10000);
+
+  it('Should show the appropriate round winner when both players play cards', async () => {
+    const userCards1 = await page1.$('#user_cards');
+    const userCards2 = await page2.$('#user_cards');
+    const roundWinnerText = await page1.$('#round_end_text');
+    const card1 = await userCards1.evaluate((e) => {
+      return {
+        suite: e.firstChild.getAttribute('suite'),
+        number: e.firstChild.getAttribute('number'),
+      };
+    });
+    const card2 = await userCards2.evaluate((e) => {
+      return {
+        suite: e.firstChild.getAttribute('suite'),
+        number: e.firstChild.getAttribute('number'),
+      };
+    });
+    await userCards1.evaluate((e) => e.firstChild.click());
+    await userCards2.evaluate((e) => e.firstChild.click());
+    await new Promise((r) => setTimeout(r, 2500));
+    if (getWinningCard(card1, card2) == card1) {
+      const winText = await roundWinnerText.evaluate((e) => e.innerText);
+      expect(winText).toBe('YOU WON!');
+    } else {
+      const loseText = await roundWinnerText.evaluate((e) => e.innerText);
+      expect(loseText).toBe('YOU LOST!');
+    }
+    await page1.close();
+    await browser1.close();
+    await page2.close();
+    await browser2.close();
+  });
+
+  it('Should start next round when both players play cards', async () => {
+    const userCards1 = await page1.$('#user_cards');
+    const userCards2 = await page2.$('#user_cards');
+    const roundNumberText = await page1.$('#round_number');
+    await userCards1.evaluate((e) => e.firstChild.click());
+    await userCards2.evaluate((e) => e.firstChild.click());
+    await new Promise((r) => setTimeout(r, 4000));
+    const roundNumber = await roundNumberText.evaluate((e) => e.innerText);
+    expect(roundNumber).toBe('2');
+    await page1.close();
+    await browser1.close();
+    await page2.close();
+    await browser2.close();
+  });
 });
