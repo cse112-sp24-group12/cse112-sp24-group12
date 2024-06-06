@@ -8,16 +8,15 @@ import {
 } from './profile.js';
 
 export const SOUND_EFFECTS = {
-  TEST: './assets/sounds/test.mp3',
+  SWISH: './assets/sounds/swish.mp3',
 };
 
 const audioContext = new AudioContext();
 
 /**
  *
- * @param { string } soundPath
+ * @param { string } soundFilePath
  * @param { 'effect'|'background' } options
- * @param soundFilePath
  */
 async function playSound(soundFilePath, { variant } = {}) {
   const audioBufferSource = audioContext.createBufferSource();
