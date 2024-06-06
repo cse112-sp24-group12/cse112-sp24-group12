@@ -7,22 +7,39 @@ import {
   UPDATE_VOLUME_LISTENER_NAME,
 } from './profile.js';
 
+/**
+ * @typedef {{
+ *  filePath: string,
+ *  volumeFactor: number
+ * }} SoundEffect
+ */
+
+/** @type { Record<string, SoundEffect>} */
 export const SOUND_EFFECTS = {
-  SWISH: './assets/sounds/swish.mp3',
+  SWISH: {
+    filePath: './assets/sounds/swish.mp3',
+    volumeFactor: 0.75,
+  },
+};
+
+/** @type { SoundEffect } */
+const BACKGROUND_SOUND = {
+  filePath: 'assets/sounds/test.mp3',
+  volumeFactor: 1,
 };
 
 const audioContext = new AudioContext();
 
 /**
  *
- * @param { string } soundFilePath
+ * @param { SoundEffect } soundEffect
  * @param { 'effect'|'background' } options
  */
-async function playSound(soundFilePath, { variant } = {}) {
+async function playSound(soundEffect, { variant } = {}) {
   const audioBufferSource = audioContext.createBufferSource();
   const audioGainNode = audioContext.createGain();
 
-  audioBufferSource.buffer = await fetch(soundFilePath)
+  audioBufferSource.buffer = await fetch(soundEffect.filePath)
     .then((res) => res.arrayBuffer())
     .then((audioArrayBuffer) => audioContext.decodeAudioData(audioArrayBuffer));
 
@@ -30,8 +47,11 @@ async function playSound(soundFilePath, { variant } = {}) {
   audioGainNode.connect(audioContext.destination);
 
   audioBufferSource.loop = variant === 'background';
-  audioGainNode.gain.setValueAtTime(getVolume(variant), 0);
-  audioBufferSource.start(0);
+  audioGainNode.gain.setValueAtTime(
+    getVolume(variant, soundEffect.volumeFactor),
+    0,
+  );
+  audioBufferSource.start();
 
   window.addEventListener(
     'click',
@@ -42,38 +62,43 @@ async function playSound(soundFilePath, { variant } = {}) {
   );
 
   window.addEventListener(UPDATE_VOLUME_LISTENER_NAME, () => {
-    audioGainNode.gain.setValueAtTime(getVolume(variant), 0);
+    audioGainNode.gain.setValueAtTime(
+      getVolume(variant, soundEffect.volumeFactor),
+      0,
+    );
   });
 } /* playSound */
 
 /**
  *
  * @param { 'effect'|'background' } variant
+ * @param { number } volumeFactor
+ * @returns { number }
  */
-function getVolume(variant) {
+function getVolume(variant, volumeFactor) {
   if (getIsMute()) return 0;
 
   switch (variant) {
     case 'background':
-      return getMusicVolumeLevel();
+      return getMusicVolumeLevel() * volumeFactor;
     case 'effect':
-      return getSFXVolumeLevel();
+      return getSFXVolumeLevel() * volumeFactor;
     default:
-      return 1;
+      return volumeFactor;
   }
 } /* getVolume */
 
 /**
  *
- * @param { string } soundEffectFilePath
+ * @param { SoundEffect } soundEffect
  */
-export function playSoundEffect(soundEffectFilePath) {
-  playSound(soundEffectFilePath, { variant: 'effect' });
+export function playSoundEffect(soundEffect) {
+  playSound(soundEffect, { variant: 'effect' });
 } /* playSoundEffect */
 
 /**
  *
  */
 export function playBackgroundMusic() {
-  playSound('assets/sounds/test.mp3', { variant: 'background' });
+  playSound(BACKGROUND_SOUND, { variant: 'background' });
 } /* playBackgroundMusic */
