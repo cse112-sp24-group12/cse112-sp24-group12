@@ -41,15 +41,15 @@ function initializeNavigation(buttonWrapperIdToSectionIdMap) {
 } /* initializeNavigation */
 
 /**
- * Saves volume setting on user input
+ * Changes volume setting on user input
  * @param volumeEl
  * @param setVolumeCallbackFn
  */
-function saveVolume(volumeEl, setVolumeCallbackFn) {
+function initializeVolumeInput(volumeEl, setVolumeCallbackFn) {
   volumeEl.addEventListener('change', () => {
     setVolumeCallbackFn(volumeEl.value / 100);
   });
-} /* saveVolume */
+} /* initializeVolumeInput */
 
 /**
  * Populate the list of cards
@@ -205,8 +205,8 @@ function initializeSettings() {
     '#profile_menu_button_wrapper': '#profile_settings',
     '#info_menu_button_wrapper': '#information_settings',
   });
-  saveVolume(musicSettingsEl, setMusicVolumeLevel);
-  saveVolume(sfxSettingsEl, setSFXVolumeLevel);
+  initializeVolumeInput(musicSettingsEl, setMusicVolumeLevel);
+  initializeVolumeInput(sfxSettingsEl, setSFXVolumeLevel);
 
   saveSettingsButtonEl.addEventListener('click', saveSettings);
   resetSettingsButtonEl.addEventListener('click', resetSettings);
