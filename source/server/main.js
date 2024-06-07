@@ -562,40 +562,6 @@ function handleSelectCard(webSocketConnection, selectedCard) {
 } /* handleSelectCard */
 
 /**
- * Handles game-start logic upon signal from host client, including transmission
- * of game-start to each child connection
- * @param { Types.WSConnection } webSocketConnection connection requesting game start
- */
-function handleStartRound(webSocketConnection) {
-  const gameInstance =
-    gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-
-  if (!gameInstance?.gameState?.isStarted) {
-    console.log('Game not yet started');
-    return;
-  }
-
-  if (!getCurrentRoundState(gameInstance).roundWinner) {
-    console.log('Current round not yet complete');
-    return;
-  }
-
-  // TODO: validate request is coming from host
-  const newRound = createNewRound(gameInstance);
-  gameInstance.gameState.byRound.push(newRound); //creates world event in NewRound
-
-  gameInstance.webSocketConnections.forEach((webSocketConnection) => {
-    sendMessage(webSocketConnection, {
-      action: S2C_ACTIONS.START_ROUND,
-    });
-    sendMessage(webSocketConnection, {
-      action: S2C_ACTIONS.WORLD_EVENT,
-      worldEvent: newRound.worldEvent,
-    });
-  });
-} /* handleStartRound */
-
-/*
  * Validates and relays chat message from client
  * @param { Types.WSConnection } webSocketConnection connection sending chat message
  * @param { string } messageContents text content of message being received

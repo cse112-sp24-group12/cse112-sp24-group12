@@ -3,6 +3,8 @@ import { WORLD_EVENTS } from './types.js';
 import { MULTIPLER } from './types.js';
 import * as Types from './types.js';
 
+const NUM_CARDS = 14;
+
 /**
  * Creates and returns random unique game code for each game instance
  * @param { number } rangeLo lowest allowed game code (inclusive)
@@ -80,10 +82,14 @@ export function getCurrentRoundState(gameInstance) {
   ];
 } /* getCurrentRoundState */
 
-function getRandomSuite(){
-  let suites = [SUITES.WANDS, SUITES.CUPS, SUITES.SWORDS, SUITES.PENTACLES];
+/**
+ *
+ * @returns { string } random suite from SUITES object
+ */
+function getRandomSuite() {
+  const suiteList = Object.values(SUITES);
 
-  return suites[Math.floor(Math.random() * suites.length)];
+  return suiteList[Math.floor(Math.random() * suiteList.length)];
 }
 
 /**
@@ -91,37 +97,71 @@ function getRandomSuite(){
  * (Positive multiplier implies that card1 has a suite-based advantage over card2)
  * @param { Types.Card } card1 card to compare, target of multiplier
  * @param { Types.Card } card2 card to compare
- * @param {String} worldEvent current worldEvent for the round
+ * @param {string} worldEvent current worldEvent for the round
  * @returns { Types.Card } matchup multiplier for card1 with reference to card2
  */
 function getMultiplierWorldEvent(card1, card2, worldEvent) {
-
   let multiplier = MULTIPLER.NEUTRAL;
-  let suite1 = worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card1.suite;
-  let suite2 = worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card2.suite;
+  let suite1 =
+    worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card1.suite;
+  let suite2 =
+    worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card2.suite;
 
   switch (suite1) {
     case SUITES.WANDS:
-      if (suite2 === SUITES.CUPS) multiplier = worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS ? MULTIPLER.GREATER + MULTIPLER.BOOST : MULTIPLER.GREATER;
-      else if (suite2 == SUITES.SWORDS) multiplier = worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS ? MULTIPLER.LESS + MULTIPLER.BOOST : MULTIPLER.LESS;
+      if (suite2 === SUITES.CUPS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS
+            ? MULTIPLER.GREATER + MULTIPLER.BOOST
+            : MULTIPLER.GREATER;
+      else if (suite2 == SUITES.SWORDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS
+            ? MULTIPLER.LESS + MULTIPLER.BOOST
+            : MULTIPLER.LESS;
     case SUITES.CUPS:
-      if (suite2 === SUITES.SWORDS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS ? MULTIPLER.GREATER + MULTIPLER.BOOST : MULTIPLER.GREATER;
-      else if (suite2 == SUITES.WANDS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS ? MULTIPLER.LESS + MULTIPLER.BOOST : MULTIPLER.LESS;
+      if (suite2 === SUITES.SWORDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS
+            ? MULTIPLER.GREATER + MULTIPLER.BOOST
+            : MULTIPLER.GREATER;
+      else if (suite2 == SUITES.WANDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS
+            ? MULTIPLER.LESS + MULTIPLER.BOOST
+            : MULTIPLER.LESS;
     case SUITES.SWORDS:
-      if (suite2 === SUITES.WANDS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS ? MULTIPLER.GREATER + MULTIPLER.BOOST : MULTIPLER.GREATER;
-      else if (suite2 == SUITES.CUPS) multiplier =  worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS ? MULTIPLER.LESS + MULTIPLER.BOOST : MULTIPLER.LESS;
+      if (suite2 === SUITES.WANDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS
+            ? MULTIPLER.GREATER + MULTIPLER.BOOST
+            : MULTIPLER.GREATER;
+      else if (suite2 == SUITES.CUPS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS
+            ? MULTIPLER.LESS + MULTIPLER.BOOST
+            : MULTIPLER.LESS;
     case SUITES.PENTACLES:
-      multiplier = worldEvent === WORLD_EVENTS.SUITE_BOOST_PENTACLES ? MULTIPLER.NEUTRAL + MULTIPLER.BOOST : MULTIPLER.NEUTRAL;
+      multiplier =
+        worldEvent === WORLD_EVENTS.SUITE_BOOST_PENTACLES
+          ? MULTIPLER.NEUTRAL + MULTIPLER.BOOST
+          : MULTIPLER.NEUTRAL;
     default:
-
   }
 
-  return worldEvent === WORLD_EVENTS.SUITE_REVERSED ? 1/multiplier : multiplier;
-
+  return worldEvent === WORLD_EVENTS.SUITE_REVERSED
+    ? 1 / multiplier
+    : multiplier;
 } /* getMultiplier */
 
-function getRandomValue() {
-  return Math.floor(Math.random() * 14) + 1;
+/**
+ * Returns a random number in a range
+ * @param { number } lo integer low value (inclusive)
+ * @param { number } hi integer high value(inclusive)
+ * @returns { number } random integer between lo and hi, inclusive
+ */
+function getRandomValue(lo, hi) {
+  return Math.floor(Math.random() * (hi - lo + 1)) + lo;
 }
 
 /**
@@ -129,7 +169,6 @@ function getRandomValue() {
  * @param { Types.GameInstance } gameInstance
  * @returns { Types.UUID } winning user UUID1 and UUID2
  */
-
 export function getRoundWinnerUUID(gameInstance) {
   const currentRoundState = getCurrentRoundState(gameInstance);
   const worldEvent = currentRoundState.worldEvent;
@@ -141,10 +180,17 @@ export function getRoundWinnerUUID(gameInstance) {
     case WORLD_EVENTS.LOWER_WINS:
       return card1.number < card2.number ? uuid1 : uuid2;
     case WORLD_EVENTS.RANDOM_VALUE:
-      return getRandomValue() * getMultiplierWorldEvent(card1, card2, worldEvent) > getRandomValue() ? uuid1 : uuid2;
+      return getRandomValue(1, NUM_CARDS) *
+        getMultiplierWorldEvent(card1, card2, worldEvent) >
+        getRandomValue(1, NUM_CARDS)
+        ? uuid1
+        : uuid2;
     /*fallthrough because other world events influence the multiplier method not winning card*/
     default:
-      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) > card2.number? uuid1: uuid2;
+      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) >
+        card2.number
+        ? uuid1
+        : uuid2;
   }
 }
 
@@ -153,7 +199,7 @@ export function getRoundWinnerUUID(gameInstance) {
  * @param { Types.GameInstance } gameInstance
  * @returns { Types.worldEvent } World Event
  */
-function getRandomWorldEvent(gameInstance){
+function getRandomWorldEvent(gameInstance) {
   const currentRound = gameInstance.gameState.byRound.length + 1;
   let worldEvents = [
     WORLD_EVENTS.LOWER_WINS,
@@ -163,18 +209,17 @@ function getRandomWorldEvent(gameInstance){
     WORLD_EVENTS.SUITE_BOOST_CUPS,
     WORLD_EVENTS.SUITE_BOOST_SWORDS,
     WORLD_EVENTS.SUITE_BOOST_PENTACLES,
-    WORLD_EVENTS.RANDOM_SUITE
+    WORLD_EVENTS.RANDOM_SUITE,
   ];
 
-  if(currentRound == 2 || currentRound == 4){
-    const worldEvent = worldEvents[Math.floor(Math.random() * worldEvents.length)];
-    console.log(worldEvent);
+  if (currentRound == 2 || currentRound == 4) {
+    const worldEvent =
+      worldEvents[Math.floor(Math.random() * worldEvents.length)];
     return worldEvent;
   } else {
     return WORLD_EVENTS.NONE;
   }
 }
-
 
 /**
  * Returns profile of user who has a higher score
@@ -194,13 +239,14 @@ export function calculateGameWinnerProfile(gameInstance) {
 
 /**
  * Creates and returns a new round state
+ * @param { Types.GameInstance } gameInstance game instance to determine if world event should be used
  * @returns { Types.RoundState } blank round state
  */
 export function createNewRound(gameInstance) {
   return {
     selectedCard: {},
     roundWinner: null,
-    worldEvent: getRandomWorldEvent(gameInstance)
+    worldEvent: getRandomWorldEvent(gameInstance),
   };
 } /* createNewRound */
 

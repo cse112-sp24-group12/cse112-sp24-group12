@@ -159,12 +159,11 @@ export const WORLD_EVENTS = {
  *    gameState: GameState
  *  } |
  *  {
-<<<<<<< HEAD
  *    action: S2C_ACTIONS.WORLD_EVENT,
  *    worldEvent: string
-=======
+ *  } |
+ *  {
  *    action: S2C_ACTIONS.INSTANCE_CLOSED
->>>>>>> main
  *  }
  * } ServerToClientMessage
  */
