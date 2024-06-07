@@ -478,7 +478,7 @@ function startNewRound(gameInstance) {
     return;
   }
 
-  gameInstance.gameState.byRound.push(createNewRound());
+  gameInstance.gameState.byRound.push(createNewRound(gameInstance));
 
   log('Round started', {
     gameInstance,
