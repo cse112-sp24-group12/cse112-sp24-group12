@@ -148,6 +148,11 @@ export function getRoundWinnerUUID(gameInstance) {
   }
 }
 
+/**
+ * Gives a random World Event
+ * @param { Types.GameInstance } gameInstance
+ * @returns { Types.worldEvent } World Event
+ */
 function getRandomWorldEvent(gameInstance){
   const currentRound = gameInstance.gameState.byRound.length + 1;
   let worldEvents = [
