@@ -10,7 +10,6 @@ import {
 import {
   updateProfile,
   getScore,
-  getPlayerUUIDs,
   initializePlayers,
   setRemainingCards,
   getRemainingCards,
@@ -29,6 +28,7 @@ import {
   clearGameState,
   setGameWinnerUUID,
   getGameWinnerUUID,
+  getOpponentUUID,
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
@@ -114,7 +114,7 @@ function initializeScoreboard() {
   const roundNumberEl = document.querySelector('#round_number');
 
   scoreInfoWrapperEl.replaceChildren(
-    ...getPlayerUUIDs().map((UUID) => {
+    ...[getOpponentUUID(), getPlayerUUID()].map((UUID) => {
       const scoreInfoEl = document.createElement('p');
       const scoreCounterEl = document.createElement('span');
       scoreCounterEl.innerText = getScore(UUID);
