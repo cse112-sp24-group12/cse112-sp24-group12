@@ -1,7 +1,5 @@
 import { getCardURLFromName } from '../util.js';
 
-const CARD_BACK_IMAGE_URL = './assets/images/cardback.png';
-
 /**
  * Displays either generic back of a card, or explicitly-defined
  * front of card
@@ -13,6 +11,7 @@ export default class Card extends HTMLElement {
   /** @type { string[] } */
   static observedAttributes = ['variant', 'suite', 'number', 'disabled'];
   _initialized = false;
+  _translationAnimationPromise = Promise.resolve();
 
   constructor() {
     super();
@@ -43,38 +42,21 @@ export default class Card extends HTMLElement {
    * card as appropriate, based off the variant attribute
    */
   _handleUpdate = () => {
-    if (this.getAttribute('variant') === 'front') {
-      this._handleUpdateFront();
-    } else {
-      this._handleUpdateBack();
-    }
-
     if (this._initialized && this.hasAttribute('disabled')) {
       const cardInputEl = this.querySelector('input');
       cardInputEl.disabled = true;
     }
-  }; /* handleUpdate */
 
-  /**
-   * Displays appropriate image for a back-facing card
-   */
-  _handleUpdateBack = () => {
-    if (!this._initialized) return;
-
-    const cardImageEl = this.querySelector('img');
-
-    cardImageEl.src = CARD_BACK_IMAGE_URL;
-  }; /* handleUpdateBack */
-
-  /**
-   * Displays appropriate image on card and handles input elements
-   * for a front-facing card
-   */
-  _handleUpdateFront = () => {
     const suite = this.getAttribute('suite');
     const number = this.getAttribute('number');
 
-    if (!suite || !number || !this._initialized) return;
+    if (
+      this.getAttribute('variant') !== 'front' ||
+      !suite ||
+      !number ||
+      !this._initialized
+    )
+      return;
 
     const cardInputEl = this.querySelector('input');
     const cardLabelEl = this.querySelector('label');
@@ -87,12 +69,13 @@ export default class Card extends HTMLElement {
     cardInputEl.value = JSON.stringify({ suite, number: +number });
 
     cardImageEl.src = getCardURLFromName(suite, number);
-  }; /* _handleUpdateFront */
+  }; /* handleUpdate */
 
   /**
    * Animates card sliding into a container; at the end of the animation, the card
    * will be moved into the container in the DOM as well
    * @param { HTMLElement } containerEl container that element should end up in
+   * @returns { Promise<void> }
    */
   async translateToContainer(containerEl) {
     const transWrapperEl = this.querySelector('.card-trans-wrapper');
@@ -101,28 +84,69 @@ export default class Card extends HTMLElement {
     const transWrapperElRect = transWrapperEl.getBoundingClientRect();
     const containerElRect = containerEl.getBoundingClientRect();
 
-    const diffXPos = containerElRect.left - transWrapperElRect.left;
-    const diffYPos = containerElRect.top - transWrapperElRect.top;
+    const diffXPos = transWrapperElRect.left - containerElRect.left;
+    const diffYPos = transWrapperElRect.top - containerElRect.top;
 
-    const scaleXDim = containerElRect.width / transWrapperElRect.width;
-    const scaleYDim = containerElRect.height / transWrapperElRect.height;
+    const scaleXDim = transWrapperElRect.width / containerElRect.width;
+    const scaleYDim = transWrapperElRect.height / containerElRect.height;
 
-    /* translate and swap after completion */
-    return new Promise((resolve) => {
-      transWrapperEl.style.setProperty(
-        'transform',
-        `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
-      );
+    /* swap and translate */
+    containerEl.replaceChildren(this);
 
-      transWrapperEl.addEventListener(
-        'transitionend',
+    const translationAnimation = transWrapperEl.animate(
+      [
+        {
+          transform: `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
+        },
+        {},
+      ],
+      {
+        duration: 350,
+      },
+    );
+
+    /* promise for blocking animation */
+    this._translationAnimationPromise = new Promise((resolve) => {
+      translationAnimation.addEventListener(
+        'finish',
         () => {
-          transWrapperEl.style.removeProperty('transform');
-          containerEl.replaceChildren(this);
           resolve();
         },
         { once: true },
       );
     });
+
+    return this._translationAnimationPromise;
   } /* translateToContainer */
+
+  /**
+   * Returns promise last attached to call of translateToContainer function;
+   * can be used to ensure that translation has completed before proceeding
+   * with further animations
+   * @returns { Promise<void> } promise that resolves when animation complete
+   */
+  async getCardTranslationPromise() {
+    return this._translationAnimationPromise;
+  } /* pendCardTranslation */
+
+  /**
+   * Flips card to targeted side and returns promise that resolves
+   * when transition (i.e., flip) is completed
+   * @param { 'front'|'back' } targetSide side that card will be flipped to
+   * @returns { Promise<void> } promise that resolves when transition complete
+   */
+  async flipCard(targetSide) {
+    this.setAttribute('variant', targetSide);
+
+    /* promise for blocking animation */
+    return new Promise((resolve) => {
+      this.addEventListener(
+        'transitionend',
+        () => {
+          resolve();
+        },
+        { once: true },
+      );
+    });
+  } /* animateCardFlip */
 } /* Card */

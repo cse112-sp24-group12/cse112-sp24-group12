@@ -1,26 +1,20 @@
 #game_board {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-#top_board_wrapper {
-  flex: 1;
-  display: flex;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-rows: 5fr 3fr;
   overflow: hidden;
 }
 
 #top_left_wrapper {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   max-width: 40rem;
 }
 
 #top_mid_wrapper {
   display: flex;
-  flex: 1;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
@@ -28,13 +22,32 @@
 }
 
 #top_right_wrapper {
-  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+#legend_card {
   margin-top: 6rem;
-  max-width: 25rem;
+  min-height: 0;
+  max-width: 20rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#legend_card_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#legend_card img {
+  flex: 1;
+  min-height: 0;
 }
 
 #bottom_board_wrapper {
-  height: 20rem;
+  grid-column: 1 / span 3;
 }
 
 #round_control_wrapper {

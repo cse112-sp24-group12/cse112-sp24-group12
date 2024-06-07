@@ -9,20 +9,29 @@ import { areCardsEqual, getCurrentRoundState } from './util.js';
 const userProfilesByUUID = {};
 
 /** @type { Types.GameState } */
-const gameState = {
+let gameState = {
   byPlayer: {},
   byRound: [],
   isStarted: false,
+  gameWinner: null,
 };
 
 /**
  * Sets the winner of the current/most recent round
  * @param { Types.UUID } playerUUID unique identifier of round winner
  */
-export function setRoundWinner(playerUUID) {
+export function setRoundWinnerUUID(playerUUID) {
   getCurrentRoundState(gameState).roundWinner = playerUUID;
   gameState.byPlayer[playerUUID].score += 1;
 } /* setRoundWinner */
+
+/**
+ * Fetches UUID of user that won the current round
+ * @returns { Types.UUID } unique ID corresponding to round winner
+ */
+export function getRoundWinnerUUID() {
+  return getCurrentRoundState(gameState).roundWinner;
+} /* getRoundWinnerUUID */
 
 /**
  * Adds blank new round to the current game state
@@ -82,6 +91,15 @@ export function getOppHasPlayedRound() {
 } /* getOppHasPlayedRound */
 
 /**
+ * For the current round, returns whether or not the client user has already
+ * played a card
+ * @returns { boolean } true if client user has played this round; false otherwise
+ */
+export function getSelfHasPlayedRound() {
+  return !!getCurrentRoundState(gameState).selectedCard[getPlayerUUID()];
+} /* getOppHasPlayedRound */
+
+/**
  * Updates profile to store by UUID and emits appropriate event listener
  * for downstream users
  * @param { Types.ServerToClientProfile } profile most-recent profile sent from
@@ -132,6 +150,7 @@ export function initializePlayers(playerUUIDs) {
       {
         score: 0,
         remainingCards: [],
+        ...gameState.byPlayer[UUID],
       },
     ]),
   );
@@ -197,10 +216,38 @@ export function getGameIsStarted() {
 } /* getGameIsStarted */
 
 /**
+ * Sets unique ID of user that won the game
+ * @param { Types.UUID } gameWinnerUUID unique ID of game winner
+ */
+export function setGameWinnerUUID(gameWinnerUUID) {
+  gameState.gameWinner = gameWinnerUUID;
+} /* setGameWinner */
+
+/**
+ * Fetches UUID of user that won the game
+ * @returns { Types.UUID } unique ID of game winner
+ */
+export function getGameWinnerUUID() {
+  return gameState.gameWinner;
+} /* getGameWinner */
+
+/**
  * Attempts to update game state by forcing a new game state object
  * on top of the existing game state
  * @param { Types.GameState } newGameState game state that takes priority
  */
 export function setGameState(newGameState) {
-  Object.assign(gameState, newGameState);
+  gameState = { ...gameState, ...newGameState };
 } /* setGameState */
+
+/**
+ *
+ */
+export function clearGameState() {
+  Object.assign(gameState, {
+    byPlayer: {},
+    byRound: [],
+    isStarted: false,
+    gameWinner: null,
+  });
+} /* clearGameState */

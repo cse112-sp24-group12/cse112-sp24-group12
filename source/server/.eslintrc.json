@@ -15,5 +15,14 @@
     "jsdoc"
   ],
   "rules": {
+    "jsdoc/check-tag-names": [
+      "error",
+      {
+        "definedTags": ["jest-environment"]
+      }
+    ]
+  },
+  "globals": {
+    "NodeJS": true
   }
 }

@@ -16,8 +16,12 @@
   <script src="scripts/versus/index.js" type="module"></script>
 </head>
 <body>
-  <header class="icon-header">
-    <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+  <!-- HEADER -->
+  <header>
+    <div>
+      <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+      <button id="leave_game_button" class="destructive-button hidden">Leave game</button>
+    </div>
     <ul id="short_settings_icon_list">
       <li>
         <button aria-label="Mute" title="Mute" id="mute_button" class="icon-button"></button>
@@ -33,7 +37,10 @@
     <section id="lobby_menu">
       <section id="lobby_game_codes_wrapper" aria-labelledby="lobby_game_codes_title">
         <div class="lobby-code-wrapper">
-          <label for="self_game_code">You are in room</label>
+          <div id="self_code_label_wrapper">
+            <label for="self_game_code">You are in room</label>
+            <button id="game_code_info_button" class="info-button" aria-label="Game code info"></button>
+          </div>
           <div class="lobby-code-input-wrapper">
             <button id="copy_game_code_button" aria-label="Copy room code"></button>
             <input type="text" id="self_game_code" name="self_game_code" readonly>
@@ -41,7 +48,7 @@
         </div>
         <div class="lobby-code-wrapper">
           <div class="lobby-code-input-wrapper">
-            <input type="text" id="outbound_game_code" name="outbound_game_code">
+            <input type="text" id="outbound_game_code" name="outbound_game_code" autofocus>
             <button id="join_game_button" aria-label="Join game"></button>
           </div>
           <label for="outbound_game_code" id="join_friend_label">Join a friend</label>
@@ -56,50 +63,54 @@
         </button>
       </div>
       <div id="lobby_button_wrapper">
-        <button id="start_game_button" class="primary-button">Start</button>
+        <button id="start_game_button" class="primary-button" disabled>Start</button>
         <button id="practice_game_button" class="secondary-button">Practice</button>
       </div>
     </section>
 
     <!-- GAMEPLAY -->
     <section id="game_board" class="hidden">
-      <div id="top_board_wrapper">
-        <div id="top_left_wrapper">
-          <div id="opponent_cards"><!-- dynamically populated --></div>
-          <section id="chat_box" aria-label="Chat">
-            <div id="chat_feed" role="feed"><!-- dynamically populated --></div>
-            <div id="chat_input_wrapper">
-              <input type="text" name="chat_input" id="chat_input">
-              <button id="chat_input_button" class="primary-button">Send</button>
-            </div>
-          </section>
-        </div>
-        <div id="top_mid_wrapper">
-          <section id="game_info">
-            <div id="round_info">
-              <p>Round <span id="round_number"><!-- dynamically populated --></span></p>
-              <time id="time_remaining"><!-- dynamically populated --></time>
-            </div>
-            <div id="score_info"><!-- dynamically populated --></div>
-          </section>
-          <section id="played_card_wrapper">
-            <div class="card-outline">
-              <div id="opp_played_card" class="card-slot"><!-- dynamically populated --></div>
-            </div>
-            <div class="card-outline">
-              <div id="self_played_card" class="card-slot"><!-- dynamically populated --></div>
-            </div>
-          </section>
-          <div id="round_control_wrapper">
-            <p id="current_instruction"><!-- dynamically populated --></p>
-            <button id="start_round_button" class="primary-button hidden">Next round</button>
+      <div id="top_left_wrapper">
+        <div id="opponent_cards"><!-- dynamically populated --></div>
+        <section id="chat_box" aria-label="Chat">
+          <div id="chat_feed" role="feed"><!-- dynamically populated --></div>
+          <div id="chat_input_wrapper">
+            <input type="text" name="chat_input" id="chat_input">
+            <button id="chat_input_button" class="primary-button">Send</button>
           </div>
+        </section>
+      </div>
+      <div id="top_mid_wrapper">
+        <section id="game_info">
+          <div id="round_info">
+            <p>Round <span id="round_number"><!-- dynamically populated --></span></p>
+            <time id="time_remaining"><!-- dynamically populated --></time>
+          </div>
+          <div id="score_info"><!-- dynamically populated --></div>
+        </section>
+        <section id="played_card_wrapper">
+          <div class="next-round">
+            <p id="round_end_text"><!-- dynamically populated --></p>
+          </div>
+          <div class="card-outline">
+            <div id="opp_played_card" class="card-slot"><!-- dynamically populated --></div>
+          </div>
+          <div class="card-outline">
+            <div id="self_played_card" class="card-slot"><!-- dynamically populated --></div>
+          </div>
+        </section>
+        <div id="round_control_wrapper">
+          <p id="current_instruction"><!-- dynamically populated --></p>
         </div>
-        <div id="top_right_wrapper">
-          <section class="card purple-card">
+      </div> 
+      <div id="top_right_wrapper">
+        <section id="legend_card" class="card purple-card">
+          <div id="legend_card_header">
             <h2>Legend</h2>
-          </section>
-        </div>
+            <button id="legend_info_button" class="info-button" aria-label="Game code info"></button>
+          </div>
+          <img src="./assets/images/game_legend.webp" alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+        </section>
       </div>
       <div id="bottom_board_wrapper">
         <section id="user_cards"><!-- dynamically populated --></section>
@@ -124,13 +135,142 @@
     </section>
   </footer>
 
+  <!-- MODALS -->
+  <dialog id="game_lobby_info_modal">
+    <h2>Game codes</h2>
+    <p>If you want to get a game started, share your game code with a friend.</p>
+    <p>If your friend sent you a game code, enter it below to join their game.</p>
+    <form method="dialog" class="default-dialog-form">
+      <button class="primary-button">Okay</button>
+    </form>
+  </dialog>
+
+  <dialog id="instance_closed_modal">
+    <p>The game you are in has ended.</p>
+    <form method="dialog" class="default-dialog-form">
+      <button class="primary-button">Return to lobby</button>
+    </form>
+  </dialog>
+
+  <dialog id="confirm_leave_modal">
+    <p>Are you sure you want to leave the game? This action is irreversible.</p>
+    <form method="dialog" class="default-dialog-form">
+      <button class="secondary-button">Stay in game</button>
+      <button type="button" id="confirm_leave_button" class="destructive-button">Leave game</button>
+    </form>
+  </dialog>
+
+  <dialog id="rules_modal">
+    <div id="rules_modal_header">
+      <h2 id="rules_title">Rules</h2>
+      <form method="dialog">
+        <button class="secondary-button">Close</button>
+      </form>
+    </div>
+    <section id="rules_text_wrapper" aria-labelledby="rules_title">
+      <ul>
+        <li>
+          <h3>Setup</h3>
+          <ul>
+            <li>
+              Each player is initially dealt five cards.
+            </li>
+            <li>
+              Cards belong to one of four suite: Cups, Swords, Wands, or Pentacles. The illustration on the 
+              card as well as the color of the border surrounding the card serve to indicate which suit a
+              card belongs to. Each card also has either a printed numeric value, or a face corresponding to
+              a numeric value (much like a standard deck of playing cards). Namely, a Page exists as the
+              equivalent to the number 11, a Knight to 12, a Queen to 13, and a King to 14. 
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h3>Gameplay</h3>
+          <ul>
+            <li>
+              During each round, each player selects a card. The choice of card remains obscured from the other 
+              player until such time as both players have selected their cards. Then, both cards are revealed, as 
+              well as the winner of the round.
+            </li>
+            <li>
+              After all cards have been exhausted (i.e., after five rounds), gameplay ends. The winner of the game
+              is the player who has won the highest number of rounds.
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h3>Winning cards</h3>
+          <ul>
+            <li>
+              As mentioned before, each card has both a suit and a number (or number-adjacent face value). The total score of
+              a card is equal to its numeric value times its multiplier. The multiplier of a round is calculated by examining
+              the relationship between the suits of the cards, subject to effect by World Events.
+            </li>
+            <li>
+              The standard relationship of suits is pictured below.
+            </li>
+            <li>
+              <img
+                src="./assets/images/game_legend.webp"
+                class="game-rules-diagram"
+                alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral"  
+              >
+            </li>
+            <li>
+              Namely, the Wands suit has a positive multiplier against the Cups suit, and likewise for Cups against Swords and Swords against Wands.
+              In this case, Pentacles are neutral (i.e., have no multiplier against any suit).
+            </li>
+            <li>
+              Once the total score of the card has been calculated from the numeric value and suit-based multiplier, the card with the highest score
+              wins each round.
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h3>World Events</h3>
+          <ul>
+            <li>
+              During the second and fourth rounds, World Events trigger. These World Events change the ways that cards
+              compete against each other. The possible Events are as follows:
+              <ul id="world_event_list">
+                <li>
+                  <h4>Event 1</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 2</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 3</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 4</h4>
+                  Description description description description description description description description description description
+                </li>
+                <li>
+                  <h4>Event 5</h4>
+                  Description description description description description description description description description description
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+  </dialog>
+
   <!-- TEMPLATES -->
   <template id="card-template">
     <div class="card-trans-wrapper">
-      <label>
-        <img src="" alt="card front face">
-      </label>
-      <input type="radio" name="selected_card">
+      <div class="card-flip-wrapper">
+        <label>
+          <img class="card-front" src="" alt="card front face">
+          <img class="card-back" src="./assets/images/cardback.png" alt="card back face">
+        </label>
+        <input type="radio" name="selected_card">
+      </div>
     </div>
   </template>
 </body>
