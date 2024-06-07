@@ -41,13 +41,21 @@ export function printMessage(messageContents, profile) {
 
   const chatMessageEl = document.createElement('p');
 
+  const usernameWrapperEl = document.createElement('span');
+  usernameWrapperEl.classList.add('username-wrapper');
+  usernameWrapperEl.classList.toggle(
+    'username-wrapper-system',
+    profile.uuid === 'system',
+  );
+
   const versusUsernameEl = document.createElement('versus-username');
   versusUsernameEl.setAttribute('uuid', profile.uuid);
+  usernameWrapperEl.replaceChildren(versusUsernameEl);
 
   const chatMessageContentsEl = document.createElement('span');
   chatMessageContentsEl.innerText = messageContents;
 
-  chatMessageEl.replaceChildren(versusUsernameEl, ': ', chatMessageContentsEl);
+  chatMessageEl.replaceChildren(usernameWrapperEl, ': ', chatMessageContentsEl);
 
   chatFeedEl.append(chatMessageEl);
 } /* printMessage */

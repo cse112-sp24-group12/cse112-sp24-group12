@@ -112,7 +112,6 @@ export function handleGameStart(drawnCardNames) {
 function initializeScoreboard() {
   const scoreInfoWrapperEl = document.querySelector('#score_info');
   const roundNumberEl = document.querySelector('#round_number');
-  const timeRemainingEl = document.querySelector('#time_remaining');
 
   scoreInfoWrapperEl.replaceChildren(
     ...getPlayerUUIDs().map((UUID) => {
@@ -130,7 +129,6 @@ function initializeScoreboard() {
   );
 
   roundNumberEl.innerText = getRoundNumber();
-  timeRemainingEl.innerText = '0 sec';
 } /* initializeScoreboard */
 
 /**
