@@ -66,13 +66,39 @@ function initalizeCards() {
       newCardEl.classList.add('card');
       imgEl.src = card.image;
       imgEl.alt = card.name;
-      imgEl.setAttribute('data-info', card.keywords.join(', '));
+      imgEl.dataset.info = card.keywords.join(', ');
 
       newCardEl.appendChild(imgEl);
 
       return newCardEl;
     }),
   );
+
+  // Card information onclick
+  const cardImages = document.querySelectorAll(
+    '#information-card-list div img',
+  );
+  // loop through all the images and make an onclick that takes the alt, and the data, and display
+  cardImages.forEach((img) => {
+    img.addEventListener('click', () => {
+      document.querySelector("output[name='card-name-output']").textContent =
+        img.alt;
+      document.querySelector("output[name='card-info-output']").textContent =
+        img.getAttribute('data-info');
+
+      document
+        .querySelector('#card-information-wrapper')
+        .classList.add('active');
+    });
+  });
+
+  const closeInfoButton = document.querySelector('#card-information-close');
+  closeInfoButton.addEventListener('click', () => {
+    document
+      .querySelector('#card-information-wrapper')
+      .classList.remove('active');
+  });
+
 } /* initalizeCards */
 
 /**
@@ -112,17 +138,7 @@ function initializeVolumeInput() {
   sfxSettingsEl.value = getSFXVolumeLevel() * 100;
 } /* initializeVolumeInput */
 
-/**
- * Initializes event listeners for navigation
- */
-function initializeSettings() {
-  const musicSettingsEl = document.querySelector('#music_volume_slider');
-  const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
-  const saveSettingsButtonEl = document.querySelector('#save_settings_button');
-  const resetSettingsButtonEl = document.querySelector(
-    '#reset_settings_button',
-  );
-  // Implement avatar selection
+function initializeAvatarSelection(){
 
   const changeAvatarButton = document.querySelector('#change_image_button');
   changeAvatarButton.addEventListener('click', () => {
@@ -166,36 +182,20 @@ function initializeSettings() {
       }
     });
   }
-
-  // need to make the cards first, before the onclick
-  initalizeCards();
-
-  // Card information onclick
-  const cardImages = document.querySelectorAll(
-    '#information-card-list div img',
+}
+/**
+ * Initializes event listeners for navigation
+ */
+function initializeSettings() {
+  const musicSettingsEl = document.querySelector('#music_volume_slider');
+  const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
+  const saveSettingsButtonEl = document.querySelector('#save_settings_button');
+  const resetSettingsButtonEl = document.querySelector(
+    '#reset_settings_button',
   );
-  // loop through all the images and make an onclick that takes the alt, and the data, and display
-  cardImages.forEach((img) => {
-    img.addEventListener('click', () => {
-      document.querySelector("output[name='card-name-output']").textContent =
-        img.alt;
-      document.querySelector("output[name='card-info-output']").textContent =
-        img.getAttribute('data-info');
-
-      document
-        .querySelector('#card-information-wrapper')
-        .classList.add('active');
-    });
-  });
-
-  const closeInfoButton = document.querySelector('#card-information-close');
-  closeInfoButton.addEventListener('click', () => {
-    document
-      .querySelector('#card-information-wrapper')
-      .classList.remove('active');
-  });
-
-  // TODO: Refactor code
+  
+  initializeAvatarSelection();
+  initalizeCards();
 
   resetSettings();
   //saveSettings(); this breaks the avatar refresh.
