@@ -50,15 +50,25 @@ function initializeVolumeInput(volumeEl, setVolumeCallbackFn) {
 } /* initializeVolumeInput */
 
 /**
+ *
+ */
+function initializeUsernameInput() {
+  const usernameInputEl = document.querySelector('#profile_settings_username');
+  const saveUsernameButtonEl = document.querySelector('#save_settings_button');
+
+  saveUsernameButtonEl.addEventListener('click', () => {
+    setUsername(usernameInputEl.value);
+    resetSettings();
+  });
+} /* initializeUsernameInput */
+
+/**
  * Populate the list of cards and interactions for opening/closing info menus
  */
 function initalizeCards() {
+  const cardInfoModalEl = document.querySelector('#card_info_modal');
   const cardNameTitleEl = document.querySelector('#card_name_output');
   const cardInfoTextEl = document.querySelector('#card_info_output');
-  const cardInfoWrapperEl = document.querySelector('#card-information-wrapper');
-  const closeCardInfoButtonEl = document.querySelector(
-    '#card-information-close',
-  );
 
   const cardListEl = document.querySelector('#information-card-list');
   const cardList = tarotConfig.tarot;
@@ -77,32 +87,14 @@ function initalizeCards() {
       newCardEl.addEventListener('click', () => {
         cardNameTitleEl.innerText = card.name;
         cardInfoTextEl.innerText = card.keywords.join(', ');
-        cardInfoWrapperEl.classList.add('active');
+
+        cardInfoModalEl.showModal();
       });
 
       return newCardEl;
     }),
   );
-
-  closeCardInfoButtonEl.addEventListener('click', () => {
-    cardInfoWrapperEl.classList.remove('active');
-  });
 } /* initalizeCards */
-
-/**
- * Save username adjustment
- */
-function saveSettings() {
-  const usernameInputEl = document.querySelector('#profile_settings_username');
-  const selectedAvatarImg = document.querySelector(
-    "input[type='radio']:checked",
-  );
-
-  setUsername(usernameInputEl.value);
-  setProfileImage(selectedAvatarImg.value);
-
-  resetSettings();
-} /* saveSettings */
 
 /**
  * Reset/refresh all settings to align with currently saved values
@@ -125,19 +117,22 @@ function resetSettings() {
 function initializeAvatarSelection() {
   const changeAvatarButtonEl = document.querySelector('#change_image_button');
   const saveProfilePictureButtonEl = document.querySelector('#save_pfp_button');
+  const profileImageEl = document.querySelector('#profile_settings_avatar');
   const selectProfilePictureModalEl = document.querySelector(
     '#select_profile_picture_modal',
   );
 
-  changeAvatarButtonEl.addEventListener('click', () => selectProfilePictureModalEl.showModal());
+  [changeAvatarButtonEl, profileImageEl].forEach((el) =>
+    el.addEventListener('click', () => selectProfilePictureModalEl.showModal()),
+  );
 
   saveProfilePictureButtonEl.addEventListener('click', () => {
     selectProfilePictureModalEl.close();
 
-    const selectedAvatarImgName = document
-      .querySelector("input[type='radio']:checked")
-      .value;
-    
+    const selectedAvatarImgName = document.querySelector(
+      "input[type='radio']:checked",
+    ).value;
+
     setProfileImage(selectedAvatarImgName);
 
     resetSettings();
@@ -150,7 +145,6 @@ function initializeAvatarSelection() {
 function initializeSettings() {
   const musicSettingsEl = document.querySelector('#music_volume_slider');
   const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
-  const saveSettingsButtonEl = document.querySelector('#save_settings_button');
   const resetSettingsButtonEl = document.querySelector(
     '#reset_settings_button',
   );
@@ -158,6 +152,7 @@ function initializeSettings() {
   resetSettings();
   initalizeCards();
   initializeAvatarSelection();
+  initializeUsernameInput();
   initializeVolumeInput(musicSettingsEl, setMusicVolumeLevel);
   initializeVolumeInput(sfxSettingsEl, setSFXVolumeLevel);
   initializeNavigation({
@@ -166,7 +161,6 @@ function initializeSettings() {
     '#info_menu_button_wrapper': '#information_settings',
   });
 
-  saveSettingsButtonEl.addEventListener('click', saveSettings);
   resetSettingsButtonEl.addEventListener('click', resetSettings);
 } /* initializeSettings */
 
