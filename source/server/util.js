@@ -2,12 +2,21 @@ import { SUITES } from './types.js';
 import * as Types from './types.js';
 
 /**
- * Creates and returns random game code for each game instance; currently not necessarily unique
- * @returns { number } newly generated game code
+ * Creates and returns random unique game code for each game instance
+ * @param { number } rangeLo lowest allowed game code (inclusive)
+ * @param { number } rangeHi highest allowed game code (inclusive)
+ * @param { Array<number> } currentGameCodes games currently in use (i.e., to avoid)
+ * @returns { number } newly generated unique game code
  */
-export function generateGameCode() {
-  return Math.floor(Math.random() * 9000) + 1000;
-} /* generateGameCode */
+export function generateUniqueGameCode(rangeLo, rangeHi, currentGameCodes) {
+  let gameCode;
+
+  do {
+    gameCode = Math.floor(Math.random() * (rangeHi - rangeLo + 1)) + rangeLo;
+  } while (currentGameCodes.includes(gameCode));
+
+  return gameCode;
+} /* generateUniqueGameCode */
 
 /**
  * Determines if two arrays are equal as sets
@@ -108,6 +117,22 @@ export function getWinningCard(card1, card2) {
 } /* getWinningCard */
 
 /**
+ * Returns profile of user who has a higher score
+ * @param { Types.GameInstance } gameInstance target game instance
+ * @returns { Types.ServerToClientProfile } profile of game winner
+ */
+export function calculateGameWinnerProfile(gameInstance) {
+  const [[pOneUUID, { score: pOneScore }], [pTwoUUID, { score: pTwoScore }]] =
+    Object.entries(gameInstance.gameState.byPlayer);
+
+  const winnerUUID = pOneScore > pTwoScore ? pOneUUID : pTwoUUID;
+
+  return gameInstance.webSocketConnections.find(
+    (webSocketConnection) => webSocketConnection.profile.uuid === winnerUUID,
+  ).profile;
+} /* getGameWinner */
+
+/**
  * Creates and returns a new round state
  * @returns { Types.RoundState } blank round state
  */
@@ -162,3 +187,15 @@ export function cleanGameState(playerUUID, gameState) {
 
   return copiedState;
 } /* cleanGameState */
+
+/**
+ * For a given game, returns the number of connections (i.e., players)
+ * that are currently live connections
+ * @param { Types.GameInstance } gameInstance queried game instance
+ * @returns { number } number of live connections in the moment
+ */
+export function getNumActivePlayers(gameInstance) {
+  return gameInstance.webSocketConnections.filter(
+    (webSocketConnection) => webSocketConnection.connected,
+  ).length;
+} /* getNumActivePlayers*/

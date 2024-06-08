@@ -29,11 +29,6 @@ main {
   height: 5.75rem;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-}
-
 #main_title_wrapper {
   margin-left: 1rem;
   position: relative;

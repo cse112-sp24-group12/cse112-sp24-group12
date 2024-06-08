@@ -3,7 +3,7 @@
 import * as Types from './types.js';
 
 const MINOR_DECK_FACE_PATH_PREFIX = './assets/images/deck_minor';
-const MINOR_DECK_FACE_PATH_FORMAT = 'png';
+const MINOR_DECK_FACE_PATH_FORMAT = 'webp';
 
 /**
  * Determines if two different card objects represent the same card

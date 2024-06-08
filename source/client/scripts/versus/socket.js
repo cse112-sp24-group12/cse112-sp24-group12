@@ -17,18 +17,8 @@ const WS_RECONNECTION_DELAY_MS = 3500;
 
 const socketState = {
   webSocket: null,
-  gameCallbackFns: {
-    handleUpdateInstance: () => {},
-    handleGameStart: () => {},
-    handleOpponentMove: () => {},
-    handleRevealCards: () => {},
-    handleStartRound: () => {},
-    handleGameEnd: () => {},
-    refreshEntireGame: () => {},
-  },
-  chatCallbackFns: {
-    printMessage: () => {},
-  },
+  gameCallbackFns: {},
+  chatCallbackFns: {},
 };
 
 /**
@@ -52,11 +42,11 @@ function handleMessage(message) {
     handleGameStart,
     handleOpponentMove,
     handleRevealCards,
-    handleStartRound,
     handleGameEnd,
+    handleInstanceClosed,
     refreshEntireGame,
   } = socketState.gameCallbackFns;
-  const { printMessage } = socketState.chatCallbackFns;
+  const { printMessage, printSystemMessage } = socketState.chatCallbackFns;
 
   try {
     switch (messageObj.action) {
@@ -78,14 +68,14 @@ function handleMessage(message) {
           messageObj.roundWinner,
         );
         break;
-      case S2C_ACTIONS.START_ROUND:
-        handleStartRound();
-        break;
       case S2C_ACTIONS.GAME_END:
         handleGameEnd(messageObj.gameWinner);
         break;
       case S2C_ACTIONS.CHAT_MESSAGE:
         printMessage(messageObj.messageContents, messageObj.profile);
+        break;
+      case S2C_ACTIONS.SYSTEM_MESSAGE:
+        printSystemMessage(messageObj.messageContents);
         break;
       case S2C_ACTIONS.UPDATE_PROFILE:
         updateProfile(messageObj.profile);
@@ -93,6 +83,9 @@ function handleMessage(message) {
       case S2C_ACTIONS.FORCE_REFRESH:
         setGameState(messageObj.gameState);
         refreshEntireGame();
+        break;
+      case S2C_ACTIONS.INSTANCE_CLOSED:
+        handleInstanceClosed();
         break;
       default:
     }
@@ -144,15 +137,6 @@ export function startGame() {
 } /* startGame */
 
 /**
- * Attempts to start next round of game instance server-side
- */
-export function startRound() {
-  sendMessage({
-    action: C2S_ACTIONS.START_ROUND,
-  });
-} /* startRound */
-
-/**
  * Sends chat message server-side to be redistributed to clients,
  * implicitly associated to user profile of sender
  * @param { string } messageContents text content of message to be displayed
@@ -163,6 +147,17 @@ export function sendChatMessage(messageContents) {
     messageContents,
   });
 } /* sendChatMessage */
+
+/**
+ * Asks backend to add client to a new lobby, or restore to a previous lobby if possible
+ * @param { Types.UUID } [previousUUID] any previous UUID to client, used for restoration
+ */
+export function sendInitializationRequest(previousUUID) {
+  sendMessage({
+    action: C2S_ACTIONS.INITIALIZE_INSTANCE,
+    playerUUID: previousUUID,
+  });
+} /* sendInitializationRequest */
 
 /**
  * Attaches functions to WebSocket instance to orchestrate Versus gameplay behavior;
@@ -190,12 +185,7 @@ function handleWebSocketOpen() {
     document.querySelector('#connection_status');
   connectionStatusWrapperEl.classList.add('hidden');
 
-  const previousInstancePlayerUUID = getPlayerUUID();
-
-  sendMessage({
-    action: C2S_ACTIONS.INITIALIZE_INSTANCE,
-    playerUUID: previousInstancePlayerUUID,
-  });
+  sendInitializationRequest(getPlayerUUID());
 
   sendProfile();
 } /* handleWebSocketOpen */

@@ -1,106 +1,101 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tarot, but a Game | Settings</title>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="./styles/global.css">
-    <link rel="stylesheet" href="./styles/settings.css">
-    <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon">
-    
-    <script src="./scripts/settings.js" type="module"></script>
-  </head>
-  <body>
-    <header>
-      <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
-    </header>
-    <div id="settings-container">
-      <aside id="settings-sidebar">
-        <nav>
-          <div class="sword-slider active" id="audio_menu_button_wrapper">
-            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
-            <div class="button-translation-wrapper">
-              <button class="secondary-button" id="audio_menu_button">Audio</button>
-            </div>
-          </div>
-          <div class="sword-slider" id="profile_menu_button_wrapper">
-            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
-            <div class="button-translation-wrapper">
-              <button class="secondary-button" id="profile_menu_button">Profile</button>
-            </div>
-          </div>
-          <div class="sword-slider" id="info_menu_button_wrapper">
-            <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
-            <div class="button-translation-wrapper">
-              <button class="secondary-button" id="info_menu_button">Info</button>
-            </div>
-          </div>
-        </nav>
-      </aside>
-      <section id="volume_settings" class="active card purple-card">
-        <label for="music_volume_slider">Music volume</label>
-        <input type="range" name="music_volume" id="music_volume_slider">
-        <label for="sfx_volume_slider">Sound effects volume</label>
-        <input type="range" name="sfx_volume" id="sfx_volume_slider">
-      </section>
-      <section id="profile_settings" class="card purple-card">
-        <div id="profile_settings_identity">
-            <img id="profile_settings_avatar" src="" alt="avatar">
-            <div id="change_image_button_wrapper">
-              <button id="change_image_button">Change avatar</button>
-            </div>
-            <div id="profile_settings_username_wrapper">
-              <input id="profile_settings_username" type="text" value="">
-            </div>
-        </div>
-        <div id="profile_settings_control_wrapper">
-          <p id="save_failed_msg" class="hidden">Save failed</p>
-          <p id="save_successful_msg" class="hidden">Save successful</p>
-          <button id="reset_settings_button" class="secondary-button">Reset</button>
-          <button id="save_settings_button" class="primary-button">Save</button>
-        </div>
-      </section>
-      <section id="information_settings" class="card purple-card">
-        <h2>All cards</h2>
-        <div id="information-card-list"></div>
-        <div id="card-information-wrapper">
-          <div id="card-information" class="card white-card">
-            <button id="card-information-close">X</button>
-            <h2 id="card_name_output"></h2>
-            <h3 id="card_info_output"></h3>
+  <title>Tarot, but a Game | Settings</title>
+
+  <link rel="stylesheet" href="./styles/global.css">
+  <link rel="stylesheet" href="./styles/settings.css">
+  <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon">
+
+  <script src="./scripts/settings.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
+  </header>
+  <main id="settings-container">
+    <aside id="settings-sidebar">
+      <nav>
+        <div class="sword-slider active" id="audio_menu_button_wrapper">
+          <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
+          <div class="button-translation-wrapper">
+            <button class="secondary-button" id="audio_menu_button">Audio</button>
           </div>
         </div>
-      </section>
-    </div>
+        <div class="sword-slider" id="profile_menu_button_wrapper">
+          <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
+          <div class="button-translation-wrapper">
+            <button class="secondary-button" id="profile_menu_button">Profile</button>
+          </div>
+        </div>
+        <div class="sword-slider" id="info_menu_button_wrapper">
+          <img src="./assets/images/icons/sword.webp" alt="sword" aria-hidden="true">
+          <div class="button-translation-wrapper">
+            <button class="secondary-button" id="info_menu_button">Info</button>
+          </div>
+        </div>
+      </nav>
+    </aside>
+    <section id="volume_settings" class="active card purple-card">
+      <label for="music_volume_slider">Music volume</label>
+      <input type="range" name="music_volume" id="music_volume_slider">
+      <label for="sfx_volume_slider">Sound effects volume</label>
+      <input type="range" name="sfx_volume" id="sfx_volume_slider">
+    </section>
+    <section id="profile_settings" class="card purple-card">
+      <div id="profile_settings_identity">
+        <img id="profile_settings_avatar" src="" alt="avatar">
+        <div id="change_image_button_wrapper">
+          <button id="change_image_button">Change avatar</button>
+        </div>
+        <div id="profile_settings_username_wrapper">
+          <input id="profile_settings_username" type="text" value="">
+        </div>
+      </div>
+      <div id="profile_settings_control_wrapper">
+        <p id="save_failed_msg" class="hidden">Save failed</p>
+        <p id="save_successful_msg" class="hidden">Save successful</p>
+        <button id="reset_settings_button" class="secondary-button">Reset</button>
+        <button id="save_settings_button" class="primary-button">Save</button>
+      </div>
+    </section>
+    <section id="information_settings" class="card purple-card">
+      <h2>All cards</h2>
+      <div id="information-card-list"></div>
+      <div id="card-information-wrapper">
+        <div id="card-information" class="card white-card">
+          <button id="card-information-close">X</button>
+          <h2 id="card_name_output"></h2>
+          <h3 id="card_info_output"></h3>
+        </div>
+      </div>
+    </section>
 
     <!-- MODALS -->
     <dialog id="select_profile_picture_modal">
-        <h2>Select a profile picture</h2>
-        <div>
-          <input id="panda_avatar" type="radio" name="avatar-radio" value="panda">
-          <label for="panda_avatar" >
-            <img
-            src="./assets/images/characters/panda.png"
-            value= "./assets/images/characters/panda.png"
-            alt="Panda"
-            >
-          </label>
-          <input id="dragon_avatar" type="radio" name="avatar-radio" value="dragon" checked>
-          <label for="dragon_avatar">
-            <img
-            src="./assets/images/characters/dragon.png"
-            value= "./assets/images/characters/dragon.png"
-            alt="Dragon"
-            >
-          </label>
-        </div>
-        <form method="dialog">
-          <button>Close</button> 
-          <button type="button" id="save_pfp_button">Save</button>
-        </form>
+      <h2>Select a profile picture</h2>
+      <div>
+        <input id="panda_avatar" type="radio" name="avatar-radio" value="panda">
+        <label for="panda_avatar">
+          <img src="./assets/images/characters/panda.png" value="./assets/images/characters/panda.png" alt="Panda">
+        </label>
+        <input id="dragon_avatar" type="radio" name="avatar-radio" value="dragon" checked>
+        <label for="dragon_avatar">
+          <img src="./assets/images/characters/dragon.png" value="./assets/images/characters/dragon.png" alt="Dragon">
+        </label>
+      </div>
+      <form method="dialog">
+        <button>Close</button>
+        <button type="button" id="save_pfp_button">Save</button>
+      </form>
     </dialog>
-  </body>
+  </main>
+</body>
+
 </html>

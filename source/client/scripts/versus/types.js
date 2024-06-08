@@ -6,7 +6,6 @@ export const C2S_ACTIONS = {
   JOIN_INSTANCE: 'join_instance',
   START_GAME: 'start_game',
   SELECT_CARD: 'select_card',
-  START_ROUND: 'start_round',
   CHAT_MESSAGE: 'chat_message',
 };
 
@@ -16,11 +15,12 @@ export const S2C_ACTIONS = {
   START_GAME: 'start_game',
   CARD_SELECTED: 'card_selected',
   REVEAL_CARDS: 'reveal_cards',
-  START_ROUND: 'start_round',
   GAME_END: 'game_end',
   CHAT_MESSAGE: 'chat_message',
+  SYSTEM_MESSAGE: 'system_message',
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
+  INSTANCE_CLOSED: 'instance_closed',
 };
 
 export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
@@ -77,9 +77,6 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *    selectedCard: Card
  *  } |
  *  {
- *    action: S2C_ACTIONS.START_ROUND
- *  } |
- *  {
  *    action: C2S_ACTIONS.CHAT_MESSAGE,
  *    messageContents: string
  *  }
@@ -112,9 +109,6 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *    roundWinner: ServerToClientProfile
  *  } |
  *  {
- *    action: S2C_ACTIONS.START_ROUND
- *  } |
- *  {
  *    action: S2C_ACTIONS.GAME_END,
  *    gameWinner: ServerToClientProfile
  *  } |
@@ -124,12 +118,19 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *    profile: ServerToClientProfile
  *  } |
  *  {
+ *    action: S2C_ACTIONS.SYSTEM_MESSAGE,
+ *    messageContents: string
+ *  } |
+ *  {
  *    action: S2C_ACTIONS.UPDATE_PROFILE,
  *    profile: ServerToClientProfile
  *  } |
  *  {
  *    action: S2C_ACTIONS.FORCE_REFRESH,
  *    gameState: GameState
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.INSTANCE_CLOSED
  *  }
  * } ServerToClientMessage
  */
@@ -156,6 +157,7 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  * @typedef { {
  *  byPlayer: Record<UUID, PlayerGameState>,
  *  byRound: RoundState[],
- *  isStarted: boolean
+ *  isStarted: boolean,
+ *  gameWinner: UUID
  * } } GameState
  */
