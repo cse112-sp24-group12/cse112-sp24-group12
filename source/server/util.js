@@ -119,6 +119,7 @@ function getMultiplierWorldEvent(card1, card2, worldEvent) {
           worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS
             ? MULTIPLER.LESS + MULTIPLER.BOOST
             : MULTIPLER.LESS;
+      break;
     case SUITES.CUPS:
       if (suite2 === SUITES.SWORDS)
         multiplier =
@@ -130,6 +131,7 @@ function getMultiplierWorldEvent(card1, card2, worldEvent) {
           worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS
             ? MULTIPLER.LESS + MULTIPLER.BOOST
             : MULTIPLER.LESS;
+      break;
     case SUITES.SWORDS:
       if (suite2 === SUITES.WANDS)
         multiplier =
@@ -141,11 +143,13 @@ function getMultiplierWorldEvent(card1, card2, worldEvent) {
           worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS
             ? MULTIPLER.LESS + MULTIPLER.BOOST
             : MULTIPLER.LESS;
+      break;
     case SUITES.PENTACLES:
       multiplier =
         worldEvent === WORLD_EVENTS.SUITE_BOOST_PENTACLES
           ? MULTIPLER.NEUTRAL + MULTIPLER.BOOST
           : MULTIPLER.NEUTRAL;
+      break;
     default:
   }
 
@@ -166,9 +170,9 @@ function getRandomValue(lo, hi) {
 
 /**
  * Determines the winner between 2 cards given a world event
- * @param { Types.Card } card1
- * @param { Types.Card } card2
- * @param { string } worldEvent
+ * @param { Types.Card } card1 the first card to compare
+ * @param { Types.Card } card2 the second card to compare
+ * @param { string } worldEvent the current round's world event
  * @returns { Types.Card } winning card
  */
 export function getWinningCard(card1, card2, worldEvent) {
@@ -192,7 +196,7 @@ export function getWinningCard(card1, card2, worldEvent) {
 
 /**
  * Determines which of two users wins a round
- * @param { Types.GameInstance } gameInstance
+ * @param { Types.GameInstance } gameInstance the round's game instance
  * @returns { Types.UUID } winning user UUID1 and UUID2
  */
 export function getRoundWinnerUUID(gameInstance) {
@@ -207,7 +211,7 @@ export function getRoundWinnerUUID(gameInstance) {
 
 /**
  * Gives a random World Event
- * @param { Types.GameInstance } gameInstance
+ * @param { Types.GameInstance } gameInstance the game instance getting the world event
  * @returns { Types.worldEvent } World Event
  */
 function getRandomWorldEvent(gameInstance) {
