@@ -10,7 +10,6 @@ import {
 import {
   updateProfile,
   getScore,
-  getPlayerUUIDs,
   initializePlayers,
   setRemainingCards,
   getRemainingCards,
@@ -29,6 +28,7 @@ import {
   clearGameState,
   setGameWinnerUUID,
   getGameWinnerUUID,
+  getOpponentUUID,
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
@@ -112,10 +112,9 @@ export function handleGameStart(drawnCardNames) {
 function initializeScoreboard() {
   const scoreInfoWrapperEl = document.querySelector('#score_info');
   const roundNumberEl = document.querySelector('#round_number');
-  const timeRemainingEl = document.querySelector('#time_remaining');
 
   scoreInfoWrapperEl.replaceChildren(
-    ...getPlayerUUIDs().map((UUID) => {
+    ...[getOpponentUUID(), getPlayerUUID()].map((UUID) => {
       const scoreInfoEl = document.createElement('p');
       const scoreCounterEl = document.createElement('span');
       scoreCounterEl.innerText = getScore(UUID);
@@ -123,14 +122,13 @@ function initializeScoreboard() {
       const versusUsernameEl = document.createElement('versus-username');
       versusUsernameEl.setAttribute('uuid', UUID);
 
-      scoreInfoEl.replaceChildren(versusUsernameEl, ': ', scoreCounterEl);
+      scoreInfoEl.replaceChildren(versusUsernameEl, scoreCounterEl);
 
       return scoreInfoEl;
     }),
   );
 
   roundNumberEl.innerText = getRoundNumber();
-  timeRemainingEl.innerText = '0 sec';
 } /* initializeScoreboard */
 
 /**
