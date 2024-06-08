@@ -93,7 +93,7 @@ export function clearChat() {
 
   chatFeedEl.replaceChildren();
   printSystemMessage('Type /debug to toggle the debug menu');
-}
+} /* clearChat */
 
 /**
  * Initializes behavior of chat box in Versus mode

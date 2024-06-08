@@ -163,5 +163,18 @@
 #score_info {
   display: flex;
   justify-content: space-between;
+  font-size: 1.15rem;
+}
+
+#score_info p {
+  display: flex;
+  gap: 0.75rem;
+}
+
+#score_info p versus-username {
   font-weight: bold;
+}
+
+#score_info :last-child {
+  flex-direction: row-reverse;
 }

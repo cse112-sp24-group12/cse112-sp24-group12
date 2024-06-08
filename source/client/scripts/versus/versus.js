@@ -122,7 +122,7 @@ function initializeScoreboard() {
       const versusUsernameEl = document.createElement('versus-username');
       versusUsernameEl.setAttribute('uuid', UUID);
 
-      scoreInfoEl.replaceChildren(versusUsernameEl, ': ', scoreCounterEl);
+      scoreInfoEl.replaceChildren(versusUsernameEl, scoreCounterEl);
 
       return scoreInfoEl;
     }),
