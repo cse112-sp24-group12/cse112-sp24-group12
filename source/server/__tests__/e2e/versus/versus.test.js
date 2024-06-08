@@ -136,7 +136,7 @@ describe('E2E chat interaction testing', () => {
     const userCards = await page1.$('#user_cards');
     const oppPlayedCard = await page2.$('#opp_played_card');
     const expectedVariant = 'back';
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
     await userCards.evaluate((e) => e.firstChild.click());
     await new Promise((r) => setTimeout(r, 500));
     const cardVariant = await oppPlayedCard.evaluate((e) =>
@@ -172,7 +172,7 @@ describe('E2E chat interaction testing', () => {
     const userCards1 = await page1.$('#user_cards');
     const userCards2 = await page2.$('#user_cards');
     const roundWinnerText = await page1.$('#round_end_text');
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
     const card1 = await userCards1.evaluate((e) => {
       return {
         suite: e.firstChild.getAttribute('suite'),
