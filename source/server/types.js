@@ -182,7 +182,7 @@ export const WORLD_EVENTS = {
 /**
  * @typedef { {
  *  selectedCard: Record<UUID, Card>,
- *  roundWinner: UUID
+ *  roundWinner: UUID,
  *  worldEvent: string
  * } } RoundState
  */
