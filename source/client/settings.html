@@ -51,30 +51,6 @@
             <img id="profile_settings_avatar" src="" alt="avatar">
             <div id="change_image_button_wrapper">
               <button id="change_image_button">Change avatar</button>
-
-              <div id="select-profile-picture-wrapper">
-                <div id="select-profile-picture" class="card white-card">
-                  <button id="select-profile-picture-close">X</button>
-                  <h2>Choose a profile picture</h2>
-                  <input id="panda_avatar" type="radio" name="avatar-radio" data-url="./assets/images/characters/panda.png" value="panda">
-                  <label for="panda_avatar" >
-                    <img
-                    src="./assets/images/characters/panda.png"
-                    value= "./assets/images/characters/panda.png"
-                    alt="Panda"
-                    >
-                  </label>
-                  <input id="dragon_avatar" type="radio" name="avatar-radio" data-url="./assets/images/characters/dragon.png" value="dragon" checked>
-                  <label for="dragon_avatar">
-                    <img
-                    src="./assets/images/characters/dragon.png"
-                    value= "./assets/images/characters/dragon.png"
-                    alt="Dragon"
-                    >
-                  </label>
-
-                </div>
-              </div>
             </div>
             <div id="profile_settings_username_wrapper">
               <input id="profile_settings_username" type="text" value="">
@@ -93,11 +69,38 @@
         <div id="card-information-wrapper">
           <div id="card-information" class="card white-card">
             <button id="card-information-close">X</button>
-            <h2><output name="card-name-output"> </output></h2>
-            <h3><output name="card-info-output"> </output></h3>
+            <h2 id="card_name_output"></h2>
+            <h3 id="card_info_output"></h3>
           </div>
         </div>
       </section>
     </div>
+
+    <!-- MODALS -->
+    <dialog id="select_profile_picture_modal">
+        <h2>Select a profile picture</h2>
+        <div>
+          <input id="panda_avatar" type="radio" name="avatar-radio" value="panda">
+          <label for="panda_avatar" >
+            <img
+            src="./assets/images/characters/panda.png"
+            value= "./assets/images/characters/panda.png"
+            alt="Panda"
+            >
+          </label>
+          <input id="dragon_avatar" type="radio" name="avatar-radio" value="dragon" checked>
+          <label for="dragon_avatar">
+            <img
+            src="./assets/images/characters/dragon.png"
+            value= "./assets/images/characters/dragon.png"
+            alt="Dragon"
+            >
+          </label>
+        </div>
+        <form method="dialog">
+          <button>Close</button> 
+          <button type="button" id="save_pfp_button">Save</button>
+        </form>
+    </dialog>
   </body>
 </html>
