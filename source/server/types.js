@@ -31,7 +31,7 @@ export const SUITES = {
   PENTACLES: 'pentacles',
 };
 
-export const MULTIPLER = {
+export const MULTIPLIER = {
   GREATER: 2,
   LESS: 0.5,
   NEUTRAL: 1,
