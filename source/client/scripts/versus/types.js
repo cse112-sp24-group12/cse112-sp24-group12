@@ -147,7 +147,11 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *  } |
  *  {
  *    action: S2C_ACTIONS.INSTANCE_CLOSED
- *  }
+ *  } |
+ *  {
+ *    action: S2C_ACTIONS.WORLD_EVENT,
+ *    worldEvent: string
+ *  } |
  * } ServerToClientMessage
  */
 

@@ -109,7 +109,6 @@ function handleStartGame(webSocketConnection) {
       score: 0,
       remainingCards: drawnCards,
     };
-
     sendMessage(webSocketConnection, {
       action: S2C_ACTIONS.START_GAME,
       drawnCards,
@@ -477,8 +476,14 @@ function startNewRound(gameInstance) {
     });
     return;
   }
-
-  gameInstance.gameState.byRound.push(createNewRound(gameInstance));
+  const newRound = createNewRound(gameInstance);
+  gameInstance.gameState.byRound.push(newRound);
+  gameInstance.webSocketConnections.forEach((conn) => {
+    sendMessage(conn, {
+      action: S2C_ACTIONS.WORLD_EVENT,
+      worldEvent: newRound.worldEvent,
+    });
+  });
 
   log('Round started', {
     gameInstance,

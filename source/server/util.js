@@ -200,7 +200,7 @@ export function getRoundWinnerUUID(gameInstance) {
  * @returns { Types.worldEvent } World Event
  */
 function getRandomWorldEvent(gameInstance) {
-  const currentRound = gameInstance.gameState.byRound.length + 1;
+  const currentRoundNumber = gameInstance.gameState.byRound.length + 1;
   let worldEvents = [
     WORLD_EVENTS.LOWER_WINS,
     WORLD_EVENTS.RANDOM_VALUE,
@@ -212,10 +212,8 @@ function getRandomWorldEvent(gameInstance) {
     WORLD_EVENTS.RANDOM_SUITE,
   ];
 
-  if (currentRound == 2 || currentRound == 4) {
-    const worldEvent =
-      worldEvents[Math.floor(Math.random() * worldEvents.length)];
-    return worldEvent;
+  if (currentRoundNumber == 2 || currentRoundNumber == 4) {
+    return worldEvents[Math.floor(Math.random() * worldEvents.length)];
   } else {
     return WORLD_EVENTS.NONE;
   }

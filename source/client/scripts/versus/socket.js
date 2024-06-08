@@ -44,6 +44,7 @@ function handleMessage(message) {
     handleRevealCards,
     handleGameEnd,
     handleInstanceClosed,
+    handleWorldEvent,
     refreshEntireGame,
   } = socketState.gameCallbackFns;
   const { printMessage, printSystemMessage } = socketState.chatCallbackFns;
@@ -83,6 +84,9 @@ function handleMessage(message) {
       case S2C_ACTIONS.FORCE_REFRESH:
         setGameState(messageObj.gameState);
         refreshEntireGame();
+        break;
+      case S2C_ACTIONS.WORLD_EVENT:
+        handleWorldEvent(messageObj.worldEvent);
         break;
       default:
     }
