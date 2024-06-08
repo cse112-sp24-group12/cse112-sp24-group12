@@ -164,8 +164,27 @@ function getRandomValue(lo, hi) {
   return Math.floor(Math.random() * (hi - lo + 1)) + lo;
 }
 
+export function getWinningCard(card1, card2, worldEvent) {
+  switch (worldEvent) {
+    case WORLD_EVENTS.LOWER_WINS:
+      return card1.number < card2.number ? card1 : card2;
+    case WORLD_EVENTS.RANDOM_VALUE:
+      return getRandomValue(1, NUM_CARDS) *
+        getMultiplierWorldEvent(card1, card2, worldEvent) >
+        getRandomValue(1, NUM_CARDS)
+        ? card1
+        : card2;
+    /*fallthrough because other world events influence the multiplier method not winning card*/
+    default:
+      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) >
+        card2.number
+        ? card1
+        : card2;
+  }
+}
+
 /**
- * Determines which of two cards wins a round
+ * Determines which of two users wins a round
  * @param { Types.GameInstance } gameInstance
  * @returns { Types.UUID } winning user UUID1 and UUID2
  */
@@ -176,22 +195,7 @@ export function getRoundWinnerUUID(gameInstance) {
     currentRoundState.selectedCard,
   );
 
-  switch (worldEvent) {
-    case WORLD_EVENTS.LOWER_WINS:
-      return card1.number < card2.number ? uuid1 : uuid2;
-    case WORLD_EVENTS.RANDOM_VALUE:
-      return getRandomValue(1, NUM_CARDS) *
-        getMultiplierWorldEvent(card1, card2, worldEvent) >
-        getRandomValue(1, NUM_CARDS)
-        ? uuid1
-        : uuid2;
-    /*fallthrough because other world events influence the multiplier method not winning card*/
-    default:
-      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) >
-        card2.number
-        ? uuid1
-        : uuid2;
-  }
+  return getWinningCard(card1, card2, worldEvent) == card1 ? uuid1 : uuid2;
 }
 
 /**
