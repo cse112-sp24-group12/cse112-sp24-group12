@@ -214,7 +214,7 @@ export function getRoundWinnerUUID(gameInstance) {
  */
 function getRandomWorldEvent(gameInstance) {
   const currentRoundNumber = gameInstance.gameState.byRound.length + 1;
-  let worldEvents = WORLD_EVENTS.filter((e) => {
+  let worldEvents = Object.values(WORLD_EVENTS).filter((e) => {
     return e != WORLD_EVENTS.NONE;
   });
 
