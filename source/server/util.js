@@ -164,6 +164,13 @@ function getRandomValue(lo, hi) {
   return Math.floor(Math.random() * (hi - lo + 1)) + lo;
 }
 
+/**
+ * Determines the winner between 2 cards given a world event
+ * @param { Types.Card } card1
+ * @param { Types.Card } card2
+ * @param { string } worldEvent
+ * @returns { Types.Card } winning card
+ */
 export function getWinningCard(card1, card2, worldEvent) {
   switch (worldEvent) {
     case WORLD_EVENTS.LOWER_WINS:
