@@ -21,6 +21,7 @@ export const S2C_ACTIONS = {
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
   WORLD_EVENT: 'world_event',
+  INSTANCE_CLOSED: 'instance_closed',
 };
 
 export const WORLD_EVENTS = {
@@ -152,6 +153,9 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
  *    action: S2C_ACTIONS.WORLD_EVENT,
  *    worldEvent: string
  *  } |
+ *  {
+ *    action: S2C_ACTIONS.INSTANCE_CLOSED
+ *  }
  * } ServerToClientMessage
  */
 

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node ./main.js",
     "start": "node ./main.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests",
+    "test": "set NODE_OPTIONS=--experimental-vm-modules&& jest --passWithNoTests",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint './*.js' './__tests__/**/*.js'",
     "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint './*.js' './__tests__/**/*.js' --fix"
   },

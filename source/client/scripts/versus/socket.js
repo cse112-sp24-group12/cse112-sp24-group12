@@ -88,6 +88,9 @@ function handleMessage(message) {
       case S2C_ACTIONS.WORLD_EVENT:
         handleWorldEvent(messageObj.worldEvent);
         break;
+      case S2C_ACTIONS.INSTANCE_CLOSED:
+        handleInstanceClosed();
+        break;
       default:
     }
   } catch (e) {

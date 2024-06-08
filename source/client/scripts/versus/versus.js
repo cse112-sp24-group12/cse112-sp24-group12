@@ -433,6 +433,8 @@ export function handleGameEnd(gameWinner) {
  */
 export function handleWorldEvent(worldEvent) {
   // TODO: Trigger world event ui
+  const currentWorldEventMeta = document.querySelector('#current_world_event');
+  currentWorldEventMeta.setAttribute('content', worldEvent);
   console.log(worldEvent);
 }
 

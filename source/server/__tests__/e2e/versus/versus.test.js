@@ -188,7 +188,7 @@ describe('E2E chat interaction testing', () => {
     await userCards1.evaluate((e) => e.firstChild.click());
     await userCards2.evaluate((e) => e.firstChild.click());
     await new Promise((r) => setTimeout(r, 2500));
-    if (getWinningCard(card1, card2) == card1) {
+    if (getWinningCard(card1, card2, 'none') == card1) {
       const winText = await roundWinnerText.evaluate((e) => e.innerText);
       expect(winText).toBe('YOU WON!');
     } else {
@@ -227,6 +227,10 @@ describe('E2E chat interaction testing', () => {
     let wins2 = 0;
     await new Promise((r) => setTimeout(r, 1500));
     for (let i = 0; i < 5; i++) {
+      const currentWorldEventMeta = await page1.$('#current_world_event');
+      const currentWorldEvent = await currentWorldEventMeta.evaluate((e) =>
+        e.getAttribute('content'),
+      );
       const card1 = await userCards1.evaluate((e) => {
         return {
           suite: e.firstChild.getAttribute('suite'),
@@ -241,12 +245,12 @@ describe('E2E chat interaction testing', () => {
       });
       await userCards1.evaluate((e) => e.firstChild.click());
       await userCards2.evaluate((e) => e.firstChild.click());
-      if (getWinningCard(card1, card2) == card1) {
+      if (getWinningCard(card1, card2, currentWorldEvent) == card1) {
         wins1 += 1;
       } else {
         wins2 += 1;
       }
-      await new Promise((r) => setTimeout(r, 5000));
+      await new Promise((r) => setTimeout(r, 6000));
     }
     if (wins1 > wins2) {
       const winText = await gameWinnerText1.evaluate((e) => e.innerText);
@@ -262,5 +266,5 @@ describe('E2E chat interaction testing', () => {
     await browser1.close();
     await page2.close();
     await browser2.close();
-  }, 50000);
+  }, 60000);
 });
