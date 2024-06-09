@@ -73,7 +73,7 @@ function initializeCards() {
   const cardNameTitleEl = document.querySelector('#card_name_output');
   const cardInfoTextEl = document.querySelector('#card_info_output');
 
-  const cardListEl = document.querySelector('#information-card-list');
+  const cardListEl = document.querySelector('#information_card_list');
   const cardList = tarotConfig.tarot;
 
   cardListEl.replaceChildren(

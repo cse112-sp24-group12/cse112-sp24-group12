@@ -261,6 +261,15 @@ input[type="number"] {
   text-decoration: underline;
 }
 
+.general-link {
+  color: var(--yellow);
+  text-decoration: none;
+}
+
+.general-link:hover {
+  text-decoration: underline;
+}
+
 .card {
   border-radius: var(--border-radius);
   display: flex;
@@ -325,3 +334,32 @@ input[type="number"] {
 #settings_button {
   background-image: url(../assets/images/icons/gear.webp);
 }
+
+input[type="range"] {
+  appearance: none;
+  cursor: pointer;
+  background: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background-color: var(--black-low-opacity);
+  height: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* input[type="range"]::-moz-range-track {} */
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  background-color: var(--red);
+  background-image: url();
+  background-repeat: no-repeat;
+  background-position-x: right;
+  background-size: contain;
+  height: 1rem;
+  width: 50rem;
+  margin-top: -0.25rem;
+  border-radius: 1rem;
+}
+
+/* input[type="range"]::-moz-range-thumb {} */
