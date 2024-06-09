@@ -110,7 +110,9 @@
             <h2>Legend</h2>
             <button id="legend_info_button" class="info-button" aria-label="Game code info"></button>
           </div>
-          <img src="./assets/images/game_legend.webp" alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+          <img src="./assets/images/game_legend.webp"
+            id="game-legend"
+            alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
         </section>
       </div>
       <div id="bottom_board_wrapper">
@@ -158,6 +160,17 @@
     <form method="dialog" class="default-dialog-form">
       <button class="secondary-button">Stay in game</button>
       <button type="button" id="confirm_leave_button" class="destructive-button">Leave game</button>
+    </form>
+  </dialog>
+
+  <dialog id="world_event_modal">
+    <h2>World Event</h2>
+    <p>Description</p>
+    <img src="./assets/images/game_legend.webp"
+      class="game-rules-diagram"
+      alt="New game legend diagram from world event">
+    <form method="dialog" class="default-dialog-form">
+      <button class="secondary-button" id="world_event_button">Understood</button>
     </form>
   </dialog>
 
@@ -235,24 +248,24 @@
               compete against each other. The possible Events are as follows:
               <ul id="world_event_list">
                 <li>
-                  <h4>Event 1</h4>
-                  Description description description description description description description description description description
+                  <h4>Lower is Better</h4>
+                  The card with the lower power level wins!
                 </li>
                 <li>
-                  <h4>Event 2</h4>
-                  Description description description description description description description description description description
+                  <h4>Suite Reverse</h4>
+                  The order of the winning suites gets reversed!
                 </li>
                 <li>
-                  <h4>Event 3</h4>
-                  Description description description description description description description description description description
+                  <h4>Suite is Boosted!</h4>
+                  One of the suites is much stronger this round!
                 </li>
                 <li>
-                  <h4>Event 4</h4>
-                  Description description description description description description description description description description
+                  <h4>Value Change</h4>
+                  One of your card got changed to a new value!
                 </li>
                 <li>
-                  <h4>Event 5</h4>
-                  Description description description description description description description description description description
+                  <h4>Suite Change</h4>
+                  One of your cards got changed to a new suite!
                 </li>
               </ul>
             </li>

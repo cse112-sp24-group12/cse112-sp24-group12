@@ -432,10 +432,69 @@ export function handleGameEnd(gameWinner) {
  * @param { string } worldEvent world event that was triggered
  */
 export function handleWorldEvent(worldEvent) {
-  // TODO: Trigger world event ui
   const currentWorldEventMeta = document.querySelector('#current_world_event');
   currentWorldEventMeta.setAttribute('content', worldEvent);
-  console.log(worldEvent);
+
+  const gameLegend = document.querySelector('#game-legend');
+  const worldEventModal = document.querySelector('#world_event_modal');
+  let img, eventName, eventDescription;
+  switch (worldEvent) {
+    case 'lower_wins':
+      img = './assets/images/game_legend.webp';
+      eventName = 'Lower is Better';
+      eventDescription = 'The card with the lower power level wins!';
+      break;
+    case 'suite_reversed':
+      img = './assets/images/game_legend_reversed.webp';
+      eventName = 'Suite Reverse';
+      eventDescription = 'The order of the winning suites gets reversed!';
+      break;
+    case 'suite_boost_wands':
+      img = './assets/images/game_legend_wands_boost.webp';
+      eventName = 'Wands are Boosted!';
+      eventDescription = 'Wands are much stronger this round!';
+      break;
+    case 'suite_boost_cups':
+      img = './assets/images/game_legend_cups_boost.webp';
+      eventName = 'Cups are Boosted!';
+      eventDescription = 'Cups are much stronger this round!';
+      break;
+    case 'suite_boost_swords':
+      img = './assets/images/game_legend_swords_boost.webp';
+      eventName = 'Swords are Boosted!';
+      eventDescription = 'Swords are much stronger this round!';
+      break;
+    case 'suite_boost_pentacles':
+      img = './assets/images/game_legend_pentacles_boost.webp';
+      eventName = 'Pentacles are Boosted!';
+      eventDescription = 'Pentacles are much stronger this round!';
+      break;
+    case 'random_value':
+      img = './assets/images/game_legend.webp';
+      eventName = 'Value Change';
+      eventDescription = 'One of your cards got changed to a new value!';
+      break;
+    case 'random_suite':
+      img = './assets/images/game_legend.webp';
+      eventName = 'Suite Change';
+      eventDescription = 'One of your cards got changed to a new suite!';
+      break;
+    default:
+      img = './assets/images/game_legend.webp';
+  }
+  gameLegend.src = img;
+
+  if (worldEvent !== 'none') {
+    const modalHead = worldEventModal.querySelector('h2');
+    const modalText = worldEventModal.querySelector('p');
+    const modalImg = worldEventModal.querySelector('img');
+
+    modalHead.innerHTML = eventName;
+    modalText.innerHTML = eventDescription;
+    modalImg.src = img;
+
+    worldEventModal.showModal();
+  }
 }
 
 function returnToLobby() {
@@ -572,6 +631,7 @@ export function initializeVersus() {
   const openRulesButtonEl = document.querySelector('#open_rules_button');
   const legendInfoButtonEl = document.querySelector('#legend_info_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
+  const worldEventButtonEl = document.querySelector('#world_event_button');
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -595,4 +655,5 @@ export function initializeVersus() {
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
+  worldEventButtonEl.addEventListener('click', showWorldEventModal);
 } /* initializeVersus */
