@@ -114,8 +114,8 @@ function resetSettings() {
 } /* resetSettings */
 
 /**
- *
- *
+ * Creates list of avatar option elements based off list of available images
+ * @returns { Array<HTMLElement> } list of avatar elements
  */
 function createAvatarEls() {
   const currentProfileImageName = getProfileImageName();

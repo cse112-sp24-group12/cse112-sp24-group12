@@ -107,6 +107,7 @@
 #avatar_opt_wrapper {
   margin-top: 1rem;
   display: flex;
+  gap: 0.5rem;
 }
 
 #avatar_opt_wrapper input {
@@ -115,11 +116,15 @@
 
 #avatar_opt_wrapper label {
   display: block;
-  flex: 1;
   max-width: 10rem;
-  min-width: 0;
-  min-height: 0;
   cursor: pointer;
+  background-color: var(--black-low-opacity);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+}
+
+#avatar_opt_wrapper input:checked + label {
+  background-color: var(--yellow);
 }
 
 #avatar_opt_wrapper label img {
