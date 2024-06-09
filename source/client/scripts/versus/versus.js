@@ -145,7 +145,7 @@ function createCardElements() {
   userCardWrapperEl.replaceChildren(
     ...getRemainingCards().map((remainingCard, index) => {
       const versusCardEl = document.createElement('versus-card');
-      
+
       versusCardEl.setAttribute('variant', 'front');
       versusCardEl.setAttribute('suite', remainingCard.suite);
       versusCardEl.setAttribute('number', remainingCard.number);
@@ -155,26 +155,32 @@ function createCardElements() {
       // Add a class to the card to trigger the animation only if it's the first call
       versusCardEl.classList.add('player-card');
       versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
-      versusCardEl.addEventListener("animationend", () => {versusCardEl.classList.remove('player-card')});
+      versusCardEl.addEventListener('animationend', () => {
+        versusCardEl.classList.remove('player-card');
+      });
 
       return versusCardEl;
     }),
   );
 
   opponentCardWrapperEl.replaceChildren(
-    ...Array.from({ length: getNumOpponentCards() }).map((remainingCard, index) => {
-      const versusCardEl = document.createElement('versus-card');
+    ...Array.from({ length: getNumOpponentCards() }).map(
+      (remainingCard, index) => {
+        const versusCardEl = document.createElement('versus-card');
 
-      versusCardEl.setAttribute('variant', 'back');
-      versusCardEl.toggleAttribute('disabled', true);
+        versusCardEl.setAttribute('variant', 'back');
+        versusCardEl.toggleAttribute('disabled', true);
 
-      // Add a class to the card to trigger the animation only if it's the first call
-      versusCardEl.classList.add('player-card');
-      versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
-      versusCardEl.addEventListener("animationend", () => {versusCardEl.classList.remove('player-card')});
+        // Add a class to the card to trigger the animation only if it's the first call
+        versusCardEl.classList.add('player-card');
+        versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
+        versusCardEl.addEventListener('animationend', () => {
+          versusCardEl.classList.remove('player-card');
+        });
 
-      return versusCardEl;
-    }),
+        return versusCardEl;
+      },
+    ),
   );
 } /* createCardElements */
 
