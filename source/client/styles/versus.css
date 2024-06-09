@@ -82,3 +82,19 @@ versus-card label {
   height: 100%;
   color: var(--black);
 }
+
+.player-card {
+  visibility: hidden;
+  animation: slide-out 0.25s ease-out forwards;
+}
+
+@keyframes slide-out {
+  0% {
+    visibility: visible;
+    transform: translateX(100%);
+  }
+  100% {
+    visibility: visible;
+    transform: translateX(0);
+  }
+}

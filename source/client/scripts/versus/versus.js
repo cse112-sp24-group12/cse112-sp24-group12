@@ -140,29 +140,38 @@ function createCardElements() {
   const userCardWrapperEl = document.querySelector('#user_cards');
   const opponentCardWrapperEl = document.querySelector('#opponent_cards');
 
-  userCardWrapperEl.replaceChildren(
-    ...getRemainingCards().map((remainingCard) => {
-      const versusCardEl = document.createElement('versus-card');
+  const delayIncrement = 0.5;
 
+  userCardWrapperEl.replaceChildren(
+    ...getRemainingCards().map((remainingCard, index) => {
+      const versusCardEl = document.createElement('versus-card');
+      
       versusCardEl.setAttribute('variant', 'front');
       versusCardEl.setAttribute('suite', remainingCard.suite);
       versusCardEl.setAttribute('number', remainingCard.number);
 
       versusCardEl.addEventListener('change', handleCardSelection);
 
-      // Add a class to the card to trigger the animation
-      versusCardEl.classList.add('versus-card');
+      // Add a class to the card to trigger the animation only if it's the first call
+      versusCardEl.classList.add('player-card');
+      versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
+      versusCardEl.addEventListener("animationend", () => {versusCardEl.classList.remove('player-card')});
 
       return versusCardEl;
     }),
   );
 
   opponentCardWrapperEl.replaceChildren(
-    ...Array.from({ length: getNumOpponentCards() }).map(() => {
+    ...Array.from({ length: getNumOpponentCards() }).map((remainingCard, index) => {
       const versusCardEl = document.createElement('versus-card');
 
       versusCardEl.setAttribute('variant', 'back');
       versusCardEl.toggleAttribute('disabled', true);
+
+      // Add a class to the card to trigger the animation only if it's the first call
+      versusCardEl.classList.add('player-card');
+      versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
+      versusCardEl.addEventListener("animationend", () => {versusCardEl.classList.remove('player-card')});
 
       return versusCardEl;
     }),
