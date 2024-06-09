@@ -185,6 +185,7 @@ header {
 .oscillating-bar {
   height: 24px;
   position: relative;
+  font-family: "Mystery Quest", cursive, serif;
 }
 
 .luck-bar {
