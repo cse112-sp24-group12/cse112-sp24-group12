@@ -441,53 +441,54 @@ export function handleWorldEvent(worldEvent) {
 
   // describe world event's legend and description
   switch (worldEvent) {
-    case 'lower_wins':
+    case Types.WORLD_EVENTS.LOWER_WINS:
       img = './assets/images/game_legend.webp';
       eventName = 'Lower is Better';
       eventDescription = 'The card with the lower power level wins!';
       break;
-    case 'suite_reversed':
+    case Types.WORLD_EVENTS.SUITE_REVERSED:
       img = './assets/images/game_legend_reversed.webp';
       eventName = 'Suite Reverse';
       eventDescription = 'The order of the winning suites gets reversed!';
       break;
-    case 'suite_boost_wands':
+    case Types.WORLD_EVENTS.SUITE_BOOST_WANDS:
       img = './assets/images/game_legend_wands_boost.webp';
       eventName = 'Wands are Boosted!';
       eventDescription = 'Wands are much stronger this round!';
       break;
-    case 'suite_boost_cups':
+    case Types.WORLD_EVENTS.SUITE_BOOST_CUPS:
       img = './assets/images/game_legend_cups_boost.webp';
       eventName = 'Cups are Boosted!';
       eventDescription = 'Cups are much stronger this round!';
       break;
-    case 'suite_boost_swords':
+    case Types.WORLD_EVENTS.SUITE_BOOST_SWORDS:
       img = './assets/images/game_legend_swords_boost.webp';
       eventName = 'Swords are Boosted!';
       eventDescription = 'Swords are much stronger this round!';
       break;
-    case 'suite_boost_pentacles':
+    case Types.WORLD_EVENTS.SUITE_BOOST_PENTACLES:
       img = './assets/images/game_legend_pentacles_boost.webp';
       eventName = 'Pentacles are Boosted!';
       eventDescription = 'Pentacles are much stronger this round!';
       break;
-    case 'random_value':
+    case Types.WORLD_EVENTS.RANDOM_VALUE:
       img = './assets/images/game_legend.webp';
-      eventName = 'Value Change';
-      eventDescription = 'One of your cards got changed to a new value!';
+      eventName = 'Random Values';
+      eventDescription = "Your cards' values are randomized this round!";
       break;
-    case 'random_suite':
+    case Types.WORLD_EVENTS.RANDOM_SUITE:
       img = './assets/images/game_legend.webp';
-      eventName = 'Suite Change';
-      eventDescription = 'One of your cards got changed to a new suite!';
+      eventName = 'Random Suites';
+      eventDescription = "Your cards' suites are randomized this round!";
       break;
     default:
       gameLegend.src = './assets/images/game_legend.webp';
-      gameLegend.alt = 'Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral';
+      gameLegend.alt =
+        'Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral';
   }
 
   // update world event popup
-  if (worldEvent !== 'none') {
+  if (worldEvent !== Types.WORLD_EVENTS.NONE) {
     const worldEventPopupImg = document.createElement('img');
     const modalHead = worldEventModal.querySelector('h2');
     const modalText = worldEventModal.querySelector('p');
@@ -510,7 +511,7 @@ export function handleWorldEvent(worldEvent) {
  * @returns { Promise<void> }
  */
 async function translateWorldEvent() {
-  const gameLegend = document.querySelector('#game-legend')
+  const gameLegend = document.querySelector('#game-legend');
   const worldEventPopupImg = document.querySelector('#world-event-popup');
 
   /* calculate difference between current and desired position */
