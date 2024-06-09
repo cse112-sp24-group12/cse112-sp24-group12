@@ -9,6 +9,9 @@ import {
   setSFXVolumeLevel,
   getMusicVolumeLevel,
   getSFXVolumeLevel,
+  getProfileImageNameOptions,
+  getProfileImageUrlFromName,
+  getProfileImageName,
 } from './profile.js';
 import tarotConfig from './tarot.js';
 
@@ -65,7 +68,7 @@ function initializeUsernameInput() {
 /**
  * Populate the list of cards and interactions for opening/closing info menus
  */
-function initalizeCards() {
+function initializeCards() {
   const cardInfoModalEl = document.querySelector('#card_info_modal');
   const cardNameTitleEl = document.querySelector('#card_name_output');
   const cardInfoTextEl = document.querySelector('#card_info_output');
@@ -75,26 +78,25 @@ function initalizeCards() {
 
   cardListEl.replaceChildren(
     ...cardList.map((card) => {
-      const newCardEl = document.createElement('div');
+      const cardButtonEl = document.createElement('button');
       const imgEl = document.createElement('img');
 
-      newCardEl.classList.add('card');
       imgEl.src = card.image;
       imgEl.alt = card.name;
 
-      newCardEl.appendChild(imgEl);
+      cardButtonEl.appendChild(imgEl);
 
-      newCardEl.addEventListener('click', () => {
+      cardButtonEl.addEventListener('click', () => {
         cardNameTitleEl.innerText = card.name;
         cardInfoTextEl.innerText = card.keywords.join(', ');
 
         cardInfoModalEl.showModal();
       });
 
-      return newCardEl;
+      return cardButtonEl;
     }),
   );
-} /* initalizeCards */
+} /* initializeCards */
 
 /**
  * Reset/refresh all settings to align with currently saved values
@@ -113,21 +115,54 @@ function resetSettings() {
 
 /**
  *
+ *
+ */
+function createAvatarEls() {
+  const currentProfileImageName = getProfileImageName();
+
+  return getProfileImageNameOptions().map((profileImageName) => {
+    const profileImageOptionWrapperEl = document.createElement('div');
+    const inputEl = document.createElement('input');
+    const labelEl = document.createElement('label');
+    const imgEl = document.createElement('img');
+
+    inputEl.id = profileImageName;
+    inputEl.value = profileImageName;
+    inputEl.type = 'radio';
+    inputEl.name = 'avatar_radio';
+
+    if (profileImageName === currentProfileImageName) inputEl.checked = true;
+
+    labelEl.htmlFor = profileImageName;
+
+    imgEl.src = getProfileImageUrlFromName(profileImageName);
+    imgEl.alt = profileImageName;
+
+    labelEl.replaceChildren(imgEl);
+    profileImageOptionWrapperEl.replaceChildren(inputEl, labelEl);
+
+    return profileImageOptionWrapperEl;
+  });
+} /* createAvatarEls */
+
+/**
+ *
  */
 function initializeAvatarSelection() {
   const changeAvatarButtonEl = document.querySelector('#change_image_button');
-  const saveProfilePictureButtonEl = document.querySelector('#save_pfp_button');
-  const profileImageEl = document.querySelector('#profile_settings_avatar');
-  const selectProfilePictureModalEl = document.querySelector(
-    '#select_profile_picture_modal',
+  const saveAvatarButtonEl = document.querySelector('#save_pfp_button');
+  const avatarImageEl = document.querySelector('#profile_settings_avatar');
+  const avatarModalEl = document.querySelector('#select_avatar_modal');
+  const avatarOptionWrapperEl = document.querySelector('#avatar_opt_wrapper');
+
+  avatarOptionWrapperEl.replaceChildren(...createAvatarEls());
+
+  [changeAvatarButtonEl, avatarImageEl].forEach((el) =>
+    el.addEventListener('click', () => avatarModalEl.showModal()),
   );
 
-  [changeAvatarButtonEl, profileImageEl].forEach((el) =>
-    el.addEventListener('click', () => selectProfilePictureModalEl.showModal()),
-  );
-
-  saveProfilePictureButtonEl.addEventListener('click', () => {
-    selectProfilePictureModalEl.close();
+  saveAvatarButtonEl.addEventListener('click', () => {
+    avatarModalEl.close();
 
     const selectedAvatarImgName = document.querySelector(
       "input[type='radio']:checked",
@@ -150,7 +185,7 @@ function initializeSettings() {
   );
 
   resetSettings();
-  initalizeCards();
+  initializeCards();
   initializeAvatarSelection();
   initializeUsernameInput();
   initializeVolumeInput(musicSettingsEl, setMusicVolumeLevel);

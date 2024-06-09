@@ -71,18 +71,9 @@
       </section>
 
       <!-- MODALS -->
-      <dialog id="select_profile_picture_modal">
-        <h2>Select a profile picture</h2>
-        <div id="profile_picture_opt_wrapper">
-          <input id="panda_avatar" type="radio" name="avatar-radio" value="panda">
-          <label for="panda_avatar">
-            <img src="./assets/images/characters/panda.png" value="./assets/images/characters/panda.png" alt="Panda">
-          </label>
-          <input id="dragon_avatar" type="radio" name="avatar-radio" value="dragon" checked>
-          <label for="dragon_avatar">
-            <img src="./assets/images/characters/dragon.png" value="./assets/images/characters/dragon.png" alt="Dragon">
-          </label>
-        </div>
+      <dialog id="select_avatar_modal">
+        <h2>Select an avatar</h2>
+        <div id="avatar_opt_wrapper"><!-- dynamically populated --></div>
         <form method="dialog" class="default-dialog-form">
           <button class="secondary-button" autofocus>Close</button>
           <button type="button" id="save_pfp_button" class="primary-button">Save</button>
