@@ -18,14 +18,22 @@ import {
 export const SOUND_EFFECTS = {
   SWISH: {
     filePath: './assets/sounds/swish.mp3',
-    volumeFactor: 0.75,
+    volumeFactor: 1,
+  },
+  LOSE: {
+    filePath: './assets/sounds/lose.mp3',
+    volumeFactor: 1,
+  },
+  WIN: {
+    filePath: './assets/sounds/win.mp3',
+    volumeFactor: 1,
   },
 };
 
 /** @type { SoundEffect } */
 const BACKGROUND_SOUND = {
-  filePath: 'assets/sounds/test.mp3',
-  volumeFactor: 1,
+  filePath: 'assets/sounds/background.mp3',
+  volumeFactor: 0.33,
 };
 
 const audioContext = new AudioContext();
@@ -61,12 +69,15 @@ async function playSound(soundEffect, { variant } = {}) {
     { once: true },
   );
 
-  window.addEventListener(UPDATE_VOLUME_LISTENER_NAME, () => {
+  const updateVolume = () => {
     audioGainNode.gain.setValueAtTime(
       getVolume(variant, soundEffect.volumeFactor),
       0,
     );
-  });
+  };
+
+  window.addEventListener(UPDATE_VOLUME_LISTENER_NAME, updateVolume);
+  window.addEventListener('storage', updateVolume);
 } /* playSound */
 
 /**

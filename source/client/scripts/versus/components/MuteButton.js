@@ -18,6 +18,8 @@ export default class MuteButton extends HTMLElement {
 
     this._buttonEl.addEventListener('click', this._toggleMute);
 
+    window.addEventListener('storage', this._updateDisplay);
+
     this.replaceChildren(this._buttonEl);
   } /* connectedCallback */
 
@@ -26,10 +28,12 @@ export default class MuteButton extends HTMLElement {
   } /* disconnectedCallback */
 
   _toggleMute = () => {
-    const isMute = !getIsMute();
+    setIsMute(!getIsMute());
 
-    setIsMute(isMute);
-
-    this.dataset.muted = isMute;
+    this._updateDisplay();
   }; /* _toggleIsMute */
+
+  _updateDisplay = () => {
+    this.dataset.muted = getIsMute();
+  }; /* _updateDisplay */
 } /* MuteButton */
