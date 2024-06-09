@@ -5,12 +5,13 @@ import {
   getUsername,
   setProfileImage,
   setUsername,
-  // getProfileImageNameOptions,
-  // getProfileImageUrlFromName,
   setMusicVolumeLevel,
   setSFXVolumeLevel,
   getMusicVolumeLevel,
   getSFXVolumeLevel,
+  getProfileImageNameOptions,
+  getProfileImageUrlFromName,
+  getProfileImageName,
 } from './profile.js';
 import tarotConfig from './tarot.js';
 
@@ -41,9 +42,9 @@ function initializeNavigation(buttonWrapperIdToSectionIdMap) {
 } /* initializeNavigation */
 
 /**
- *
- * @param volumeEl
- * @param setVolumeCallbackFn
+ * Adds event listener to change volume setting on user input
+ * @param { HTMLElement } volumeEl
+ * @param { Function } setVolumeCallbackFn
  */
 function initializeVolumeInput(volumeEl, setVolumeCallbackFn) {
   volumeEl.addEventListener('change', () => {
@@ -54,116 +55,148 @@ function initializeVolumeInput(volumeEl, setVolumeCallbackFn) {
 /**
  *
  */
-function initalizeCards() {
-  const cardListEl = document.querySelector('#information-card-list');
-  const cards = tarotConfig.tarot;
+function initializeUsernameInput() {
+  const usernameInputEl = document.querySelector('#profile_settings_username');
+  const saveUsernameButtonEl = document.querySelector('#save_settings_button');
+
+  saveUsernameButtonEl.addEventListener('click', () => {
+    setUsername(usernameInputEl.value);
+    resetSettings();
+  });
+} /* initializeUsernameInput */
+
+/**
+ * Populate the list of cards and interactions for opening/closing info menus
+ */
+function initializeCards() {
+  const cardInfoModalEl = document.querySelector('#card_info_modal');
+  const cardNameTitleEl = document.querySelector('#card_name_output');
+  const cardInfoTextEl = document.querySelector('#card_info_output');
+
+  const cardListEl = document.querySelector('#information_card_list');
+  const cardList = tarotConfig.tarot;
 
   cardListEl.replaceChildren(
-    ...cards.map((card) => {
-      const newCardEl = document.createElement('div');
+    ...cardList.map((card) => {
+      const cardButtonEl = document.createElement('button');
       const imgEl = document.createElement('img');
 
-      newCardEl.classList.add('card');
       imgEl.src = card.image;
       imgEl.alt = card.name;
 
-      newCardEl.appendChild(imgEl);
+      cardButtonEl.appendChild(imgEl);
 
-      return newCardEl;
+      cardButtonEl.addEventListener('click', () => {
+        cardNameTitleEl.innerText = card.name;
+        cardInfoTextEl.innerText = card.keywords.join(', ');
+
+        cardInfoModalEl.showModal();
+      });
+
+      return cardButtonEl;
     }),
   );
-}
+} /* initializeCards */
 
 /**
- *
- */
-function saveSettings() {
-  const usernameInputEl = document.querySelector('#profile_settings_username');
-  // const avatarImageEl = document.querySelector('#profile_settings_avatar');
-
-  setUsername(usernameInputEl.value);
-  setProfileImage();
-
-  resetSettings();
-} /* saveSettings */
-
-/**
- *
+ * Reset/refresh all settings to align with currently saved values
  */
 function resetSettings() {
   const usernameInputEl = document.querySelector('#profile_settings_username');
   const avatarImageEl = document.querySelector('#profile_settings_avatar');
+  const musicSettingsEl = document.querySelector('#music_volume_slider');
+  const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
 
   usernameInputEl.value = getUsername();
   avatarImageEl.src = getProfileImageUrl();
+  musicSettingsEl.value = getMusicVolumeLevel() * 100;
+  sfxSettingsEl.value = getSFXVolumeLevel() * 100;
 } /* resetSettings */
+
+/**
+ * Creates list of avatar option elements based off list of available images
+ * @returns { Array<HTMLElement> } list of avatar elements
+ */
+function createAvatarEls() {
+  const currentProfileImageName = getProfileImageName();
+
+  return getProfileImageNameOptions().map((profileImageName) => {
+    const profileImageOptionWrapperEl = document.createElement('div');
+    const inputEl = document.createElement('input');
+    const labelEl = document.createElement('label');
+    const imgEl = document.createElement('img');
+
+    inputEl.id = profileImageName;
+    inputEl.value = profileImageName;
+    inputEl.type = 'radio';
+    inputEl.name = 'avatar_radio';
+
+    if (profileImageName === currentProfileImageName) inputEl.checked = true;
+
+    labelEl.htmlFor = profileImageName;
+
+    imgEl.src = getProfileImageUrlFromName(profileImageName);
+    imgEl.alt = profileImageName;
+
+    labelEl.replaceChildren(imgEl);
+    profileImageOptionWrapperEl.replaceChildren(inputEl, labelEl);
+
+    return profileImageOptionWrapperEl;
+  });
+} /* createAvatarEls */
 
 /**
  *
  */
-function saveVolume() {
-  const musicSettingsEl = document.querySelector('#music_volume_slider');
-  const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
+function initializeAvatarSelection() {
+  const changeAvatarButtonEl = document.querySelector('#change_image_button');
+  const saveAvatarButtonEl = document.querySelector('#save_pfp_button');
+  const avatarImageEl = document.querySelector('#profile_settings_avatar');
+  const avatarModalEl = document.querySelector('#select_avatar_modal');
+  const avatarOptionWrapperEl = document.querySelector('#avatar_opt_wrapper');
 
-  musicSettingsEl.value = getMusicVolumeLevel() * 100;
-  sfxSettingsEl.value = getSFXVolumeLevel() * 100;
-} /* saveVolume */
+  avatarOptionWrapperEl.replaceChildren(...createAvatarEls());
+
+  [changeAvatarButtonEl, avatarImageEl].forEach((el) =>
+    el.addEventListener('click', () => avatarModalEl.showModal()),
+  );
+
+  saveAvatarButtonEl.addEventListener('click', () => {
+    avatarModalEl.close();
+
+    const selectedAvatarImgName = document.querySelector(
+      "input[type='radio']:checked",
+    ).value;
+
+    setProfileImage(selectedAvatarImgName);
+
+    resetSettings();
+  });
+} /* initializeAvatarSelection */
 
 /**
- * Initializes event listeners for navigation
+ * Initializes settings functionality
  */
 function initializeSettings() {
   const musicSettingsEl = document.querySelector('#music_volume_slider');
   const sfxSettingsEl = document.querySelector('#sfx_volume_slider');
-  const saveSettingsButtonEl = document.querySelector('#save_settings_button');
   const resetSettingsButtonEl = document.querySelector(
     '#reset_settings_button',
   );
-  // TODO: Implement avatar selection
-
-  const changeAvatarButton = document.querySelector('#change_image_button');
-  changeAvatarButton.addEventListener('click', () => {
-    document
-      .querySelector('#select-profile-picture-wrapper')
-      .classList.add('active');
-  });
-  const closeAvatarButton = document.querySelector(
-    '#select-profile-picture-close',
-  );
-  closeAvatarButton.addEventListener('click', () => {
-    document
-      .querySelector('#select-profile-picture-wrapper')
-      .classList.remove('active');
-  });
-
-  // TODO: Card information onclick
-  /*
-  const cardInfoPopup = document.querySelector("card");
-  cardInfoPopup.addEventListener('click', () => {
-    document.querySelector("#card-information-wrapper").classList.add('active');
-  });
-
-  const closeInfoButton = document.querySelector("#card-information-close");
-  closeInfoButton.addEventListener('click', () => {
-    document.querySelector("#card-information-wrapper").classList.remove('active');
-  })
-  */
-  // TODO: Refactor code
 
   resetSettings();
-  saveSettings();
-  saveVolume();
+  initializeCards();
+  initializeAvatarSelection();
+  initializeUsernameInput();
+  initializeVolumeInput(musicSettingsEl, setMusicVolumeLevel);
+  initializeVolumeInput(sfxSettingsEl, setSFXVolumeLevel);
   initializeNavigation({
     '#audio_menu_button_wrapper': '#volume_settings',
     '#profile_menu_button_wrapper': '#profile_settings',
     '#info_menu_button_wrapper': '#information_settings',
   });
-  initializeVolumeInput(musicSettingsEl, setMusicVolumeLevel);
-  initializeVolumeInput(sfxSettingsEl, setSFXVolumeLevel);
-  initalizeCards();
 
-  saveSettingsButtonEl.addEventListener('click', saveSettings);
   resetSettingsButtonEl.addEventListener('click', resetSettings);
-} /* initSettings */
+} /* initializeSettings */
 
 window.addEventListener('DOMContentLoaded', initializeSettings);

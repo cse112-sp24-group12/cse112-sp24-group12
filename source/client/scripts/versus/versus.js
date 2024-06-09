@@ -10,7 +10,6 @@ import {
 import {
   updateProfile,
   getScore,
-  getPlayerUUIDs,
   initializePlayers,
   setRemainingCards,
   getRemainingCards,
@@ -29,6 +28,7 @@ import {
   clearGameState,
   setGameWinnerUUID,
   getGameWinnerUUID,
+  getOpponentUUID,
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
@@ -112,10 +112,9 @@ export function handleGameStart(drawnCardNames) {
 function initializeScoreboard() {
   const scoreInfoWrapperEl = document.querySelector('#score_info');
   const roundNumberEl = document.querySelector('#round_number');
-  const timeRemainingEl = document.querySelector('#time_remaining');
 
   scoreInfoWrapperEl.replaceChildren(
-    ...getPlayerUUIDs().map((UUID) => {
+    ...[getOpponentUUID(), getPlayerUUID()].map((UUID) => {
       const scoreInfoEl = document.createElement('p');
       const scoreCounterEl = document.createElement('span');
       scoreCounterEl.innerText = getScore(UUID);
@@ -123,14 +122,13 @@ function initializeScoreboard() {
       const versusUsernameEl = document.createElement('versus-username');
       versusUsernameEl.setAttribute('uuid', UUID);
 
-      scoreInfoEl.replaceChildren(versusUsernameEl, ': ', scoreCounterEl);
+      scoreInfoEl.replaceChildren(versusUsernameEl, scoreCounterEl);
 
       return scoreInfoEl;
     }),
   );
 
   roundNumberEl.innerText = getRoundNumber();
-  timeRemainingEl.innerText = '0 sec';
 } /* initializeScoreboard */
 
 /**
@@ -164,8 +162,10 @@ function createCardElements() {
   const userCardWrapperEl = document.querySelector('#user_cards');
   const opponentCardWrapperEl = document.querySelector('#opponent_cards');
 
+  const delayIncrement = 0.5;
+
   userCardWrapperEl.replaceChildren(
-    ...getRemainingCards().map((remainingCard) => {
+    ...getRemainingCards().map((remainingCard, index) => {
       const versusCardEl = document.createElement('versus-card');
 
       versusCardEl.setAttribute('variant', 'front');
@@ -174,19 +174,35 @@ function createCardElements() {
 
       versusCardEl.addEventListener('click', handleCardSelection);
 
+      // Add a class to the card to trigger the animation only if it's the first call
+      versusCardEl.classList.add('player-card');
+      versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
+      versusCardEl.addEventListener('animationend', () => {
+        versusCardEl.classList.remove('player-card');
+      });
+
       return versusCardEl;
     }),
   );
 
   opponentCardWrapperEl.replaceChildren(
-    ...Array.from({ length: getNumOpponentCards() }).map(() => {
-      const versusCardEl = document.createElement('versus-card');
+    ...Array.from({ length: getNumOpponentCards() }).map(
+      (remainingCard, index) => {
+        const versusCardEl = document.createElement('versus-card');
 
-      versusCardEl.setAttribute('variant', 'back');
-      versusCardEl.toggleAttribute('disabled', true);
+        versusCardEl.setAttribute('variant', 'back');
+        versusCardEl.toggleAttribute('disabled', true);
 
-      return versusCardEl;
-    }),
+        // Add a class to the card to trigger the animation only if it's the first call
+        versusCardEl.classList.add('player-card');
+        versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
+        versusCardEl.addEventListener('animationend', () => {
+          versusCardEl.classList.remove('player-card');
+        });
+
+        return versusCardEl;
+      },
+    ),
   );
 } /* createCardElements */
 

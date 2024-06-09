@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./styles/global.css">
     <link rel="stylesheet" href="./styles/settings.css">
     <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon">
-    
+
     <script src="./scripts/settings.js" type="module"></script>
   </head>
   <body>
@@ -41,62 +41,68 @@
         </nav>
       </aside>
       <section id="volume_settings" class="active card purple-card">
-        <label for="music_volume_slider"><h2>Music volume</h2></label>
+        <h2>Audio settings</h2>
+        <label for="music_volume_slider">Music volume</label>
         <input type="range" name="music_volume" id="music_volume_slider">
         <label for="sfx_volume_slider"><h2>Sound effects volume</h2></label>
         <input type="range" name="sfx_volume" id="sfx_volume_slider">
       </section>
       <section id="profile_settings" class="card purple-card">
+        <h2>Profile settings</h2>
         <div id="profile_settings_identity">
+          <label for="change_image_button">
             <img id="profile_settings_avatar" src="" alt="avatar">
-            <div id="change_image_button_wrapper">
-              <button id="change_image_button">Change avatar</button>
-
-              <div id="select-profile-picture-wrapper">
-                <div id="select-profile-picture" class="card white-card">
-                  <button id="select-profile-picture-close">X</button>
-                  <h2>Choose a profile picture</h2>
-                  <label><input type="radio" name="avatar-radio" value="./source/client/assets/images/characters/panda.png">
-                    <img
-                    src="./assets/images/characters/panda.png"
-                    value= "./assets/images/characters/panda.png"
-                    alt="Panda"
-                    width="50"
-                    height="50">
-                  </label>
-                  <label><input type="radio" name="avatar-radio" value="./source/client/assets/images/characters/dragon.png" checked>
-                    <img
-                    src="./assets/images/characters/dragon.png"
-                    value= "./assets/images/characters/dragon.png"
-                    alt="Dragon"
-                    width="50"
-                    height="50">
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div id="profile_settings_username_wrapper">
-              <input id="profile_settings_username" type="text" value="">
-            </div>
-        </div>
-        <div id="profile_settings_control_wrapper">
-          <p id="save_failed_msg" class="hidden">Save failed</p>
-          <p id="save_successful_msg" class="hidden">Save successful</p>
-          <button id="reset_settings_button" class="secondary-button">Reset</button>
-          <button id="save_settings_button" class="primary-button">Save</button>
-        </div>
-      </section>
-      <section id="information_settings" class="card purple-card">
-        <h2>All cards</h2>
-        <div id="information-card-list"></div>
-        <div id="card-information-wrapper">
-          <div id="card-information" class="card white-card">
-            <button id="card-information-close">X</button>
-            <h2>The Fool</h2>
-            <h3>freedom, faith, inexperience, innocence</h3>
+          </label>
+          <div id="change_image_button_wrapper">
+            <button id="change_image_button">Change avatar</button>
+          </div>
+          <div id="profile_settings_username_wrapper">
+            <input id="profile_settings_username" type="text" value="">
+          </div>
+          <div id="username_button_wrapper">
+            <button id="reset_settings_button" class="secondary-button">Reset</button>
+            <button id="save_settings_button" class="primary-button">Save</button>
           </div>
         </div>
       </section>
+      <section id="information_settings" class="card purple-card">
+        <section id="general_info_wrapper">
+          <h2>General information</h2>
+          <p id=>
+            This project was created by Team 12 for CSE 112 during Spring 2024 at UCSD.
+            The source code is located on
+            <a href="https://github.com/cse112-sp24-group12/cse112-sp24-group12" target="_blank" class="general-link">GitHub</a>.
+          </p>
+          <p>
+            Special thanks to Professor Powell and TA Gagan.
+          </p>
+        </section>
+        <section>
+          <h2>All cards</h2>
+          <div id="information_card_list"><!-- dynamically populated --></div>
+        </section>
+      </section>
+
+      <!-- MODALS -->
+      <dialog id="select_avatar_modal">
+        <h2>Select an avatar</h2>
+        <div id="avatar_opt_wrapper"><!-- dynamically populated --></div>
+        <form method="dialog" class="default-dialog-form">
+          <button class="secondary-button" autofocus>Close</button>
+          <button type="button" id="save_pfp_button" class="primary-button">Save</button>
+        </form>
+      </dialog>
+      
+      <dialog id="card_info_modal">
+        <h2>Card information</h2>
+        <div id="card_info_modal_wrapper">
+          <p><strong>Name: </strong>"<span id="card_name_output"><!-- dynamically populated --></span>"</p>
+          <p><strong>Keywords: </strong><span id="card_info_output"><!-- dynamically populated --></span></p>
+        </div>
+        <form method="dialog" class="default-dialog-form">
+          <button class="secondary-button">Close</button>
+        </form>
+      </dialog>
     </main>
   </body>
 </html>
