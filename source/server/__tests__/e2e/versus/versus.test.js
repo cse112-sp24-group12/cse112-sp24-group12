@@ -154,7 +154,7 @@ describe('E2E chat interaction testing', () => {
     const userCards2 = await page2.$('#user_cards');
     const oppPlayedCard = await page2.$('#opp_played_card');
     const expectedVariant = 'front';
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
     await userCards1.evaluate((e) => e.firstChild.click());
     await userCards2.evaluate((e) => e.firstChild.click());
     await new Promise((r) => setTimeout(r, 500));
@@ -205,7 +205,7 @@ describe('E2E chat interaction testing', () => {
     const userCards1 = await page1.$('#user_cards');
     const userCards2 = await page2.$('#user_cards');
     const roundNumberText = await page1.$('#round_number');
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
     await userCards1.evaluate((e) => e.firstChild.click());
     await userCards2.evaluate((e) => e.firstChild.click());
     await new Promise((r) => setTimeout(r, 4000));
@@ -225,12 +225,18 @@ describe('E2E chat interaction testing', () => {
     const gameEndDialog = await page1.$('#instance_closed_modal');
     let wins1 = 0;
     let wins2 = 0;
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
     for (let i = 0; i < 5; i++) {
       const currentWorldEventMeta = await page1.$('#current_world_event');
       const currentWorldEvent = await currentWorldEventMeta.evaluate((e) =>
         e.getAttribute('content'),
       );
+      if (i == 1 || i == 3) {
+        const worldEventButton1 = await page1.$('#world_event_button');
+        const worldEventButton2 = await page2.$('#world_event_button');
+        await worldEventButton1.evaluate((e) => e.click());
+        await worldEventButton2.evaluate((e) => e.click());
+      }
       const card1 = await userCards1.evaluate((e) => {
         return {
           suite: e.firstChild.getAttribute('suite'),
