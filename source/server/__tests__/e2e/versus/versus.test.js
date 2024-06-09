@@ -157,7 +157,7 @@ describe('E2E chat interaction testing', () => {
     await new Promise((r) => setTimeout(r, 2000));
     await userCards1.evaluate((e) => e.firstChild.click());
     await userCards2.evaluate((e) => e.firstChild.click());
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 1000));
     const cardVariant = await oppPlayedCard.evaluate((e) =>
       e.firstChild.getAttribute('variant'),
     );
