@@ -273,3 +273,19 @@ versus-card .card-back {
     transform: scale(1.0) translate(25vw, -20vh);
   }
 }
+
+.player-card {
+  visibility: hidden;
+  animation: slide-out 0.25s ease-out forwards;
+}
+
+@keyframes slide-out {
+  0% {
+    visibility: visible;
+    transform: translateX(100%);
+  }
+  100% {
+    visibility: visible;
+    transform: translateX(0);
+  }
+}
