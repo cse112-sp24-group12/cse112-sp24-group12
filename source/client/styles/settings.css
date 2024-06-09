@@ -1,7 +1,7 @@
 #settings-container {
   display: flex;
   align-items: flex-start;
-  padding: 2rem;
+  padding: 8rem 3rem 3rem 3rem;
   gap: 3rem;
 }
 
