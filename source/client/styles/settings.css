@@ -50,6 +50,8 @@
 
 #profile_settings label {
   cursor: pointer;
+  background-color: var(--background-color);
+  border-radius: 50%;
 }
 
 #profile_settings_identity {
@@ -64,9 +66,7 @@
 
 #profile_settings_avatar {
   width: 7.5rem;
-  height: 7.5rem;
-  background-color: var(--background-color);
-  border-radius: 50%;
+  aspect-ratio: 1 / 1;
 }
 
 #change_image_button_wrapper {
