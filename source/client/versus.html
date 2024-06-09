@@ -37,7 +37,10 @@
     <section id="lobby_menu">
       <section id="lobby_game_codes_wrapper" aria-labelledby="lobby_game_codes_title">
         <div class="lobby-code-wrapper">
-          <label for="self_game_code">You are in room</label>
+          <div id="self_code_label_wrapper">
+            <label for="self_game_code">You are in room</label>
+            <button id="game_code_info_button" class="info-button" aria-label="Game code info"></button>
+          </div>
           <div class="lobby-code-input-wrapper">
             <button id="copy_game_code_button" aria-label="Copy room code"></button>
             <input type="text" id="self_game_code" name="self_game_code" readonly>
@@ -79,10 +82,7 @@
       </div>
       <div id="top_mid_wrapper">
         <section id="game_info">
-          <div id="round_info">
-            <p>Round <span id="round_number"><!-- dynamically populated --></span></p>
-            <time id="time_remaining"><!-- dynamically populated --></time>
-          </div>
+          <p id="round_info">Round <span id="round_number"><!-- dynamically populated --></span></p>
           <div id="score_info"><!-- dynamically populated --></div>
         </section>
         <section id="played_card_wrapper">
@@ -102,7 +102,10 @@
       </div> 
       <div id="top_right_wrapper">
         <section id="legend_card" class="card purple-card">
-          <h2>Legend</h2>
+          <div id="legend_card_header">
+            <h2>Legend</h2>
+            <button id="legend_info_button" class="info-button" aria-label="Game code info"></button>
+          </div>
           <img src="./assets/images/game_legend.webp" alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
         </section>
       </div>
@@ -130,6 +133,15 @@
   </footer>
 
   <!-- MODALS -->
+  <dialog id="game_lobby_info_modal">
+    <h2>Game codes</h2>
+    <p>If you want to get a game started, share your game code with a friend.</p>
+    <p>If your friend sent you a game code, enter it below to join their game.</p>
+    <form method="dialog" class="default-dialog-form">
+      <button class="primary-button">Okay</button>
+    </form>
+  </dialog>
+
   <dialog id="instance_closed_modal">
     <p>The game you are in has ended.</p>
     <form method="dialog" class="default-dialog-form">
@@ -184,6 +196,34 @@
           </ul>
         </li>
         <li>
+          <h3>Winning cards</h3>
+          <ul>
+            <li>
+              As mentioned before, each card has both a suit and a number (or number-adjacent face value). The total score of
+              a card is equal to its numeric value times its multiplier. The multiplier of a round is calculated by examining
+              the relationship between the suits of the cards, subject to effect by World Events.
+            </li>
+            <li>
+              The standard relationship of suits is pictured below.
+            </li>
+            <li>
+              <img
+                src="./assets/images/game_legend.webp"
+                class="game-rules-diagram"
+                alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral"  
+              >
+            </li>
+            <li>
+              Namely, the Wands suit has a positive multiplier against the Cups suit, and likewise for Cups against Swords and Swords against Wands.
+              In this case, Pentacles are neutral (i.e., have no multiplier against any suit).
+            </li>
+            <li>
+              Once the total score of the card has been calculated from the numeric value and suit-based multiplier, the card with the highest score
+              wins each round.
+            </li>
+          </ul>
+        </li>
+        <li>
           <h3>World Events</h3>
           <ul>
             <li>
@@ -224,7 +264,7 @@
       <div class="card-flip-wrapper">
         <label>
           <img class="card-front" src="" alt="card front face" draggable="false">
-          <img class="card-back" src="./assets/images/cardback.png" alt="card back face" draggable="false">
+          <img class="card-back" src="./assets/images/deck_minor/card_back.webp" alt="card back face" draggable="false">
         </label>
         <input type="radio" name="selected_card">
       </div>

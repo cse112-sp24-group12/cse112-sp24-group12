@@ -39,6 +39,12 @@
   font-weight: normal;
 }
 
+@font-face {
+  font-family: "Roboto";
+  src: url(../assets/fonts/Roboto-Bold.ttf) format("truetype");
+  font-weight: bold;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -75,7 +81,7 @@ canvas.star-bg {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Berkshire Swash";
+  font-family: "Berkshire Swash", cursive, serif;
   font-weight: normal;
 }
 
@@ -255,6 +261,15 @@ input[type="number"] {
   text-decoration: underline;
 }
 
+.general-link {
+  color: var(--yellow);
+  text-decoration: none;
+}
+
+.general-link:hover {
+  text-decoration: underline;
+}
+
 .card {
   border-radius: var(--border-radius);
   display: flex;
@@ -286,8 +301,21 @@ input[type="number"] {
   transition: var(--default-transform-transition);
 }
 
-.icon-button:hover {
+.icon-button:hover,
+.info-button:hover {
   transform: var(--default-scale);
+}
+
+.info-button {
+  display: inline-block;
+  width: 1.5rem;
+  aspect-ratio: 1 / 1;
+  background-size: contain;
+  background-image: url(../assets/images/icons/info_icon.svg);
+  background-repeat: no-repeat;
+  border: none;
+  background-color: transparent;
+  transition: var(--default-transform-transition);
 }
 
 #short_settings_icon_list {
@@ -310,3 +338,31 @@ versus-mute-button[data-muted="false"] button {
 #settings_button {
   background-image: url(../assets/images/icons/gear.webp);
 }
+
+input[type="range"] {
+  appearance: none;
+  cursor: pointer;
+  background: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background-color: var(--yellow);
+  height: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: inset 0 0 3px 5px var(--red-low-opacity);
+}
+
+/* input[type="range"]::-moz-range-track {} */
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  background-image: url(../assets/images/icons/gemstone.svg);
+  background-repeat: no-repeat;
+  background-position-x: right;
+  background-size: contain;
+  height: 2.5rem;
+  aspect-ratio: 1 / 1;
+  margin-top: -0.825rem;
+}
+
+/* input[type="range"]::-moz-range-thumb {} */

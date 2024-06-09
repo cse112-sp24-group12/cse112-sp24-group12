@@ -1,0 +1,26 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="358 223 74 74" width="150" height="150">
+	<title>7068475</title>
+	<style>
+		.s0 { fill: #ab0000 } 
+		.s1 { fill: #f20f0f } 
+		.s2 { fill: #8a0000 } 
+		.s3 { fill: #6b0000 } 
+		.s4 { fill: #ff4336 } 
+		.s5 { fill: #d60000 } 
+		.s6 { fill: #ff756b } 
+	</style>
+	<g id="OBJECTS">
+		<g id="&lt;Group&gt;">
+			<g id="&lt;Group&gt;">
+				<path id="&lt;Path&gt;" class="s0" d="m373.5 251.7l-14 2.6 42.6-30.3-11 15.2z"/>
+				<path id="&lt;Path&gt;" class="s1" d="m402.1 224l2.9 2.5 25.2 39.8-2.9-2.5z"/>
+				<path id="&lt;Path&gt;" class="s2" d="m427.3 263.8l2.9 2.5-42.7 30.3-2.8-2.5z"/>
+				<path id="&lt;Path&gt;" fill-rule="evenodd" class="s3" d="m383.9 268.2l0.8 25.9-25.2-39.8 14-2.6z"/>
+				<path id="&lt;Path&gt;" class="s1" d="m401.6 255.7l25.7 8.1-42.6 30.3-0.8-25.9z"/>
+				<path id="&lt;Path&gt;" class="s4" d="m391.1 239.2l11-15.2 25.2 39.8-25.7-8.1z"/>
+				<path id="&lt;Path&gt;" class="s5" d="m391.1 239.2l10.5 16.5-17.7 12.5-10.4-16.5z"/>
+				<path id="&lt;Path&gt;" class="s6" d="m391.1 239.2l-0.3 0.2 10.2 16.2-17.3 12.3 0.2 0.3 17.7-12.5z"/>
+			</g>
+		</g>
+	</g>
+</svg>

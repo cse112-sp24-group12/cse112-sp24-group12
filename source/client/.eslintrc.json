@@ -21,6 +21,5 @@
         "definedTags": ["jest-environment"]
       }
     ]
-  },
-  "ignorePatterns": ["scripts/swiper-bundle.min.js"]
+  }
 }

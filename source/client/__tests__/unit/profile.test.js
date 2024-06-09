@@ -140,8 +140,8 @@ describe('setIsMute and getIsMute unit testing', () => {
   });
 });
 
-const VALID_PROFILE_IMAGE_NAME = 'dragon';
-const VALID_PROFILE_IMAGE_NAME_TWO = 'panda';
+const VALID_PROFILE_IMAGE_NAME = 'walrus';
+const VALID_PROFILE_IMAGE_NAME_TWO = 'lion';
 const INVALID_PROFILE_IMAGE_NAME = 'iajdfsiofajsdf';
 const EXAMPLE_CUSTOM_URL = 'https://example.com';
 describe('setProfileImage and getProfileImageUrl unit testing', () => {

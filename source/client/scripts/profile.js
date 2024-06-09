@@ -2,10 +2,6 @@
 
 import * as Types from './versus/types.js';
 
-/**
- * @typedef { ('default'|'dragon'|'panda'|LOCAL_PROFILE_IMAGE_CUSTOM_FLAG) } ProfileImageName
- */
-
 const LOCAL_PROFILE_IMAGE_NAME_LOCATION = 'user_profile.image_name';
 const LOCAL_PROFILE_IMAGE_CUSTOM_URL_LOCATION = 'user_profile.custom_image_url';
 const LOCAL_PROFILE_USERNAME_LOCATION = 'user_profile.username';
@@ -21,14 +17,21 @@ const DEFAULT_SFX_VOLUME_LEVEL = 0.5;
 
 /** @type { Record<ProfileImageName, string> } */
 const LOCAL_PROFILE_IMAGE_STANDARD_URLS = {
-  default: './assets/images/characters/default.png',
-  dragon: './assets/images/characters/dragon.png',
-  panda: './assets/images/characters/panda.png',
+  default: './assets/images/profiles/dog.svg',
+  duck: './assets/images/profiles/duck.svg',
+  elephant: './assets/images/profiles/elephant.svg',
+  fox: './assets/images/profiles/fox.svg',
+  lion: './assets/images/profiles/lion.svg',
+  walrus: './assets/images/profiles/walrus.svg',
 };
 
 export const LOCAL_PROFILE_IMAGE_CUSTOM_FLAG = 'custom_image';
 
 export const UPDATE_VOLUME_LISTENER_NAME = 'volume-update';
+
+/**
+ * @typedef { ('default'|'duck'|'elephant'|'fox'|'lion'|'walrus'|LOCAL_PROFILE_IMAGE_CUSTOM_FLAG) } ProfileImageName
+ */
 
 /**
  * Fetches list of existing profile image name options; used to populate
