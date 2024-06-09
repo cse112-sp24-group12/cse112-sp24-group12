@@ -428,16 +428,18 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
- * Handles world event action
+ * Handles world event action, updating the game legend and triggering popup
  * @param { string } worldEvent world event that was triggered
  */
 export function handleWorldEvent(worldEvent) {
   const currentWorldEventMeta = document.querySelector('#current_world_event');
-  currentWorldEventMeta.setAttribute('content', worldEvent);
-
   const gameLegend = document.querySelector('#game-legend');
   const worldEventModal = document.querySelector('#world_event_modal');
   let img, eventName, eventDescription;
+
+  currentWorldEventMeta.setAttribute('content', worldEvent);
+
+  // describe world event's legend and description
   switch (worldEvent) {
     case 'lower_wins':
       img = './assets/images/game_legend.webp';
@@ -480,22 +482,76 @@ export function handleWorldEvent(worldEvent) {
       eventDescription = 'One of your cards got changed to a new suite!';
       break;
     default:
-      img = './assets/images/game_legend.webp';
+      gameLegend.src = './assets/images/game_legend.webp';
+      gameLegend.alt = 'Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral';
   }
-  gameLegend.src = img;
 
+  // update world event popup
   if (worldEvent !== 'none') {
+    const worldEventPopupImg = document.createElement('img');
     const modalHead = worldEventModal.querySelector('h2');
     const modalText = worldEventModal.querySelector('p');
-    const modalImg = worldEventModal.querySelector('img');
+    worldEventPopupImg.src = img;
+    worldEventPopupImg.id = 'world-event-popup';
+    worldEventPopupImg.alt = eventDescription;
 
     modalHead.innerHTML = eventName;
     modalText.innerHTML = eventDescription;
-    modalImg.src = img;
+    worldEventModal.insertBefore(worldEventPopupImg, modalText.nextSibling);
 
     worldEventModal.showModal();
   }
 }
+
+/**
+ * Animates world event popup to replace current legend;
+ * at the end of the animation, the legend will be moved
+ * into the container in the DOM as well
+ * @returns { Promise<void> }
+ */
+async function translateWorldEvent() {
+  const gameLegend = document.querySelector('#game-legend')
+  const worldEventPopupImg = document.querySelector('#world-event-popup');
+
+  /* calculate difference between current and desired position */
+  const worldEventPopupImgRect = worldEventPopupImg.getBoundingClientRect();
+  const gameLegendElRect = gameLegend.getBoundingClientRect();
+
+  const diffXPos = worldEventPopupImgRect.left - gameLegendElRect.left;
+  const diffYPos = worldEventPopupImgRect.top - gameLegendElRect.top;
+
+  const scaleXDim = gameLegendElRect.width / worldEventPopupImgRect.width;
+  const scaleYDim = gameLegendElRect.height / worldEventPopupImgRect.height;
+
+  /* swap and translate */
+  gameLegend.parentElement.replaceChildren(worldEventPopupImg);
+  worldEventPopupImg.id = 'game-legend';
+
+  const translationAnimation = worldEventPopupImg.animate(
+    [
+      {
+        transform: `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
+      },
+      {},
+    ],
+    {
+      duration: 500,
+    },
+  );
+
+  /* promise for blocking animation */
+  this._translationAnimationPromise = new Promise((resolve) => {
+    translationAnimation.addEventListener(
+      'finish',
+      () => {
+        resolve();
+      },
+      { once: true },
+    );
+  });
+
+  return this._translationAnimationPromise;
+} /* translateWorldEvent*/
 
 function returnToLobby() {
   toggleToLobbyView();
@@ -655,5 +711,5 @@ export function initializeVersus() {
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
-  worldEventButtonEl.addEventListener('click', showWorldEventModal);
+  worldEventButtonEl.addEventListener('click', translateWorldEvent);
 } /* initializeVersus */

@@ -44,6 +44,7 @@
 #legend_card img {
   flex: 1;
   min-height: 0;
+  max-height: 20rem;
 }
 
 #bottom_board_wrapper {

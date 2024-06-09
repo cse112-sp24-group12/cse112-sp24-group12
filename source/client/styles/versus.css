@@ -69,6 +69,15 @@ header {
   padding: 1rem;
 }
 
+#world_event_modal #world-event-popup {
+  max-width: 20rem;
+  max-height: 20rem;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: var(--background-color);
+  border-radius: 2rem;
+}
+
 #rules_modal_header {
   display: flex;
   justify-content: space-between;

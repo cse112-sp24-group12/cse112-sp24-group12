@@ -110,9 +110,11 @@
             <h2>Legend</h2>
             <button id="legend_info_button" class="info-button" aria-label="Game code info"></button>
           </div>
-          <img src="./assets/images/game_legend.webp"
-            id="game-legend"
-            alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+          <div id="game-legend-wrapper">
+            <img src="./assets/images/game_legend.webp"
+              id="game-legend"
+              alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+          </div>
         </section>
       </div>
       <div id="bottom_board_wrapper">
@@ -166,9 +168,6 @@
   <dialog id="world_event_modal">
     <h2>World Event</h2>
     <p>Description</p>
-    <img src="./assets/images/game_legend.webp"
-      class="game-rules-diagram"
-      alt="New game legend diagram from world event">
     <form method="dialog" class="default-dialog-form">
       <button class="secondary-button" id="world_event_button">Understood</button>
     </form>
