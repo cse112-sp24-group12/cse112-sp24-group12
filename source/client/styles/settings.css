@@ -39,6 +39,7 @@
 
 #music_volume_slider, #sfx_volume_slider {
   width: 100%;
+  margin-top: -1rem;
 }
 
 #profile_settings {
@@ -58,6 +59,7 @@
   grid-auto-flow: column;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: auto 1fr;
+  width: fit-content;
 }
 
 #profile_settings_avatar {
@@ -70,6 +72,7 @@
 #change_image_button_wrapper {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 }
 
 #change_image_button {
@@ -81,7 +84,14 @@
 
 #profile_settings_username_wrapper {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+#username_button_wrapper {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 #profile_settings_control_wrapper {
