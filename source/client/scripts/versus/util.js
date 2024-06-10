@@ -54,7 +54,7 @@ export function getRandFromArr(arr) {
  * @returns {{
  *  imgPath: string,
  *  eventName: string,
- *  eventDescription: string,
+ *  eventDescription: string
  * }} object containing information associated to the world event
  */
 export function getWorldEventInfo(worldEventName) {
