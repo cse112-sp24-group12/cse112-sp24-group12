@@ -40,7 +40,7 @@ const DISCONNECTED_TIMEOUT_MS = 180_000; // 3 minutes
  * Time between game end and instance deletion (in milliseconds)
  * @type { number }
  */
-const GAME_END_TIMEOUT_MS = 20_000;
+const GAME_END_TIMEOUT_MS = 35_000;
 
 /** @type { Record<number, Types.GameInstance> } */
 const gameInstancesByGameCode = {};
@@ -513,27 +513,21 @@ function handleSelectCard(webSocketConnection, selectedCard) {
 
   const currentRoundState = getCurrentRoundState(gameInstance);
 
-  // TODO: more robust handling here; return some error to client on failure
-
+  // validate input to prevent cheating
+  let errorOccurred = true;
   if (currentRoundState.selectedCard[playerUUID]) {
     log('Card selection rejected: card already selected this round', {
       webSocketConnection,
       gameInstance,
       severity: 'error',
     });
-    return;
-  }
-
-  if (!isCardValid(selectedCard)) {
+  } else if (!isCardValid(selectedCard)) {
     log('Card selection rejected: invalid card format', {
       webSocketConnection,
       gameInstance,
       severity: 'error',
     });
-    return;
-  }
-
-  if (
+  } else if (
     !playerGameState.remainingCards.some((card) =>
       areCardsEqual(card, selectedCard),
     )
@@ -543,6 +537,12 @@ function handleSelectCard(webSocketConnection, selectedCard) {
       gameInstance,
       severity: 'error',
     });
+  } else {
+    errorOccurred = false;
+  }
+
+  if (errorOccurred) {
+    forceRefreshGameState(webSocketConnection);
     return;
   }
 
@@ -574,8 +574,6 @@ function handleSelectCard(webSocketConnection, selectedCard) {
 function handleChatMessage(webSocketConnection, messageContents) {
   const gameInstance =
     gameInstancesByPlayerUUID[webSocketConnection.profile.uuid];
-
-  // TODO: validate chat message contents
 
   log(`Chat message: "${messageContents}"`, {
     webSocketConnection,
@@ -638,17 +636,26 @@ function attemptRejoin(webSocketConnection, playerUUID) {
   });
 
   if (reqGameInstance.gameState.isStarted) {
-    sendMessage(webSocketConnection, {
-      action: S2C_ACTIONS.FORCE_REFRESH,
-      gameState: cleanGameState(
-        webSocketConnection.profile.uuid,
-        reqGameInstance.gameState,
-      ),
-    });
+    forceRefreshGameState(webSocketConnection);
   }
 
   return true;
 } /* attemptRejoin */
+
+/**
+ * Forces a client user to completely refresh/rerender their game instance,
+ * used when a user reconnects or to handle errors
+ * @param { Types.WSConnection } webSocketConnection connection to force refresh state to
+ */
+function forceRefreshGameState(webSocketConnection) {
+  const playerUUID = webSocketConnection.profile.uuid;
+  const gameInstance = gameInstancesByPlayerUUID[playerUUID];
+
+  sendMessage(webSocketConnection, {
+    action: S2C_ACTIONS.FORCE_REFRESH,
+    gameState: cleanGameState(playerUUID, gameInstance.gameState),
+  });
+} /* forceRefreshGameState */
 
 /**
  * Attempts to force user back through rejoin logic, and creates a new instance for

@@ -5,6 +5,7 @@ body {
 }
 
 main {
+  position: relative;
   flex: 1;
   overflow: hidden;
 }
@@ -71,6 +72,10 @@ header {
 
 #world_event_modal_name {
   font-size: 1.25rem;
+}
+
+#world_event_modal_wrapper {
+  overflow: auto;
 }
 
 #world_event_modal_desc {
