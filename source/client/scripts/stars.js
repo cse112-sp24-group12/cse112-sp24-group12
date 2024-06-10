@@ -13,7 +13,7 @@ const MOUSE_EFFECT_COEFF = 0.05;
 const STAR_RADIUS_COEFF = 3;
 const CENTER_EXCLUSION_RADIUS = 0.2;
 
-let ANIMATIONID;
+let currentAnimationFrameID;
 
 /**
  * @type { {
@@ -135,19 +135,25 @@ function animateNextFrame(stars, canvasContext) {
   );
 
   /* self-invoke next frame */
-  requestAnimationFrame(() => animateNextFrame(stars, canvasContext));
+  currentAnimationFrameID = requestAnimationFrame(() =>
+    animateNextFrame(stars, canvasContext),
+  );
 } /* animateNextFrame */
 
 /**
  * Creates and attaches canvas element to page, and then initializes animation and
  * appropriate event listeners
  */
-function starsInit() {
-  /* create star canvas element */
-  const starBgCanvasEl = document.createElement('canvas');
-  starBgCanvasEl.classList.add('star-bg');
+export function starsInit() {
+  /* create star canvas element if it doesn't already exist */
+  let starBgCanvasEl = document.querySelector('.star-bg');
+  if (!starBgCanvasEl) {
+    starBgCanvasEl = document.createElement('canvas');
+    starBgCanvasEl.classList.add('star-bg');
+    document.body.append(starBgCanvasEl);
+  }
+
   handleResize(starBgCanvasEl);
-  document.body.append(starBgCanvasEl);
 
   /* initialize animation */
   const canvasContext = starBgCanvasEl.getContext('2d');
@@ -158,35 +164,17 @@ function starsInit() {
   window.addEventListener('resize', () => handleResize(starBgCanvasEl), {
     passive: true,
   });
-
-  // Store the animation ID for later use
-  ANIMATIONID = requestAnimationFrame(() => animateNextFrame(generateStars(NUM_STARS), canvasContext));
 } /* starsInit */
-
-/**
- * Removes the canvas element from the DOM.
- * @param {HTMLCanvasElement} canvas The canvas element to remove.
- */
-function removeCanvas(canvas) {
-  canvas.remove();
-}
 
 /**
  * Remove the stary background
  */
-function removeStars() {
-  // Stop the animation
-  cancelAnimationFrame(ANIMATIONID);
-
-  // Remove the canvas element
+export function removeStars() {
   const starBgCanvasEl = document.querySelector('.star-bg');
-  if (starBgCanvasEl) {
-    removeCanvas(starBgCanvasEl);
-  }
-}
 
-// Expose the startGame function globally
-window.removeStars = removeStars;
-window.starsInit = starsInit;
+  starBgCanvasEl?.remove();
+
+  cancelAnimationFrame(currentAnimationFrameID);
+}
 
 window.addEventListener('DOMContentLoaded', starsInit);

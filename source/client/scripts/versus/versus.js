@@ -34,6 +34,7 @@ import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
 import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
+import { starsInit, removeStars } from '../stars.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
@@ -210,8 +211,6 @@ function createCardElements() {
  * Switch to view of game board
  */
 function toggleToGameboardView() {
-  removeStars();
-
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
   const gameBoardWrapperEl = document.querySelector('#game_board');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
@@ -221,14 +220,14 @@ function toggleToGameboardView() {
   homeButtonEl.classList.add('hidden');
   gameBoardWrapperEl.classList.remove('hidden');
   leaveGameButtonEl.classList.remove('hidden');
+
+  removeStars();
 } /* toggleToGameboardView */
 
 /**
  * Switch to view of lobby, and focus on game code input element
  */
 function toggleToLobbyView() {
-  starsInit();
-
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
   const gameBoardWrapperEl = document.querySelector('#game_board');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
@@ -241,6 +240,8 @@ function toggleToLobbyView() {
   homeButtonEl.classList.remove('hidden');
 
   outBoundGameCodeInputEl.focus();
+
+  starsInit();
 } /* toggleToLobbyView */
 
 /**
@@ -606,4 +607,6 @@ export function initializeVersus() {
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
+
+  starsInit();
 } /* initializeVersus */
