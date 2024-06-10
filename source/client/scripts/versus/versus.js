@@ -35,6 +35,7 @@ import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
 import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
+import { starsInit, removeStars } from '../stars.js';
 import {
   SOUND_EFFECTS,
   playSoundEffect,
@@ -239,6 +240,8 @@ function toggleToGameboardView() {
   homeButtonEl.classList.add('hidden');
   gameBoardWrapperEl.classList.remove('hidden');
   leaveGameButtonEl.classList.remove('hidden');
+
+  removeStars();
 } /* toggleToGameboardView */
 
 /**
@@ -257,6 +260,8 @@ function toggleToLobbyView() {
   homeButtonEl.classList.remove('hidden');
 
   outBoundGameCodeInputEl.focus();
+
+  starsInit();
 } /* toggleToLobbyView */
 
 /**
@@ -688,5 +693,6 @@ export function initializeVersus() {
     if (e.key === 'Enter') sendJoinInstance();
   });
 
+  starsInit();
   playBackgroundMusic();
 } /* initializeVersus */
