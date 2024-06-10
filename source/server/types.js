@@ -20,6 +20,7 @@ export const S2C_ACTIONS = {
   SYSTEM_MESSAGE: 'system_message',
   UPDATE_PROFILE: 'update_profile',
   FORCE_REFRESH: 'force_refresh',
+  WORLD_EVENT: 'world_event',
   INSTANCE_CLOSED: 'instance_closed',
 };
 
@@ -28,6 +29,25 @@ export const SUITES = {
   CUPS: 'cups',
   SWORDS: 'swords',
   PENTACLES: 'pentacles',
+};
+
+export const MULTIPLIER = {
+  GREATER: 2,
+  LESS: 0.5,
+  NEUTRAL: 1,
+  BOOST: 0.5,
+};
+
+export const WORLD_EVENTS = {
+  LOWER_WINS: 'lower_wins',
+  SUITE_REVERSED: 'suite_reversed',
+  SUITE_BOOST_WANDS: 'suite_boost_wands',
+  SUITE_BOOST_CUPS: 'suite_boost_cups',
+  SUITE_BOOST_SWORDS: 'suite_boost_swords',
+  SUITE_BOOST_PENTACLES: 'suite_boost_pentacles',
+  RANDOM_VALUE: 'random_value',
+  RANDOM_SUITE: 'random_suite',
+  NONE: 'none',
 };
 
 /**
@@ -139,6 +159,10 @@ export const SUITES = {
  *    gameState: GameState
  *  } |
  *  {
+ *    action: S2C_ACTIONS.WORLD_EVENT,
+ *    worldEvent: string
+ *  } |
+ *  {
  *    action: S2C_ACTIONS.INSTANCE_CLOSED
  *  }
  * } ServerToClientMessage
@@ -158,7 +182,8 @@ export const SUITES = {
 /**
  * @typedef { {
  *  selectedCard: Record<UUID, Card>,
- *  roundWinner: UUID
+ *  roundWinner: UUID,
+ *  worldEvent: string
  * } } RoundState
  */
 

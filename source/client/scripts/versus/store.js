@@ -3,6 +3,7 @@
 import {
   UPDATE_USERNAME_LISTENER_NAME,
   UPDATE_AVATAR_LISTENER_NAME,
+  WORLD_EVENTS,
 } from './types.js';
 import * as Types from './types.js';
 import { getPlayerUUID } from './../profile.js';
@@ -60,6 +61,14 @@ export function setSelfSelectedCard(selectedCard) {
 
   getCurrentRoundState(gameState).selectedCard[playerUUID] = selectedCard;
 } /* setSelfSelectedCard */
+
+/**
+ * Fetches world event associated to current round
+ * @returns { string } value of WORLD_EVENT enum
+ */
+export function getCurrentWorldEvent() {
+  return getCurrentRoundState(gameState).worldEvent ?? WORLD_EVENTS.NONE;
+} /* getCurrentWorldEvent */
 
 /**
  * Fetches card selected by the user during the current round

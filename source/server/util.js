@@ -1,5 +1,7 @@
-import { SUITES } from './types.js';
+import { SUITES, WORLD_EVENTS, MULTIPLIER } from './types.js';
 import * as Types from './types.js';
+
+const NUM_CARDS = 14;
 
 /**
  * Creates and returns random unique game code for each game instance
@@ -79,42 +81,149 @@ export function getCurrentRoundState(gameInstance) {
 } /* getCurrentRoundState */
 
 /**
+ *
+ * @returns { string } random suite from SUITES object
+ */
+function getRandomSuite() {
+  const suiteList = Object.values(SUITES);
+
+  return suiteList[Math.floor(Math.random() * suiteList.length)];
+}
+
+/**
  * Determines the multiplier for a given matchup between two cards
  * (Positive multiplier implies that card1 has a suite-based advantage over card2)
  * @param { Types.Card } card1 card to compare, target of multiplier
  * @param { Types.Card } card2 card to compare
+ * @param {string} worldEvent current worldEvent for the round
  * @returns { Types.Card } matchup multiplier for card1 with reference to card2
  */
-function getMultiplier(card1, card2) {
-  switch (card1.suite) {
+function getMultiplierWorldEvent(card1, card2, worldEvent) {
+  let multiplier = MULTIPLIER.NEUTRAL;
+  let suite1 =
+    worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card1.suite;
+  let suite2 =
+    worldEvent === WORLD_EVENTS.RANDOM_SUITE ? getRandomSuite() : card2.suite;
+
+  switch (suite1) {
     case SUITES.WANDS:
-      if (card2.suite === SUITES.CUPS) return 2;
-      else if (card2.suite == SUITES.SWORDS) return 0.5;
-      return 1;
+      if (suite2 === SUITES.CUPS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS
+            ? MULTIPLIER.GREATER + MULTIPLIER.BOOST
+            : MULTIPLIER.GREATER;
+      else if (suite2 == SUITES.SWORDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_WANDS
+            ? MULTIPLIER.LESS + MULTIPLIER.BOOST
+            : MULTIPLIER.LESS;
+      break;
     case SUITES.CUPS:
-      if (card2.suite === SUITES.SWORDS) return 2;
-      else if (card2.suite == SUITES.WANDS) return 0.5;
-      return 1;
+      if (suite2 === SUITES.SWORDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS
+            ? MULTIPLIER.GREATER + MULTIPLIER.BOOST
+            : MULTIPLIER.GREATER;
+      else if (suite2 == SUITES.WANDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_CUPS
+            ? MULTIPLIER.LESS + MULTIPLIER.BOOST
+            : MULTIPLIER.LESS;
+      break;
     case SUITES.SWORDS:
-      if (card2.suite === SUITES.WANDS) return 2;
-      else if (card2.suite == SUITES.CUPS) return 0.5;
-      return 1;
+      if (suite2 === SUITES.WANDS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS
+            ? MULTIPLIER.GREATER + MULTIPLIER.BOOST
+            : MULTIPLIER.GREATER;
+      else if (suite2 == SUITES.CUPS)
+        multiplier =
+          worldEvent === WORLD_EVENTS.SUITE_BOOST_SWORDS
+            ? MULTIPLIER.LESS + MULTIPLIER.BOOST
+            : MULTIPLIER.LESS;
+      break;
+    case SUITES.PENTACLES:
+      multiplier =
+        worldEvent === WORLD_EVENTS.SUITE_BOOST_PENTACLES
+          ? MULTIPLIER.NEUTRAL + MULTIPLIER.BOOST
+          : MULTIPLIER.NEUTRAL;
+      break;
     default:
-      return 1;
   }
+
+  return worldEvent === WORLD_EVENTS.SUITE_REVERSED
+    ? 1 / multiplier
+    : multiplier;
 } /* getMultiplier */
 
 /**
- * Determines which of two cards wins a round
- * @param { Types.Card } card1 card to compare
- * @param { Types.Card } card2 card to compare
- * @returns { Types.Card } winning card of card1 and card2
+ * Returns a random number in a range
+ * @param { number } lo integer low value (inclusive)
+ * @param { number } hi integer high value(inclusive)
+ * @returns { number } random integer between lo and hi, inclusive
  */
-export function getWinningCard(card1, card2) {
-  return card1.number * getMultiplier(card1, card2) > card2.number
-    ? card1
-    : card2;
-} /* getWinningCard */
+function getRandomValue(lo, hi) {
+  return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+}
+
+/**
+ * Determines the winner between 2 cards given a world event
+ * @param { Types.Card } card1 the first card to compare
+ * @param { Types.Card } card2 the second card to compare
+ * @param { string } worldEvent the current round's world event
+ * @returns { Types.Card } winning card
+ */
+export function getWinningCard(card1, card2, worldEvent) {
+  switch (worldEvent) {
+    case WORLD_EVENTS.LOWER_WINS:
+      return card1.number < card2.number ? card1 : card2;
+    case WORLD_EVENTS.RANDOM_VALUE:
+      return getRandomValue(1, NUM_CARDS) *
+        getMultiplierWorldEvent(card1, card2, worldEvent) >
+        getRandomValue(1, NUM_CARDS)
+        ? card1
+        : card2;
+    /*fallthrough because other world events influence the multiplier method not winning card*/
+    default:
+      return card1.number * getMultiplierWorldEvent(card1, card2, worldEvent) >
+        card2.number
+        ? card1
+        : card2;
+  }
+}
+
+/**
+ * Determines which of two users wins a round
+ * @param { Types.GameInstance } gameInstance the round's game instance
+ * @returns { Types.UUID } winning user UUID1 and UUID2
+ */
+export function getRoundWinnerUUID(gameInstance) {
+  const currentRoundState = getCurrentRoundState(gameInstance);
+  const worldEvent = currentRoundState.worldEvent;
+  const [[uuid1, card1], [uuid2, card2]] = Object.entries(
+    currentRoundState.selectedCard,
+  );
+
+  return getWinningCard(card1, card2, worldEvent) == card1 ? uuid1 : uuid2;
+}
+
+/**
+ * Gives a random World Event
+ * @param { Types.GameInstance } gameInstance the game instance getting the world event
+ * @returns { Types.worldEvent } World Event
+ */
+function getRandomWorldEvent(gameInstance) {
+  const currentRoundNumber = gameInstance.gameState.byRound.length + 1;
+  let worldEvents = Object.values(WORLD_EVENTS).filter((e) => {
+    return e != WORLD_EVENTS.NONE;
+  });
+
+  if (currentRoundNumber == 2 || currentRoundNumber == 4) {
+    return worldEvents[Math.floor(Math.random() * worldEvents.length)];
+  } else {
+    return WORLD_EVENTS.NONE;
+  }
+}
 
 /**
  * Returns profile of user who has a higher score
@@ -134,12 +243,14 @@ export function calculateGameWinnerProfile(gameInstance) {
 
 /**
  * Creates and returns a new round state
+ * @param { Types.GameInstance } gameInstance game instance to determine if world event should be used
  * @returns { Types.RoundState } blank round state
  */
-export function createNewRound() {
+export function createNewRound(gameInstance) {
   return {
     selectedCard: {},
     roundWinner: null,
+    worldEvent: getRandomWorldEvent(gameInstance),
   };
 } /* createNewRound */
 

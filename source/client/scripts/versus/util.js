@@ -46,4 +46,73 @@ export function getCardURLFromName(suite, number) {
  */
 export function getRandFromArr(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
-}
+} /* getRandFromArr */
+
+/**
+ * Gets world event information associated to the name
+ * @param { string } worldEventName value of WORLD_EVENTS enum
+ * @returns {{
+ *  imgPath: string,
+ *  eventName: string,
+ *  eventDescription: string
+ * }} object containing information associated to the world event
+ */
+export function getWorldEventInfo(worldEventName) {
+  switch (worldEventName) {
+    case Types.WORLD_EVENTS.LOWER_WINS:
+      return {
+        imgPath: './assets/images/game_legend.webp',
+        eventName: 'Lower is Better',
+        eventDescription: 'The card with the lower power level wins!',
+      };
+    case Types.WORLD_EVENTS.SUITE_REVERSED:
+      return {
+        imgPath: './assets/images/game_legend_reversed.webp',
+        eventName: 'Suite Reverse',
+        eventDescription: 'The order of the winning suites gets reversed!',
+      };
+    case Types.WORLD_EVENTS.SUITE_BOOST_WANDS:
+      return {
+        imgPath: './assets/images/game_legend_wands_boost.webp',
+        eventName: 'Wands are Boosted',
+        eventDescription: 'Wands are much stronger this round!',
+      };
+    case Types.WORLD_EVENTS.SUITE_BOOST_CUPS:
+      return {
+        imgPath: './assets/images/game_legend_cups_boost.webp',
+        eventName: 'Cups are Boosted',
+        eventDescription: 'Cups are much stronger this round!',
+      };
+    case Types.WORLD_EVENTS.SUITE_BOOST_SWORDS:
+      return {
+        imgPath: './assets/images/game_legend_swords_boost.webp',
+        eventName: 'Swords are Boosted',
+        eventDescription: 'Swords are much stronger this round!',
+      };
+    case Types.WORLD_EVENTS.SUITE_BOOST_PENTACLES:
+      return {
+        imgPath: './assets/images/game_legend_pentacles_boost.webp',
+        eventName: 'Pentacles are Boosted',
+        eventDescription: 'Pentacles are much stronger this round!',
+      };
+    case Types.WORLD_EVENTS.RANDOM_VALUE:
+      return {
+        imgPath: './assets/images/game_legend.webp',
+        eventName: 'Random Values',
+        eventDescription: "Your cards' values are randomized this round!",
+      };
+    case Types.WORLD_EVENTS.RANDOM_SUITE:
+      return {
+        imgPath: './assets/images/game_legend.webp',
+        eventName: 'Random Suites',
+        eventDescription: "Your cards' suites are randomized this round!",
+      };
+    default:
+      return {
+        imgPath: './assets/images/game_legend.webp',
+        eventName: 'Default',
+        eventDescription:
+          'Wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral',
+      };
+  }
+} /* getWorldEventInfo */

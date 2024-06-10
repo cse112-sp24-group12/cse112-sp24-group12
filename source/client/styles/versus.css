@@ -69,6 +69,28 @@ header {
   padding: 1rem;
 }
 
+#world_event_modal_name {
+  font-size: 1.25rem;
+}
+
+#world_event_modal_desc {
+  margin-top: 0.5rem;
+}
+
+#world_event_modal_img_wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+#world_event_modal_img_wrapper img {
+  max-width: 20rem;
+  max-height: 20rem;
+  padding: 1rem 0;
+  margin: 1rem 0;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+}
+
 #rules_modal_header {
   display: flex;
   justify-content: space-between;

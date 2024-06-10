@@ -28,7 +28,7 @@
 }
 
 #legend_card {
-  margin-top: 8rem;
+  margin-top: 7rem;
   min-height: 0;
   max-width: 20rem;
   display: flex;
@@ -41,9 +41,14 @@
   align-items: center;
 }
 
-#legend_card img {
+#legend_card_wrapper {
   flex: 1;
   min-height: 0;
+}
+
+#legend_card img {
+  width: 100%;
+  height: auto;
 }
 
 #bottom_board_wrapper {

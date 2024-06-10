@@ -9,7 +9,7 @@ import {
   areCardsEqual,
   getOtherPlayer,
   getCurrentRoundState,
-  getWinningCard,
+  getRoundWinnerUUID,
   createNewRound,
   generateUniqueCards,
   cleanGameState,
@@ -98,8 +98,8 @@ function handleStartGame(webSocketConnection) {
   }
 
   const drawnCardLists = generateUniqueCards(CARD_LIST, NUM_ROUNDS);
-
-  gameInstance.gameState.byRound.push(createNewRound());
+  const newRound = createNewRound(gameInstance);
+  gameInstance.gameState.byRound.push(newRound);
   gameInstance.gameState.isStarted = true;
 
   gameInstance.webSocketConnections.forEach((webSocketConnection) => {
@@ -109,10 +109,13 @@ function handleStartGame(webSocketConnection) {
       score: 0,
       remainingCards: drawnCards,
     };
-
     sendMessage(webSocketConnection, {
       action: S2C_ACTIONS.START_GAME,
       drawnCards,
+    });
+    sendMessage(webSocketConnection, {
+      action: S2C_ACTIONS.WORLD_EVENT,
+      worldEvent: newRound.worldEvent,
     });
   });
 
@@ -432,12 +435,7 @@ function endGame(gameInstance) {
  */
 function endRound(gameInstance) {
   const currentRoundState = getCurrentRoundState(gameInstance);
-
-  const [[uuid1, card1], [uuid2, card2]] = Object.entries(
-    currentRoundState.selectedCard,
-  );
-  const roundWinnerUUID =
-    getWinningCard(card1, card2) === card1 ? uuid1 : uuid2;
+  const roundWinnerUUID = getRoundWinnerUUID(gameInstance);
   const roundWinner = gameInstance.webSocketConnections.find(
     (conn) => conn.profile.uuid === roundWinnerUUID,
   ).profile;
@@ -478,8 +476,14 @@ function startNewRound(gameInstance) {
     });
     return;
   }
-
-  gameInstance.gameState.byRound.push(createNewRound());
+  const newRound = createNewRound(gameInstance);
+  gameInstance.gameState.byRound.push(newRound);
+  gameInstance.webSocketConnections.forEach((conn) => {
+    sendMessage(conn, {
+      action: S2C_ACTIONS.WORLD_EVENT,
+      worldEvent: newRound.worldEvent,
+    });
+  });
 
   log('Round started', {
     gameInstance,

@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Tarot, but a Game | Versus</title>
-
+  
+  <meta id="current_world_event" name="current_world_event" content="none">
   <link rel="stylesheet" href="styles/debug-menu.css">
   <link rel="stylesheet" href="styles/global.css">
   <link rel="stylesheet" href="styles/versus.css">
@@ -107,7 +108,11 @@
             <h2>Legend</h2>
             <button id="legend_info_button" class="info-button" aria-label="Game code info"></button>
           </div>
-          <img src="./assets/images/game_legend.webp" alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+          <div id="legend_card_wrapper">
+            <img src="./assets/images/game_legend.webp"
+              id="game_legend_img"
+              alt="Wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+          </div>
         </section>
       </div>
       <div id="bottom_board_wrapper">
@@ -155,6 +160,18 @@
     <form method="dialog" class="default-dialog-form">
       <button class="secondary-button">Stay in game</button>
       <button type="button" id="confirm_leave_button" class="destructive-button">Leave game</button>
+    </form>
+  </dialog>
+
+  <dialog id="world_event_modal">
+    <h2>A world event is happening!</h2>
+    <div id="world_event_modal_img_wrapper">
+      <!-- dynamically generated -->
+    </div>
+    <h3 id="world_event_modal_name"></h3>
+    <p id="world_event_modal_desc">Description</p>
+    <form method="dialog" class="default-dialog-form">
+      <button class="primary-button" id="world_event_button">Got it</button>
     </form>
   </dialog>
 
@@ -232,24 +249,24 @@
               compete against each other. The possible Events are as follows:
               <ul id="world_event_list">
                 <li>
-                  <h4>Event 1</h4>
-                  Description description description description description description description description description description
+                  <h4>Lower is Better</h4>
+                  The card with the lower power level wins!
                 </li>
                 <li>
-                  <h4>Event 2</h4>
-                  Description description description description description description description description description description
+                  <h4>Suite Reverse</h4>
+                  The order of the winning suites gets reversed!
                 </li>
                 <li>
-                  <h4>Event 3</h4>
-                  Description description description description description description description description description description
+                  <h4>Suite is Boosted!</h4>
+                  One of the suites is much stronger this round!
                 </li>
                 <li>
-                  <h4>Event 4</h4>
-                  Description description description description description description description description description description
+                  <h4>Random Values</h4>
+                  Your cards' values are randomized this round!
                 </li>
                 <li>
-                  <h4>Event 5</h4>
-                  Description description description description description description description description description description
+                  <h4>Random Suites</h4>
+                  Your cards' suites are randomized this round!
                 </li>
               </ul>
             </li>

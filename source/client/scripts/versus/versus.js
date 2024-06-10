@@ -29,10 +29,11 @@ import {
   setGameWinnerUUID,
   getGameWinnerUUID,
   getOpponentUUID,
+  getCurrentWorldEvent,
   getSelfSelectedCard,
 } from './store.js';
 import { clearChat } from './chat.js';
-import { getRandFromArr } from './util.js';
+import { getRandFromArr, getWorldEventInfo } from './util.js';
 import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
 import { starsInit, removeStars } from '../stars.js';
@@ -47,6 +48,7 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 
 const NUM_ROUNDS = 5;
 
+const WORLD_EVENT_MODAL_DELAY_MS = 250;
 const DEALING_CARD_DELAY_SEC = 0.5;
 
 /**
@@ -280,6 +282,8 @@ export function refreshEntireGame() {
   if (getOppHasPlayedRound()) refreshOppSelectedCard();
   if (getSelfHasPlayedRound()) refreshUserSelectedCard();
 
+  displayWorldEventLegendImage();
+
   const gameWinnerUUID = getGameWinnerUUID();
   const roundWinnerUUID = getRoundWinnerUUID();
   if (gameWinnerUUID) {
@@ -290,6 +294,20 @@ export function refreshEntireGame() {
 
   toggleToGameboardView();
 } /* refreshEntireGame */
+
+/**
+ * Displays (without animation) the legend image for the current
+ * world event associated to the game, for use when triggering
+ * a complete refresh of the game state
+ */
+function displayWorldEventLegendImage() {
+  const legendImageEl = document.querySelector('#legend_card_wrapper img');
+
+  const worldEventInfo = getWorldEventInfo(getCurrentWorldEvent());
+
+  legendImageEl.src = worldEventInfo.imgPath;
+  legendImageEl.alt = worldEventInfo.eventDescription;
+} /* displayWorldEventLegendImage */
 
 /**
  * Rebuilds and replaces the opponent's (unrevealed) selected card,
@@ -513,6 +531,91 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
+ * Handles world event action, updating the game legend and triggering popup
+ * @param { string } worldEvent world event that was triggered
+ * @param worldEventName
+ */
+export async function handleWorldEvent(worldEventName) {
+  // wait for current animation to end + constant delay
+  await currentAnimationPromise;
+  await new Promise((r) => setTimeout(r, WORLD_EVENT_MODAL_DELAY_MS));
+
+  const currentWorldEventMeta = document.querySelector('#current_world_event');
+  const gameLegend = document.querySelector('#game_legend_img');
+  const worldEventModal = document.querySelector('#world_event_modal');
+
+  currentWorldEventMeta.setAttribute('content', worldEventName);
+
+  const worldEventInfo = getWorldEventInfo(worldEventName);
+  if (worldEventInfo.eventName === 'Default') {
+    gameLegend.src = './assets/images/game_legend.webp';
+    gameLegend.alt =
+      'Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral';
+    return;
+  }
+
+  // update world event popup
+  if (worldEventName !== Types.WORLD_EVENTS.NONE) {
+    const newLegendImgEl = document.createElement('img');
+    const worldEventModalImgWrapperEl = document.querySelector(
+      '#world_event_modal_img_wrapper',
+    );
+    const worldEventModalNameEl = document.querySelector(
+      '#world_event_modal_name',
+    );
+    const worldEventModalDescEl = document.querySelector(
+      '#world_event_modal_desc',
+    );
+
+    newLegendImgEl.src = worldEventInfo.imgPath;
+    newLegendImgEl.id = 'world-event-popup';
+    newLegendImgEl.alt = worldEventInfo.eventDescription;
+
+    worldEventModalNameEl.innerText = worldEventInfo.eventName;
+    worldEventModalDescEl.innerText = worldEventInfo.eventDescription;
+    worldEventModalImgWrapperEl.replaceChildren(newLegendImgEl);
+
+    worldEventModal.showModal();
+  }
+} /* handleWorldEvent */
+
+/**
+ * Animates world event popup to replace current legend;
+ * at the end of the animation, the legend will be moved
+ * into the container in the DOM as well
+ */
+function translateWorldEvent() {
+  const gameLegend = document.querySelector('#game_legend_img');
+  const worldEventPopupImg = document.querySelector('#world-event-popup');
+
+  /* calculate difference between current and desired position */
+  const worldEventPopupImgRect = worldEventPopupImg.getBoundingClientRect();
+  const gameLegendElRect = gameLegend.getBoundingClientRect();
+
+  const diffXPos = worldEventPopupImgRect.left - gameLegendElRect.left;
+  const diffYPos = worldEventPopupImgRect.top - gameLegendElRect.top;
+
+  const scaleXDim = gameLegendElRect.width / worldEventPopupImgRect.width;
+  const scaleYDim = gameLegendElRect.height / worldEventPopupImgRect.height;
+
+  /* swap and translate */
+  gameLegend.parentElement.replaceChildren(worldEventPopupImg);
+  worldEventPopupImg.id = 'game_legend_img';
+
+  worldEventPopupImg.animate(
+    [
+      {
+        transform: `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
+      },
+      {},
+    ],
+    {
+      duration: 250,
+    },
+  );
+} /* translateWorldEvent*/
+
+/**
  * Handles complete return to lobby, and reset of all currentl game state and displays
  */
 function returnToLobby() {
@@ -672,6 +775,7 @@ export function initializeVersus() {
   const openRulesButtonEl = document.querySelector('#open_rules_button');
   const legendInfoButtonEl = document.querySelector('#legend_info_button');
   const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
+  const worldEventButtonEl = document.querySelector('#world_event_button');
 
   attachGameCallbackFns({
     handleUpdateInstance,
@@ -680,6 +784,7 @@ export function initializeVersus() {
     handleRevealCards,
     handleStartRound,
     handleGameEnd,
+    handleWorldEvent,
     handleInstanceClosed,
     refreshEntireGame,
   });
@@ -695,6 +800,7 @@ export function initializeVersus() {
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
+  worldEventButtonEl.addEventListener('click', translateWorldEvent);
 
   starsInit();
   playBackgroundMusic();
