@@ -19,7 +19,8 @@
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js'",
-    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js' --fix"
+    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js' --fix",
+    "build": "rm -rf dist && npx swc . --ignore '__tests__,node_modules,dist,package.json,package-lock.json' -d dist --copy-files"
   },
   "jest": {
     "verbose": true,
