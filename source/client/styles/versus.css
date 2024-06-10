@@ -117,6 +117,10 @@ versus-card {
   position: relative;
 }
 
+versus-card:not([disabled]) img {
+  cursor: pointer;
+}
+
 versus-card img {
   position: absolute;
   height: 100%;

@@ -16,50 +16,28 @@
 
   <body>
     <header class="icon-header">
+    <!-- HEADER -->
       <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
     </header>
-    <!-- instructions modal -->
-    <div id="popup-box" class="howto-modal">
-      <div class="content">
-        <b>
-          <span class="instruct">How to Play</span>
-          <ol>
-            <li>Select your avatar, take a picture if you would like.</li>
-            <li>Click on the cards to attack them.</li>
-            <li>Reduce the opponent fortune teller's HP bar to win.</li>
-            <li>Your luck is determined by the Lucky Point system.</li>
-            <li>
-              The Lucky Point bar oscillates between negative and positive luck.
-            </li>
-            <li>
-              Click on the cards when the Lucky Point bar is in the positive
-              zone.
-            </li>
-            <li>Find out your fortune!</li>
-          </ol>
-        </b>
-        <a href="#" class="box-close"> × </a>
-      </div>
-    </div>
 
+    <!-- GAME BOARD -->
     <div class="grid">
       <div class="buttons">
-        <a href="#popup-box" id="how-to-play-btn" class="secondary-button">How to play</a>
+        <button id="how_to_button" class="secondary-button">How to play</button>
       </div>
 
       <div class="oracle forwards-oracle">
         <div class="message">
-          Draw 4 cards to discover your fortune... choose wisely!
+          Draw four cards to discover your fortune... choose wisely!
         </div>
         <img src="./assets/images/oracle.png" alt="The Oracle">
       </div>
-      <!-- board div contains all the cards -->
-      <div class="board"></div>
-      <!-- end of board div -->
+
+      <div class="board"><!-- dynamically generated --></div>
 
       <div class="player">
         <img
-            src="#"
+            src="./assets/images/profiles/default.svg"
             id="profile_image"
             alt="Player Image"
          >
@@ -75,5 +53,20 @@
         </div>
       </div>
     </div>
+
+    <!-- MODALS -->
+    <dialog id="how_to_modal">
+      <h2>How to play</h2>
+      <ul>
+        <li>Click and select four cards.</li>
+        <li>Whether the card flips normally or upside down determines if you gain or lose luck.</li>
+        <li>The luck bar oscillates to determine the amount of luck you gain or lose with each card.</li>
+        <li>The luck of your fortune is determined by the total amount of luck you end with.</li>
+        <li>Pick wisely... and find out your fortune!</li>
+      </ul>
+      <form method="dialog" class="default-dialog-form">
+        <button class="secondary-button">Close</button>
+      </form>
+    </dialog>
   </body>
 </html>

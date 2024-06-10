@@ -29,16 +29,24 @@ import {
   setGameWinnerUUID,
   getGameWinnerUUID,
   getOpponentUUID,
+  getSelfSelectedCard,
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr } from './util.js';
 import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
+import {
+  SOUND_EFFECTS,
+  playSoundEffect,
+  playBackgroundMusic,
+} from '../sound.js';
 
 const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
 
 const NUM_ROUNDS = 5;
+
+const DEALING_CARD_DELAY_SEC = 0.5;
 
 /**
  * TimeoutID for use by copyGameCodeToClipboard()
@@ -156,13 +164,37 @@ function updateScoreboardRoundNumber() {
 } /* updateScoreboardRoundNumber */
 
 /**
+ * Animates card sliding into either user's or opponent's hand, including applicable
+ * sound effect(s)
+ * @param { HTMLElement } cardEl versus-card element to attach animation to
+ * @param versusCardEl
+ * @param { number } delaySec seconds of delay until animation should start
+ */
+function animateCardDealing(versusCardEl, delaySec) {
+  versusCardEl.classList.add('player-card');
+  versusCardEl.style.setProperty('animation-delay', `${delaySec}s`);
+  versusCardEl.addEventListener(
+    'animationstart',
+    () => {
+      playSoundEffect(SOUND_EFFECTS.SWISH);
+    },
+    { once: true },
+  );
+  versusCardEl.addEventListener(
+    'animationend',
+    () => {
+      versusCardEl.classList.remove('player-card');
+    },
+    { once: true },
+  );
+} /* animateCardDealing */
+
+/**
  * Adds card images to the DOM at start of game
  */
 function createCardElements() {
   const userCardWrapperEl = document.querySelector('#user_cards');
   const opponentCardWrapperEl = document.querySelector('#opponent_cards');
-
-  const delayIncrement = 0.5;
 
   userCardWrapperEl.replaceChildren(
     ...getRemainingCards().map((remainingCard, index) => {
@@ -174,35 +206,23 @@ function createCardElements() {
 
       versusCardEl.addEventListener('click', handleCardSelection);
 
-      // Add a class to the card to trigger the animation only if it's the first call
-      versusCardEl.classList.add('player-card');
-      versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
-      versusCardEl.addEventListener('animationend', () => {
-        versusCardEl.classList.remove('player-card');
-      });
+      animateCardDealing(versusCardEl, index * DEALING_CARD_DELAY_SEC);
 
       return versusCardEl;
     }),
   );
 
   opponentCardWrapperEl.replaceChildren(
-    ...Array.from({ length: getNumOpponentCards() }).map(
-      (remainingCard, index) => {
-        const versusCardEl = document.createElement('versus-card');
+    ...Array.from({ length: getNumOpponentCards() }).map((_, index) => {
+      const versusCardEl = document.createElement('versus-card');
 
-        versusCardEl.setAttribute('variant', 'back');
-        versusCardEl.toggleAttribute('disabled', true);
+      versusCardEl.setAttribute('variant', 'back');
+      versusCardEl.toggleAttribute('disabled', true);
 
-        // Add a class to the card to trigger the animation only if it's the first call
-        versusCardEl.classList.add('player-card');
-        versusCardEl.style.animationDelay = `${index * delayIncrement}s`; // Apply constant delay increment
-        versusCardEl.addEventListener('animationend', () => {
-          versusCardEl.classList.remove('player-card');
-        });
+      animateCardDealing(versusCardEl, index * DEALING_CARD_DELAY_SEC);
 
-        return versusCardEl;
-      },
-    ),
+      return versusCardEl;
+    }),
   );
 } /* createCardElements */
 
@@ -249,9 +269,8 @@ export function refreshEntireGame() {
   initializeScoreboard();
   createCardElements();
 
-  // if (/* cards have been played this round */) {
-  //   /* display cards */
-  // }
+  if (getOppHasPlayedRound()) refreshOppSelectedCard();
+  if (getSelfHasPlayedRound()) refreshUserSelectedCard();
 
   const gameWinnerUUID = getGameWinnerUUID();
   const roundWinnerUUID = getRoundWinnerUUID();
@@ -263,6 +282,38 @@ export function refreshEntireGame() {
 
   toggleToGameboardView();
 } /* refreshEntireGame */
+
+/**
+ * Rebuilds and replaces the opponent's (unrevealed) selected card,
+ * for use during full-game refresh
+ */
+function refreshOppSelectedCard() {
+  const oppCardSlotEl = document.querySelector('#opp_played_card');
+  const versusCardEl = document.createElement('versus-card');
+
+  versusCardEl.setAttribute('variant', 'back');
+  versusCardEl.toggleAttribute('disabled', true);
+
+  oppCardSlotEl.replaceChildren(versusCardEl);
+} /* refreshUserSelectedCard */
+
+/**
+ * Rebuilds and replaces the users's selected card, for use during\
+ * full-game refresh
+ */
+function refreshUserSelectedCard() {
+  const selfCardSlotEl = document.querySelector('#self_played_card');
+  const versusCardEl = document.createElement('versus-card');
+
+  const selectedCard = getSelfSelectedCard();
+
+  versusCardEl.setAttribute('variant', 'front');
+  versusCardEl.setAttribute('suite', selectedCard.suite);
+  versusCardEl.setAttribute('number', selectedCard.number);
+  versusCardEl.toggleAttribute('disabled', true);
+
+  selfCardSlotEl.replaceChildren(versusCardEl);
+} /* refreshUserSelectedCard */
 
 /**
  * Displays fact that opponent user has played a card, without yet revealing what
@@ -319,18 +370,22 @@ async function roundWinnerAnimationCard(roundWinnerUUID) {
   }
 
   return new Promise((resolve) => {
-    selfPlayedVersusCardEl.addEventListener('animationend', () => {
-      setTimeout(() => {
-        [selfPlayedVersusCardEl, oppVersusCardEl].forEach((el) => {
-          el.classList.remove(
-            'winner-card-opp',
-            'winner-card-user',
-            'loser-card',
-          );
-        });
-        resolve();
-      }, 500);
-    });
+    selfPlayedVersusCardEl.addEventListener(
+      'animationend',
+      () => {
+        setTimeout(() => {
+          [selfPlayedVersusCardEl, oppVersusCardEl].forEach((el) => {
+            el.classList.remove(
+              'winner-card-opp',
+              'winner-card-user',
+              'loser-card',
+            );
+          });
+          resolve();
+        }, 500);
+      },
+      { once: true },
+    );
   });
 } /* roundWinnerAnimationCard */
 
@@ -358,13 +413,19 @@ async function roundWinnerAnimationText(roundWinnerUUID) {
   selfPlayedVersusCardEl.classList.add('no-vis');
   nextRoundWrapperEl.classList.add('next-round-animation');
 
+  playSoundEffect(isUserWinner ? SOUND_EFFECTS.WIN : SOUND_EFFECTS.LOSE);
+
   return new Promise((resolve) => {
-    nextRoundWrapperEl.addEventListener('animationend', () => {
-      setTimeout(() => {
-        nextRoundWrapperEl.classList.remove('next-round-animation');
-        resolve();
-      }, 500);
-    });
+    nextRoundWrapperEl.addEventListener(
+      'animationend',
+      () => {
+        setTimeout(() => {
+          nextRoundWrapperEl.classList.remove('next-round-animation');
+          resolve();
+        }, 500);
+      },
+      { once: true },
+    );
   });
 } /* roundWinnerAnimationText */
 
@@ -444,7 +505,7 @@ export function handleGameEnd(gameWinner) {
 } /* handleGameEnd */
 
 /**
- *
+ * Handles complete return to lobby, and reset of all currentl game state and displays
  */
 function returnToLobby() {
   toggleToLobbyView();
@@ -454,7 +515,8 @@ function returnToLobby() {
 } /* returnToLobby */
 
 /**
- *
+ * Handles event where instance is completely closed out, including displaying a message
+ * to the user and forcing them back to the lobby
  */
 export function handleInstanceClosed() {
   const instClosedModalEl = document.querySelector('#instance_closed_modal');
@@ -497,6 +559,22 @@ async function handleCardSelection(e) {
 } /* handleCardSelection */
 
 /**
+ * Removes everything but digits 0-9 from the game code input box, called
+ * whenever the value changes
+ */
+function sanitizeGameCode() {
+  const outboundGameCodeInputEl = document.querySelector('#outbound_game_code');
+
+  const DIGIT_STRING = '0123456789';
+
+  const sanitizedInputValue = Array.from(outboundGameCodeInputEl.value)
+    .filter((c) => DIGIT_STRING.includes(c))
+    .join('');
+
+  outboundGameCodeInputEl.value = sanitizedInputValue;
+} /* sanitizeGameCode */
+
+/**
  * Relays attempt to join new game instance to server while in lobby
  */
 function sendJoinInstance() {
@@ -511,7 +589,8 @@ function sendJoinInstance() {
 } /* sendJoinInstance */
 
 /**
- *
+ * Provides user with a modal asking them if they indeed want to leave the game
+ * instance
  */
 function handleLeaveGame() {
   const confirmLeaveModalEl = document.querySelector('#confirm_leave_modal');
@@ -530,14 +609,19 @@ function handleLeaveGame() {
 } /* handleLeaveGame */
 
 /**
- *
+ * Copies game code to user's clipboard (i.e., so they can paste it instead of having
+ * to remember it)
  */
 async function copyGameCodeToClipboard() {
   const selfGameCodeReadOnlyInputEl = document.querySelector('#self_game_code');
   const copyGameCodeButtonEl = document.querySelector('#copy_game_code_button');
 
   navigator.clipboard
-    .writeText(selfGameCodeReadOnlyInputEl.value)
+    .writeText(
+      'Play Tarot, but a Game with me!\n\n' +
+        'https://tarot-game-client.netlify.app\n\n' +
+        `Game code: ${selfGameCodeReadOnlyInputEl.value}`,
+    )
     .then(() => {
       clearTimeout(copyGameCodeTimeoutID);
       copyGameCodeButtonEl.classList.add('copy-successful');
@@ -550,7 +634,7 @@ async function copyGameCodeToClipboard() {
 } /* copyGameCodeToClipboard */
 
 /**
- *
+ * Shows modal explaining the rules to a user
  */
 function showRulesModal() {
   const rulesModalEl = document.querySelector('#rules_modal');
@@ -559,7 +643,7 @@ function showRulesModal() {
 } /* handleCloseRules */
 
 /**
- *
+ * Shows modal explaining how game codes work to the user
  */
 function showGameLobbyInfoModal() {
   const gameLobbyInfoModalEl = document.querySelector('#game_lobby_info_modal');
@@ -599,7 +683,10 @@ export function initializeVersus() {
   gameCodeInfoButtonEl.addEventListener('click', showGameLobbyInfoModal);
   openRulesButtonEl.addEventListener('click', showRulesModal);
   legendInfoButtonEl.addEventListener('click', showRulesModal);
+  outboundGameCodeInputEl.addEventListener('input', sanitizeGameCode);
   outboundGameCodeInputEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendJoinInstance();
   });
+
+  playBackgroundMusic();
 } /* initializeVersus */

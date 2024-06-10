@@ -24,7 +24,7 @@
     </div>
     <ul id="short_settings_icon_list">
       <li>
-        <button aria-label="Mute" title="Mute" id="mute_button" class="icon-button"></button>
+        <versus-mute-button></versus-mute-button>
       </li>
       <li>
         <a href="settings.html" aria-label="Settings" title="Settings" id="settings_button" class="icon-button"></a>
@@ -35,7 +35,7 @@
   <main>
     <!-- LOBBY -->
     <section id="lobby_menu">
-      <section id="lobby_game_codes_wrapper" aria-labelledby="lobby_game_codes_title">
+      <section id="lobby_game_codes_wrapper">
         <div class="lobby-code-wrapper">
           <div id="self_code_label_wrapper">
             <label for="self_game_code">You are in room</label>
@@ -266,8 +266,8 @@
     <div class="card-trans-wrapper">
       <div class="card-flip-wrapper">
         <label>
-          <img class="card-front" src="" alt="card front face">
-          <img class="card-back" src="./assets/images/deck_minor/card_back.webp" alt="card back face">
+          <img class="card-front" src="" alt="card front face" draggable="false">
+          <img class="card-back" src="./assets/images/deck_minor/card_back.webp" alt="card back face" draggable="false">
         </label>
         <input type="radio" name="selected_card">
       </div>

@@ -137,6 +137,7 @@ function createAvatarEls() {
 
     imgEl.src = getProfileImageUrlFromName(profileImageName);
     imgEl.alt = profileImageName;
+    imgEl.draggable = false;
 
     labelEl.replaceChildren(imgEl);
     profileImageOptionWrapperEl.replaceChildren(inputEl, labelEl);
