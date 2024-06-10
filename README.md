@@ -17,6 +17,7 @@
 - User personas: [`/design/personas/`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/tree/main/design/personas)
 - Meeting notes: [`/logistics/meetings/`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/tree/main/logistics/meetings)
 - Workplans: [`/logistics/workplans/`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/tree/main/logistics/workplans)
+- Pipeline: [`/design/architecture/ci/PIPELINE.md`](https://github.com/cse112-sp24-group12/cse112-sp24-group12/blob/main/design/architecture/ci/PIPELINE.md)
 
 ### Important links 🔗
 - JSDocs (Documentation): [GitHub Pages](https://cse112-sp24-group12.github.io/cse112-sp24-group12/)
