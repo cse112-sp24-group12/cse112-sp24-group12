@@ -14,6 +14,7 @@
   <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon">
 
   <script src="scripts/versus/index.js" type="module"></script>
+  <script src="./scripts/stars.js" type="module" id="stars_script"></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -82,7 +83,10 @@
       </div>
       <div id="top_mid_wrapper">
         <section id="game_info">
-          <p id="round_info">Round <span id="round_number"><!-- dynamically populated --></span></p>
+          <div id="round_info">
+            <p>Round <span id="round_number"><!-- dynamically populated --></span></p>
+            <time id="time_remaining"><!-- dynamically populated --></time>
+          </div>
           <div id="score_info"><!-- dynamically populated --></div>
         </section>
         <section id="played_card_wrapper">
@@ -264,7 +268,7 @@
       <div class="card-flip-wrapper">
         <label>
           <img class="card-front" src="" alt="card front face">
-          <img class="card-back" src="./assets/images/deck_minor/card_back.webp" alt="card back face">
+          <img class="card-back" src="./assets/images/cardback.png" alt="card back face">
         </label>
         <input type="radio" name="selected_card">
       </div>

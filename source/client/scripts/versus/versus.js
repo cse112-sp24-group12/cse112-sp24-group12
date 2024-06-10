@@ -210,6 +210,8 @@ function createCardElements() {
  * Switch to view of game board
  */
 function toggleToGameboardView() {
+  removeStars();
+
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
   const gameBoardWrapperEl = document.querySelector('#game_board');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
@@ -225,6 +227,8 @@ function toggleToGameboardView() {
  * Switch to view of lobby, and focus on game code input element
  */
 function toggleToLobbyView() {
+  starsInit();
+
   const lobbyWrapperEl = document.querySelector('#lobby_menu');
   const gameBoardWrapperEl = document.querySelector('#game_board');
   const leaveGameButtonEl = document.querySelector('#leave_game_button');
