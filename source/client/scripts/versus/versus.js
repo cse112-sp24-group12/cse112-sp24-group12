@@ -29,9 +29,10 @@ import {
   setGameWinnerUUID,
   getGameWinnerUUID,
   getOpponentUUID,
+  getCurrentWorldEvent,
 } from './store.js';
 import { clearChat } from './chat.js';
-import { getRandFromArr } from './util.js';
+import { getRandFromArr, getWorldEventInfo } from './util.js';
 import { getPlayerUUID } from './../profile.js';
 import * as Types from './types.js';
 
@@ -39,6 +40,8 @@ const OPPONENT_MOVE_MESSAGE = "Waiting for opponent's move...";
 const USER_MOVE_MESSAGE = 'Select and play a card';
 
 const NUM_ROUNDS = 5;
+
+const WORLD_EVENT_MODAL_DELAY_MS = 500;
 
 /**
  * TimeoutID for use by copyGameCodeToClipboard()
@@ -253,6 +256,8 @@ export function refreshEntireGame() {
   //   /* display cards */
   // }
 
+  displayWorldEventLegendImage();
+
   const gameWinnerUUID = getGameWinnerUUID();
   const roundWinnerUUID = getRoundWinnerUUID();
   if (gameWinnerUUID) {
@@ -263,6 +268,20 @@ export function refreshEntireGame() {
 
   toggleToGameboardView();
 } /* refreshEntireGame */
+
+/**
+ * Displays (without animation) the legend image for the current
+ * world event associated to the game, for use when triggering
+ * a complete refresh of the game state
+ */
+function displayWorldEventLegendImage() {
+  const legendImageEl = document.querySelector('#legend_card_wrapper img');
+
+  const worldEventInfo = getWorldEventInfo(getCurrentWorldEvent());
+
+  legendImageEl.src = worldEventInfo.imgPath;
+  legendImageEl.alt = worldEventInfo.eventDescription;
+} /* displayWorldEventLegendImage */
 
 /**
  * Displays fact that opponent user has played a card, without yet revealing what
@@ -447,86 +466,50 @@ export function handleGameEnd(gameWinner) {
  * Handles world event action, updating the game legend and triggering popup
  * @param { string } worldEvent world event that was triggered
  */
-export function handleWorldEvent(worldEvent) {
+export async function handleWorldEvent(worldEventName) {
+  // wait for current animation to end + constant delay
+  await currentAnimationPromise;
+  await new Promise((r) => setTimeout(r, WORLD_EVENT_MODAL_DELAY_MS));
+
   const currentWorldEventMeta = document.querySelector('#current_world_event');
   const gameLegend = document.querySelector('#game-legend');
   const worldEventModal = document.querySelector('#world_event_modal');
-  let img, eventName, eventDescription;
 
-  currentWorldEventMeta.setAttribute('content', worldEvent);
+  currentWorldEventMeta.setAttribute('content', worldEventName);
 
-  // describe world event's legend and description
-  switch (worldEvent) {
-    case Types.WORLD_EVENTS.LOWER_WINS:
-      img = './assets/images/game_legend.webp';
-      eventName = 'Lower is Better';
-      eventDescription = 'The card with the lower power level wins!';
-      break;
-    case Types.WORLD_EVENTS.SUITE_REVERSED:
-      img = './assets/images/game_legend_reversed.webp';
-      eventName = 'Suite Reverse';
-      eventDescription = 'The order of the winning suites gets reversed!';
-      break;
-    case Types.WORLD_EVENTS.SUITE_BOOST_WANDS:
-      img = './assets/images/game_legend_wands_boost.webp';
-      eventName = 'Wands are Boosted!';
-      eventDescription = 'Wands are much stronger this round!';
-      break;
-    case Types.WORLD_EVENTS.SUITE_BOOST_CUPS:
-      img = './assets/images/game_legend_cups_boost.webp';
-      eventName = 'Cups are Boosted!';
-      eventDescription = 'Cups are much stronger this round!';
-      break;
-    case Types.WORLD_EVENTS.SUITE_BOOST_SWORDS:
-      img = './assets/images/game_legend_swords_boost.webp';
-      eventName = 'Swords are Boosted!';
-      eventDescription = 'Swords are much stronger this round!';
-      break;
-    case Types.WORLD_EVENTS.SUITE_BOOST_PENTACLES:
-      img = './assets/images/game_legend_pentacles_boost.webp';
-      eventName = 'Pentacles are Boosted!';
-      eventDescription = 'Pentacles are much stronger this round!';
-      break;
-    case Types.WORLD_EVENTS.RANDOM_VALUE:
-      img = './assets/images/game_legend.webp';
-      eventName = 'Random Values';
-      eventDescription = "Your cards' values are randomized this round!";
-      break;
-    case Types.WORLD_EVENTS.RANDOM_SUITE:
-      img = './assets/images/game_legend.webp';
-      eventName = 'Random Suites';
-      eventDescription = "Your cards' suites are randomized this round!";
-      break;
-    default:
-      gameLegend.src = './assets/images/game_legend.webp';
-      gameLegend.alt =
-        'Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral';
+  const worldEventInfo = getWorldEventInfo(worldEventName);
+  if (worldEventInfo.eventName === 'Default') {
+    gameLegend.src = './assets/images/game_legend.webp';
+    gameLegend.alt =
+      'Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral';
+    return;
   }
 
   // update world event popup
-  if (worldEvent !== Types.WORLD_EVENTS.NONE) {
-    const worldEventPopupImg = document.createElement('img');
-    const modalHead = worldEventModal.querySelector('h2');
-    const modalText = worldEventModal.querySelector('p');
-    worldEventPopupImg.src = img;
-    worldEventPopupImg.id = 'world-event-popup';
-    worldEventPopupImg.alt = eventDescription;
+  if (worldEventName !== Types.WORLD_EVENTS.NONE) {
+    const newLegendImgEl = document.createElement('img');
+    const worldEventModalImgWrapperEl = document.querySelector('#world_event_modal_img_wrapper');
+    const worldEventModalNameEl = document.querySelector('#world_event_modal_name');
+    const worldEventModalDescEl = document.querySelector('#world_event_modal_desc');
 
-    modalHead.innerHTML = eventName;
-    modalText.innerHTML = eventDescription;
-    worldEventModal.insertBefore(worldEventPopupImg, modalText.nextSibling);
+    newLegendImgEl.src = worldEventInfo.imgPath;
+    newLegendImgEl.id = 'world-event-popup';
+    newLegendImgEl.alt = worldEventInfo.eventDescription;
+
+    worldEventModalNameEl.innerText = worldEventInfo.eventName;
+    worldEventModalDescEl.innerText = worldEventInfo.eventDescription;
+    worldEventModalImgWrapperEl.replaceChildren(newLegendImgEl);
 
     worldEventModal.showModal();
   }
-}
+} /* handleWorldEvent */
 
 /**
  * Animates world event popup to replace current legend;
  * at the end of the animation, the legend will be moved
  * into the container in the DOM as well
- * @returns { Promise<void> }
  */
-async function translateWorldEvent() {
+function translateWorldEvent() {
   const gameLegend = document.querySelector('#game-legend');
   const worldEventPopupImg = document.querySelector('#world-event-popup');
 
@@ -544,7 +527,7 @@ async function translateWorldEvent() {
   gameLegend.parentElement.replaceChildren(worldEventPopupImg);
   worldEventPopupImg.id = 'game-legend';
 
-  const translationAnimation = worldEventPopupImg.animate(
+  worldEventPopupImg.animate(
     [
       {
         transform: `translate(${diffXPos}px, ${diffYPos}px) scale(${scaleXDim}, ${scaleYDim})`,
@@ -555,19 +538,6 @@ async function translateWorldEvent() {
       duration: 500,
     },
   );
-
-  /* promise for blocking animation */
-  this._translationAnimationPromise = new Promise((resolve) => {
-    translationAnimation.addEventListener(
-      'finish',
-      () => {
-        resolve();
-      },
-      { once: true },
-    );
-  });
-
-  return this._translationAnimationPromise;
 } /* translateWorldEvent*/
 
 function returnToLobby() {

@@ -166,7 +166,8 @@ export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
 /**
  * @typedef { {
  *  selectedCard: Record<UUID, Card>,
- *  roundWinner: UUID
+ *  roundWinner: UUID,
+ *  worldEvent: string
  * } } RoundState
  */
 

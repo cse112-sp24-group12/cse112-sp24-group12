@@ -107,10 +107,10 @@
             <h2>Legend</h2>
             <button id="legend_info_button" class="info-button" aria-label="Game code info"></button>
           </div>
-          <div id="game-legend-wrapper">
+          <div id="legend_card_wrapper">
             <img src="./assets/images/game_legend.webp"
               id="game-legend"
-              alt="Game legend explaining that wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
+              alt="Wands beat cups, cups beat swords, swords beat wands, and pentacles are neutral">
           </div>
         </section>
       </div>
@@ -163,10 +163,14 @@
   </dialog>
 
   <dialog id="world_event_modal">
-    <h2>World Event</h2>
-    <p>Description</p>
+    <h2>A world event is happening!</h2>
+    <h3 id="world_event_modal_name"></h3>
+    <div id="world_event_modal_img_wrapper">
+      <!-- dynamically generated -->
+    </div>
+    <p id="world_event_modal_desc">Description</p>
     <form method="dialog" class="default-dialog-form">
-      <button class="secondary-button" id="world_event_button">Understood</button>
+      <button class="primary-button" id="world_event_button">Got it</button>
     </form>
   </dialog>
 

@@ -1,6 +1,6 @@
 /** @module store */
 
-import { UPDATE_USERNAME_LISTENER_NAME } from './types.js';
+import { UPDATE_USERNAME_LISTENER_NAME, WORLD_EVENTS } from './types.js';
 import * as Types from './types.js';
 import { getPlayerUUID } from './../profile.js';
 import { areCardsEqual, getCurrentRoundState } from './util.js';
@@ -57,6 +57,14 @@ export function setSelfSelectedCard(selectedCard) {
 
   getCurrentRoundState(gameState).selectedCard[playerUUID] = selectedCard;
 } /* setSelfSelectedCard */
+
+/**
+ * Fetches world event associated to current round
+ * @returns { string } value of WORLD_EVENT enum
+ */
+export function getCurrentWorldEvent() {
+  return getCurrentRoundState(gameState).worldEvent ?? WORLD_EVENTS.NONE;
+} /* getCurrentWorldEvent */
 
 /**
  * Determines the UUID of the opponent player by finding the first (only)
