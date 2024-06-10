@@ -29,11 +29,8 @@ import {
   setGameWinnerUUID,
   getGameWinnerUUID,
   getOpponentUUID,
-<<<<<<< HEAD
   getCurrentWorldEvent,
-=======
   getSelfSelectedCard,
->>>>>>> main
 } from './store.js';
 import { clearChat } from './chat.js';
 import { getRandFromArr, getWorldEventInfo } from './util.js';
@@ -51,11 +48,8 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 
 const NUM_ROUNDS = 5;
 
-<<<<<<< HEAD
 const WORLD_EVENT_MODAL_DELAY_MS = 500;
-=======
 const DEALING_CARD_DELAY_SEC = 0.5;
->>>>>>> main
 
 /**
  * TimeoutID for use by copyGameCodeToClipboard()
@@ -89,10 +83,13 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
       updateProfile(profile);
 
       const profileListItemEl = document.createElement('li');
+
+      const versusAvatarEl = document.createElement('versus-avatar');
       const versusUsernameEl = document.createElement('versus-username');
+      versusAvatarEl.setAttribute('uuid', profile.uuid);
       versusUsernameEl.setAttribute('uuid', profile.uuid);
 
-      profileListItemEl.append(versusUsernameEl);
+      profileListItemEl.replaceChildren(versusAvatarEl, versusUsernameEl);
 
       return profileListItemEl;
     }),
@@ -299,7 +296,6 @@ export function refreshEntireGame() {
 } /* refreshEntireGame */
 
 /**
-<<<<<<< HEAD
  * Displays (without animation) the legend image for the current
  * world event associated to the game, for use when triggering
  * a complete refresh of the game state
@@ -312,7 +308,8 @@ function displayWorldEventLegendImage() {
   legendImageEl.src = worldEventInfo.imgPath;
   legendImageEl.alt = worldEventInfo.eventDescription;
 } /* displayWorldEventLegendImage */
-=======
+
+/**
  * Rebuilds and replaces the opponent's (unrevealed) selected card,
  * for use during full-game refresh
  */
@@ -343,7 +340,6 @@ function refreshUserSelectedCard() {
 
   selfCardSlotEl.replaceChildren(versusCardEl);
 } /* refreshUserSelectedCard */
->>>>>>> main
 
 /**
  * Displays fact that opponent user has played a card, without yet revealing what

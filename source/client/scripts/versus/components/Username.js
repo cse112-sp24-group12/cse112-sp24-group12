@@ -50,8 +50,13 @@ export default class Username extends HTMLElement {
     const playerUUID = this.getAttribute('uuid');
     if (!playerUUID) return;
 
-    const newUsername =
-      playerUUID === getPlayerUUID() ? 'You' : getProfile(playerUUID)?.username;
+    let newUsername;
+    if (playerUUID === getPlayerUUID()) {
+      newUsername = 'You';
+      this.classList.add('you-username');
+    } else {
+      newUsername = getProfile(playerUUID)?.username;
+    }
 
     if (!newUsername) return;
 

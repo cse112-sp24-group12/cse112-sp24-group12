@@ -37,6 +37,7 @@ export const WORLD_EVENTS = {
 };
 
 export const UPDATE_USERNAME_LISTENER_NAME = 'versus-username-update';
+export const UPDATE_AVATAR_LISTENER_NAME = 'versus-avatar-update';
 
 /**
  * @typedef { string|null } UUID
