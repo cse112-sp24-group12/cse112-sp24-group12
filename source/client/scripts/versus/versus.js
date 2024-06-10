@@ -48,7 +48,7 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 
 const NUM_ROUNDS = 5;
 
-const WORLD_EVENT_MODAL_DELAY_MS = 500;
+const WORLD_EVENT_MODAL_DELAY_MS = 250;
 const DEALING_CARD_DELAY_SEC = 0.5;
 
 /**
@@ -533,6 +533,7 @@ export function handleGameEnd(gameWinner) {
 /**
  * Handles world event action, updating the game legend and triggering popup
  * @param { string } worldEvent world event that was triggered
+ * @param worldEventName
  */
 export async function handleWorldEvent(worldEventName) {
   // wait for current animation to end + constant delay
@@ -540,7 +541,7 @@ export async function handleWorldEvent(worldEventName) {
   await new Promise((r) => setTimeout(r, WORLD_EVENT_MODAL_DELAY_MS));
 
   const currentWorldEventMeta = document.querySelector('#current_world_event');
-  const gameLegend = document.querySelector('#game-legend');
+  const gameLegend = document.querySelector('#game_legend_img');
   const worldEventModal = document.querySelector('#world_event_modal');
 
   currentWorldEventMeta.setAttribute('content', worldEventName);
@@ -556,9 +557,15 @@ export async function handleWorldEvent(worldEventName) {
   // update world event popup
   if (worldEventName !== Types.WORLD_EVENTS.NONE) {
     const newLegendImgEl = document.createElement('img');
-    const worldEventModalImgWrapperEl = document.querySelector('#world_event_modal_img_wrapper');
-    const worldEventModalNameEl = document.querySelector('#world_event_modal_name');
-    const worldEventModalDescEl = document.querySelector('#world_event_modal_desc');
+    const worldEventModalImgWrapperEl = document.querySelector(
+      '#world_event_modal_img_wrapper',
+    );
+    const worldEventModalNameEl = document.querySelector(
+      '#world_event_modal_name',
+    );
+    const worldEventModalDescEl = document.querySelector(
+      '#world_event_modal_desc',
+    );
 
     newLegendImgEl.src = worldEventInfo.imgPath;
     newLegendImgEl.id = 'world-event-popup';
@@ -578,7 +585,7 @@ export async function handleWorldEvent(worldEventName) {
  * into the container in the DOM as well
  */
 function translateWorldEvent() {
-  const gameLegend = document.querySelector('#game-legend');
+  const gameLegend = document.querySelector('#game_legend_img');
   const worldEventPopupImg = document.querySelector('#world-event-popup');
 
   /* calculate difference between current and desired position */
@@ -593,7 +600,7 @@ function translateWorldEvent() {
 
   /* swap and translate */
   gameLegend.parentElement.replaceChildren(worldEventPopupImg);
-  worldEventPopupImg.id = 'game-legend';
+  worldEventPopupImg.id = 'game_legend_img';
 
   worldEventPopupImg.animate(
     [
@@ -603,7 +610,7 @@ function translateWorldEvent() {
       {},
     ],
     {
-      duration: 500,
+      duration: 250,
     },
   );
 } /* translateWorldEvent*/
