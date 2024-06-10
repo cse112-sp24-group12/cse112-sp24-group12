@@ -14,7 +14,7 @@
     <script src="./scripts/settings.js" type="module"></script>
   </head>
   <body>
-    <header class="icon-header">
+    <header>
       <a href="index.html" aria-label="Home" id="home_button" class="icon-button"></a>
     </header>
     <main id="settings-container">
@@ -44,7 +44,7 @@
         <h2>Audio settings</h2>
         <label for="music_volume_slider">Music volume</label>
         <input type="range" name="music_volume" id="music_volume_slider">
-        <label for="sfx_volume_slider"><h2>Sound effects volume</h2></label>
+        <label for="sfx_volume_slider">Sound effects volume</label>
         <input type="range" name="sfx_volume" id="sfx_volume_slider">
       </section>
       <section id="profile_settings" class="card purple-card">
@@ -57,7 +57,7 @@
             <button id="change_image_button">Change avatar</button>
           </div>
           <div id="profile_settings_username_wrapper">
-            <input id="profile_settings_username" type="text" value="">
+            <input id="profile_settings_username" type="text" value="" maxlength="15">
           </div>
           <div id="username_button_wrapper">
             <button id="reset_settings_button" class="secondary-button">Reset</button>

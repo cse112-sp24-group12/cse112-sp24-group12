@@ -1,7 +1,7 @@
 body {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 10rem);
 }
 
 main {
@@ -9,7 +9,6 @@ main {
   justify-content: center;
   align-items: center;
   flex: 1;
-  padding-top: 4rem;
 }
 
 #main_button_list {

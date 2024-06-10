@@ -1,17 +1,19 @@
-import { UPDATE_USERNAME_LISTENER_NAME } from '../types.js';
+import { UPDATE_AVATAR_LISTENER_NAME } from '../types.js';
 import { getProfile } from '../store.js';
-import { getPlayerUUID } from '../../profile.js';
+import { getProfileImageUrlFromName } from '../../profile.js';
 
 /**
- * Displays and automatically updates a username associated to a specific
- * UUID, as determined by information sent from the server
+ * Displays and automatically updates a profile image/avatar
+ * associated to a specific UUID, as determined by information sent from the server
  * @example
- * // renders username associated to "test-uuid"
- * <versus-username uuid="test-uuid"></versus-username>
+ * // renders avatar image associated to "test-uuid"
+ * <versus-avatar uuid="test-uuid"></versus-avatar>
  */
-export default class Username extends HTMLElement {
+export default class Avatar extends HTMLElement {
   /** @type { string[] } */
   static observedAttributes = ['uuid'];
+
+  _initialized = false;
 
   constructor() {
     super();
@@ -21,8 +23,15 @@ export default class Username extends HTMLElement {
    * Initializes display and sets listener to update whenever new information exists
    */
   connectedCallback() {
+    if (!this._initialized) {
+      this._initialized = true;
+
+      this._imgEl = document.createElement('img');
+      this.replaceChildren(this._imgEl);
+    }
+
     this._handleUpdate();
-    window.addEventListener(UPDATE_USERNAME_LISTENER_NAME, this._handleUpdate);
+    window.addEventListener(UPDATE_AVATAR_LISTENER_NAME, this._handleUpdate);
   } /* connectedCallback */
 
   /**
@@ -30,7 +39,7 @@ export default class Username extends HTMLElement {
    */
   disconnectedCallback() {
     window.removeEventListener(
-      UPDATE_USERNAME_LISTENER_NAME,
+      UPDATE_AVATAR_LISTENER_NAME,
       this._handleUpdate,
     );
   } /* disconnectedCallback */
@@ -39,6 +48,8 @@ export default class Username extends HTMLElement {
    * Refreshes display whenever UUID is updated
    */
   attributeChangedCallback() {
+    if (!this._initialized) return;
+
     this._handleUpdate();
   } /* attributeChangedCallback */
 
@@ -50,16 +61,8 @@ export default class Username extends HTMLElement {
     const playerUUID = this.getAttribute('uuid');
     if (!playerUUID) return;
 
-    let newUsername;
-    if (playerUUID === getPlayerUUID()) {
-      newUsername = 'You';
-      this.classList.add('you-username');
-    } else {
-      newUsername = getProfile(playerUUID)?.username;
-    }
-
-    if (!newUsername) return;
-
-    this.innerText = newUsername;
+    const newProfileImageName = getProfile(playerUUID)?.profileImageName;
+  
+    this._imgEl.src = getProfileImageUrlFromName(newProfileImageName);
   }; /* _handleUpdate */
 } /* Username */

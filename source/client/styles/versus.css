@@ -40,7 +40,7 @@ header {
   border: none;
   color: var(--white);
   font-family: "Berkshire Swash";
-  font-size: 2rem;
+  font-size: 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
