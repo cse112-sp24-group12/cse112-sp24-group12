@@ -15,7 +15,7 @@ const DEFAULT_MUTE = false;
 const DEFAULT_MUSIC_VOLUME_LEVEL = 0.5;
 const DEFAULT_SFX_VOLUME_LEVEL = 0.5;
 const LOCAL_PROFILE_IMAGE_STANDARD_URLS = {
-  default: './assets/images/profiles/dog.svg',
+  default: './assets/images/profiles/default.svg',
   duck: './assets/images/profiles/duck.svg',
   elephant: './assets/images/profiles/elephant.svg',
   fox: './assets/images/profiles/fox.svg',
