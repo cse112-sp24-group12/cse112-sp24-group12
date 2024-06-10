@@ -170,14 +170,16 @@
 
   <dialog id="world_event_modal">
     <h2>A world event is happening!</h2>
-    <div id="world_event_modal_img_wrapper">
-      <!-- dynamically generated -->
+    <div id="world_event_modal_wrapper">
+      <div id="world_event_modal_img_wrapper">
+        <!-- dynamically generated -->
+      </div>
+      <h3 id="world_event_modal_name"></h3>
+      <p id="world_event_modal_desc">Description</p>
     </div>
-    <h3 id="world_event_modal_name"></h3>
-    <p id="world_event_modal_desc">Description</p>
-    <form method="dialog" class="default-dialog-form">
-      <button class="primary-button" id="world_event_button">Got it</button>
-    </form>
+      <form method="dialog" class="default-dialog-form">
+        <button class="primary-button" id="world_event_button">Got it</button>
+      </form>
   </dialog>
 
   <dialog id="rules_modal">

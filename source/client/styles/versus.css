@@ -74,6 +74,10 @@ header {
   font-size: 1.25rem;
 }
 
+#world_event_modal_wrapper {
+  overflow: auto;
+}
+
 #world_event_modal_desc {
   margin-top: 0.5rem;
 }
