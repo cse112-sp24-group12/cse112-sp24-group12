@@ -81,10 +81,13 @@ export function handleUpdateInstance({ gameCode, profileList } = {}) {
       updateProfile(profile);
 
       const profileListItemEl = document.createElement('li');
+
+      const versusAvatarEl = document.createElement('versus-avatar');
       const versusUsernameEl = document.createElement('versus-username');
+      versusAvatarEl.setAttribute('uuid', profile.uuid);
       versusUsernameEl.setAttribute('uuid', profile.uuid);
 
-      profileListItemEl.append(versusUsernameEl);
+      profileListItemEl.replaceChildren(versusAvatarEl, versusUsernameEl);
 
       return profileListItemEl;
     }),

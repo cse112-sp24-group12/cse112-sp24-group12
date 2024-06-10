@@ -54,6 +54,16 @@
   text-align: right;
 }
 
+#oracle {
+  position: absolute;
+  height: 14rem;
+  aspect-ratio: 1 / 1;
+  transform: scaleX(-1);
+  right: 14rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .lobby-code-input-wrapper button {
   width: 3rem;
   background-color: var(--yellow);
@@ -113,7 +123,15 @@
   height: 5.75rem;
 }
 
+#lobby_profile_list_wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
 #lobby_profile_list {
+  flex: 1;
+  max-width: 30rem;
   list-style-type: none;
   overflow: hidden;
   border-radius: var(--border-radius);
@@ -123,4 +141,17 @@
   background-color: var(--light-gray);
   color: var(--black);
   padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.15rem;
+}
+
+#lobby_profile_list li:has(.you-username) {
+  background-color: var(--yellow);
+}
+
+#lobby_profile_list li versus-avatar {
+  height: 2rem;
+  aspect-ratio: 1 / 1;
 }
