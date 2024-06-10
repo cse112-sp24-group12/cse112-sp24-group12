@@ -40,13 +40,6 @@ describe('E2E button/link testing', () => {
   beforeEach(defaultInitialization);
   afterEach(defaultTeardown);
 
-  it('Make sure clicking how to play button goes to href', async () => {
-    const tutorialButton = await page.$('#how-to-play-btn');
-    await tutorialButton.evaluate((b) => b.click());
-    const hash = await page.evaluate(() => document.location.hash);
-    expect(hash).toEqual('#popup-box');
-  }, 5000);
-
   it('Check clicking one div btn outputs status', async () => {
     const card = await page.$('#card-1');
     await page.waitForSelector('.active-container');

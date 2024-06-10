@@ -249,7 +249,7 @@ header {
     }
   }
 
-  #how-to-play-btn {
+  #how_to_button {
     display: none;
   }
 
@@ -302,71 +302,6 @@ header {
 }
 
 /* instructions */
-.box {
-  background-color: black;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-p {
-  font-size: 17px;
-  align-items: center;
-}
-.box a {
-  display: inline-block;
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 3px;
-}
-.howto-modal {
-  z-index: 1000;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #fff3;
-  transition: all 0.4s;
-  visibility: hidden;
-  opacity: 0;
-  z-index: 10000;
-}
-.content {
-  position: absolute;
-  background: white;
-  width: 660px;
-  padding: 1em 2em;
-  border-radius: 4px;
-}
-.howto-modal:target {
-  visibility: visible;
-  opacity: 1;
-}
-.box-close {
-  position: absolute;
-  top: 0;
-  right: 15px;
-  color: #fe0606;
-  text-decoration: none;
-  font-size: 30px;
-}
-.instruct {
-  color: black;
-  font-size: 2.5rem;
-  align-items: center;
-}
-ol {
-  font-size: 1.5rem;
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
-  list-style-position: inside;
-  color: #6c1960;
-}
 .buttons {
   position: fixed;
   bottom: 0%;
@@ -378,6 +313,14 @@ ol {
   justify-content: center;
   gap: 8px;
   padding: 1rem;
+}
+
+#how_to_modal ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  list-style-type: none;
 }
 
 @media (max-width: 62em) {
