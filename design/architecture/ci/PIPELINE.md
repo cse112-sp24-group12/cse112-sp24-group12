@@ -13,16 +13,18 @@ Developers can, and should, verify their own changes in accordance with the inst
 _Currently, JSDocs issues will be reported as warnings instead of errors. This means that they do **not** need to be fixed in order to merge a pull request. In the future, this will change. As such, you should add and fix JSDocs comments on all files you edit to mitigate any future burden._
 
 ### On pull request
-When a new pull request is triggered, GitHub actions will check if there are changes to either/both of the `/client` and `/server` subdirectories. In any with changes, a script will run the testing suite and linter. Any errors will report back as failures. 
+When a new pull request is triggered, GitHub actions will check if there are changes to either/both of the `/client` and `/server` subdirectories. Where there are changes, a script will run the testing suite and linter. A script will also build and then discard JSDOCs for the site, which serves to verify that the JSDOC comment syntax is 100% correct (eslint-jsdoc-plugin serves to catch some high-level issues and enforce guidelines like requiring a comment on every function, but fails to catch things like trailing commas, which cause JSDOC construction to fail). Any errors will report back as failures. 
 
 Netlify will automatically generate and attach a preview build to your pull request. This will allow you to view any changes as they would appear in the production environment before you merge the branch. Please make sure that your changes appear as you would expect them to. _Note: If you simultaneously made changes to both the server and client, the server changes will not be reflected in the preview build; the preview build will be attached to the current production deployment of the server due to pricing constraints from Render._
+
+**Manual review**: A pull request requires manual code review from another developer on the team before it can be merged.
 
 **All steps must be passed in order to merge your branch into `main`.**
 
 ### On merge
 When a branch is merged into main, there are three deployment processes which simulatenously may commence. If there were not appropriate changes to targeted files, some processes may be skipped. 
 - **JSDocs**: JSDocs will be deployed automatically to GitHub Pages.
-- **`./client`**: The static client files will be deployed automatically to Netlify.
+- **`./client`**: The static client files will be deployed automatically to Netlify. Before deployment, internal files (such as config files and tests) will be removed from the file structure and all JS will be minified through SWC.
 - **`./server`**: The Node.js WebSocket backend will be deployed automatically to Render.
 
 ### Artifacts
@@ -41,6 +43,9 @@ We are using Jest for testing. On the client, we are also using Puppeteer to run
 
 ### JSDocs
 We are using JSDocs to structure our block-level comments, and automatically generate external documentation.
+
+### Minification
+We are using SWC for JS minification. This is housed in the `npm run build` step, which creates a `/dist` directory that we then deploy through Netlify. This step also strips off files that we do not want or need to expose to the client. 
 
 ## Other
 ### Code Climate
