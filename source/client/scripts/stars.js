@@ -13,6 +13,8 @@ const MOUSE_EFFECT_COEFF = 0.05;
 const STAR_RADIUS_COEFF = 3;
 const CENTER_EXCLUSION_RADIUS = 0.2;
 
+let currentAnimationFrameID;
+
 /**
  * @type { {
  *  xPosPercentFromCenter: number,
@@ -133,19 +135,25 @@ function animateNextFrame(stars, canvasContext) {
   );
 
   /* self-invoke next frame */
-  requestAnimationFrame(() => animateNextFrame(stars, canvasContext));
+  currentAnimationFrameID = requestAnimationFrame(() =>
+    animateNextFrame(stars, canvasContext),
+  );
 } /* animateNextFrame */
 
 /**
  * Creates and attaches canvas element to page, and then initializes animation and
  * appropriate event listeners
  */
-function init() {
-  /* create star canvas element */
-  const starBgCanvasEl = document.createElement('canvas');
-  starBgCanvasEl.classList.add('star-bg');
+export function starsInit() {
+  /* create star canvas element if it doesn't already exist */
+  let starBgCanvasEl = document.querySelector('.star-bg');
+  if (!starBgCanvasEl) {
+    starBgCanvasEl = document.createElement('canvas');
+    starBgCanvasEl.classList.add('star-bg');
+    document.body.append(starBgCanvasEl);
+  }
+
   handleResize(starBgCanvasEl);
-  document.body.append(starBgCanvasEl);
 
   /* initialize animation */
   const canvasContext = starBgCanvasEl.getContext('2d');
@@ -156,6 +164,17 @@ function init() {
   window.addEventListener('resize', () => handleResize(starBgCanvasEl), {
     passive: true,
   });
-} /* init */
+} /* starsInit */
 
-window.addEventListener('DOMContentLoaded', init);
+/**
+ * Remove the stary background
+ */
+export function removeStars() {
+  const starBgCanvasEl = document.querySelector('.star-bg');
+
+  starBgCanvasEl?.remove();
+
+  cancelAnimationFrame(currentAnimationFrameID);
+}
+
+window.addEventListener('DOMContentLoaded', starsInit);

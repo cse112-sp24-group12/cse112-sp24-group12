@@ -1,4 +1,5 @@
 import { getCardURLFromName } from '../util.js';
+import { SOUND_EFFECTS, playSoundEffect } from './../../sound.js';
 
 /**
  * Displays either generic back of a card, or explicitly-defined
@@ -115,6 +116,8 @@ export default class Card extends HTMLElement {
         { once: true },
       );
     });
+
+    playSoundEffect(SOUND_EFFECTS.SWISH);
 
     return this._translationAnimationPromise;
   } /* translateToContainer */

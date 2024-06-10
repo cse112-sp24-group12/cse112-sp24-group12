@@ -4,6 +4,7 @@
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.2.0",
+    "@swc/cli": "^0.3.12",
     "eslint": "^9.2.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jsdoc": "^48.2.3",
@@ -18,7 +19,8 @@
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js'",
-    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js' --fix"
+    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint './scripts/**/*.js' './__tests__/**/*.js' --fix",
+    "build": "rm -rf dist && npx swc . --ignore '__tests__,node_modules,dist,package.json,package-lock.json' -d dist --copy-files"
   },
   "jest": {
     "verbose": true,

@@ -67,6 +67,15 @@ export function getCurrentWorldEvent() {
 } /* getCurrentWorldEvent */
 
 /**
+ * Fetches card selected by the user during the current round
+ * @returns { Types.Card|null } card selected by the user in the current round,
+ * or null if no card has been selected
+ */
+export function getSelfSelectedCard() {
+  return getCurrentRoundState(gameState).selectedCard[getPlayerUUID()] ?? null;
+} /* getSelfSelectedCard */
+
+/**
  * Determines the UUID of the opponent player by finding the first (only)
  * UUID that doesn't match the client user
  * @returns { Types.UUID } UUID of opponent user

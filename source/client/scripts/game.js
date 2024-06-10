@@ -220,14 +220,22 @@ function getCurPercentOfBarFill() {
  */
 function attachProfileImageAndListener() {
   const playerImageEl = document.querySelector('#profile_image');
-  const playerImageInputEl = document.querySelector('#file');
 
   playerImageEl.src = getProfileImageUrl();
-
-  playerImageInputEl.addEventListener('change', (e) => {
-    playerImageEl.src = URL.createObjectURL(e.target.files[0]);
-  });
 } /* attachProfileImageAndListener */
+
+/**
+ * Initializes event listener for opening how to modal;
+ * closing is handled by default through HTML form element
+ */
+function initializeHowToModal() {
+  const howToModalEl = document.querySelector('#how_to_modal');
+  const howToButtonEl = document.querySelector('#how_to_button');
+
+  howToButtonEl.addEventListener('click', () => {
+    howToModalEl.showModal();
+  });
+} /* initializeHowToModal */
 
 /**
  * Initializes game board and gameplay
@@ -239,6 +247,7 @@ function init() {
   setLuck(STARTING_LUCK_PERCENT);
 
   attachProfileImageAndListener();
+  initializeHowToModal();
 } /* init */
 
 window.addEventListener('DOMContentLoaded', init);
