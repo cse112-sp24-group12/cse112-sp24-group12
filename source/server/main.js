@@ -653,10 +653,7 @@ function forceRefreshGameState(webSocketConnection) {
 
   sendMessage(webSocketConnection, {
     action: S2C_ACTIONS.FORCE_REFRESH,
-    gameState: cleanGameState(
-      playerUUID,
-      gameInstance.gameState,
-    ),
+    gameState: cleanGameState(playerUUID, gameInstance.gameState),
   });
 } /* forceRefreshGameState */
 
