@@ -38,10 +38,7 @@ export default class Avatar extends HTMLElement {
    * Destructs listeners
    */
   disconnectedCallback() {
-    window.removeEventListener(
-      UPDATE_AVATAR_LISTENER_NAME,
-      this._handleUpdate,
-    );
+    window.removeEventListener(UPDATE_AVATAR_LISTENER_NAME, this._handleUpdate);
   } /* disconnectedCallback */
 
   /**
@@ -62,7 +59,7 @@ export default class Avatar extends HTMLElement {
     if (!playerUUID) return;
 
     const newProfileImageName = getProfile(playerUUID)?.profileImageName;
-  
+
     this._imgEl.src = getProfileImageUrlFromName(newProfileImageName);
   }; /* _handleUpdate */
 } /* Username */

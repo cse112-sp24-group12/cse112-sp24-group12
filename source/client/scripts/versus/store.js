@@ -1,6 +1,9 @@
 /** @module store */
 
-import { UPDATE_USERNAME_LISTENER_NAME, UPDATE_AVATAR_LISTENER_NAME } from './types.js';
+import {
+  UPDATE_USERNAME_LISTENER_NAME,
+  UPDATE_AVATAR_LISTENER_NAME,
+} from './types.js';
 import * as Types from './types.js';
 import { getPlayerUUID } from './../profile.js';
 import { areCardsEqual, getCurrentRoundState } from './util.js';
