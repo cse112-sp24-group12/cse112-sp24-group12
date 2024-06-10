@@ -49,6 +49,7 @@ const USER_MOVE_MESSAGE = 'Select and play a card';
 const NUM_ROUNDS = 5;
 
 const WORLD_EVENT_MODAL_DELAY_MS = 250;
+const GAME_END_ANIMATION_DELAY_MS = 500;
 const DEALING_CARD_DELAY_SEC = 0.5;
 
 /**
@@ -439,7 +440,9 @@ async function roundWinnerAnimationText(roundWinnerUUID) {
   selfPlayedVersusCardEl.classList.add('no-vis');
   nextRoundWrapperEl.classList.add('next-round-animation');
 
-  playSoundEffect(isUserWinner ? SOUND_EFFECTS.WIN : SOUND_EFFECTS.LOSE);
+  playSoundEffect(
+    isUserWinner ? SOUND_EFFECTS.ROUND_WIN : SOUND_EFFECTS.ROUND_LOSE,
+  );
 
   return new Promise((resolve) => {
     nextRoundWrapperEl.addEventListener(
@@ -525,9 +528,25 @@ export function handleStartRound() {
  * Displays end-of-game information, namely who won
  * @param { Types.ServerToClientProfile } gameWinner profile data of (user/opponent) who won game
  */
-export function handleGameEnd(gameWinner) {
+export async function handleGameEnd(gameWinner) {
+  const gameWinnerYouTitleEl = document.querySelector('#game_winner_you');
+  const gameWinnerOppTitleEl = document.querySelector('#game_winner_opp');
+
   setGameWinnerUUID(gameWinner.uuid);
-  displayWinner(gameWinner.uuid, 'game');
+  updateCurrentInstruction();
+
+  await currentAnimationPromise;
+  await new Promise((r) => setTimeout(r, GAME_END_ANIMATION_DELAY_MS));
+
+  const isUserWinner = gameWinner.uuid === getPlayerUUID();
+
+  if (isUserWinner) {
+    gameWinnerYouTitleEl.classList.add('game-winner-animation');
+    playSoundEffect(SOUND_EFFECTS.GAME_WIN);
+  } else {
+    gameWinnerOppTitleEl.classList.add('game-winner-animation');
+    playSoundEffect(SOUND_EFFECTS.GAME_LOSE);
+  }
 } /* handleGameEnd */
 
 /**
@@ -631,8 +650,11 @@ function returnToLobby() {
  */
 export function handleInstanceClosed() {
   const instClosedModalEl = document.querySelector('#instance_closed_modal');
+  const confirmLeaveModalEl = document.querySelector('#confirm_leave_modal');
 
-  instClosedModalEl.addEventListener('close', returnToLobby); // TODO: fix multiple attachment when opening/closing many times
+  instClosedModalEl.addEventListener('close', returnToLobby, { once: true });
+
+  confirmLeaveModalEl.close();
   instClosedModalEl.showModal();
 } /* handleInstanceClosed */
 
@@ -707,14 +729,16 @@ function handleLeaveGame() {
   const confirmLeaveModalEl = document.querySelector('#confirm_leave_modal');
   const confirmLeaveButtonEl = document.querySelector('#confirm_leave_button');
 
-  confirmLeaveButtonEl.addEventListener(
-    'click',
-    () => {
-      confirmLeaveModalEl.close();
-      returnToLobby();
-    },
-    { once: true },
-  ); // TODO: fix multiple attachment when opening and closing modal many times
+  const confirmLeaveClickHandler = () => {
+    confirmLeaveModalEl.close();
+    returnToLobby();
+  };
+
+  confirmLeaveButtonEl.addEventListener('click', confirmLeaveClickHandler);
+
+  confirmLeaveModalEl.addEventListener('close', () => {
+    confirmLeaveButtonEl.removeEventListener('click', confirmLeaveClickHandler);
+  });
 
   confirmLeaveModalEl.showModal();
 } /* handleLeaveGame */

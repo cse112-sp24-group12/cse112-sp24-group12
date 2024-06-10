@@ -20,12 +20,20 @@ export const SOUND_EFFECTS = {
     filePath: './assets/sounds/swish.mp3',
     volumeFactor: 1,
   },
-  LOSE: {
-    filePath: './assets/sounds/lose.mp3',
+  ROUND_LOSE: {
+    filePath: './assets/sounds/round_lose.mp3',
     volumeFactor: 1,
   },
-  WIN: {
-    filePath: './assets/sounds/win.mp3',
+  ROUND_WIN: {
+    filePath: './assets/sounds/round_win.mp3',
+    volumeFactor: 1,
+  },
+  GAME_LOSE: {
+    filePath: './assets/sounds/game_lose.mp3',
+    volumeFactor: 1,
+  },
+  GAME_WIN: {
+    filePath: './assets/sounds/game_win.mp3',
     volumeFactor: 1,
   },
 };

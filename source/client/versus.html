@@ -101,6 +101,10 @@
         <div id="round_control_wrapper">
           <p id="current_instruction"><!-- dynamically populated --></p>
         </div>
+        <div id="game_winner_announcement">
+          <h2 id="game_winner_you">You won the game!</h2>
+          <h2 id="game_winner_opp">You lost the game!</h2>
+        </div>
       </div> 
       <div id="top_right_wrapper">
         <section id="legend_card" class="card purple-card">
@@ -126,7 +130,8 @@
       <button id="debug_toggle_view_btn">Toggle view</button>
       <button id="debug_start_game_btn">Start game</button>
       <button id="debug_opponent_move_btn">Opponent move (no reveal)</button>
-      <button id="debug_reveal_cards_btn">Reveal cards</button>
+      <button id="debug_game_end_animation_you_btn">Trigger game end animation (you)</button>
+      <button id="debug_game_end_animation_opp_btn">Trigger game end animation (opp)</button>
     </section>
   </main>
 
