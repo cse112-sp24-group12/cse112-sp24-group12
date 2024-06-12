@@ -195,6 +195,7 @@
   font-size: 4rem;
   transform: translateY(800vh);
   transition: transform 250ms ease-in-out;
+  text-align: center;
 }
 
 #game_winner_you {
