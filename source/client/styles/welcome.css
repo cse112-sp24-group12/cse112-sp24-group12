@@ -21,7 +21,6 @@ h1 {
   font-size: 11rem;
   font-family: cursive;
   color: white;
-
   animation: fadeInLetters 2s ease-out;
 }
 
